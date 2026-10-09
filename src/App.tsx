@@ -9,6 +9,7 @@ import { IndustryDetailPanel } from "./components/IndustryDetailPanel";
 import { StockScreenerTable } from "./components/StockScreenerTable";
 import { StockDetailPanel } from "./components/StockDetailPanel";
 import { BacktestPanel } from "./components/BacktestPanel";
+import { HistoryPanel } from "./components/HistoryPanel";
 import { Tabs } from "./components/Tabs";
 import { SettingsPanel } from "./components/SettingsPanel";
 import { HelpModal } from "./components/HelpModal";
@@ -17,7 +18,7 @@ import { sectorsToCsv, stocksToCsv, downloadCsv } from "./lib/export/csv";
 import { downloadJson } from "./lib/export/json";
 import { computeRegimeHistory } from "./lib/dashboard";
 
-type TabKey = "sectors" | "industries" | "screener" | "backtest";
+type TabKey = "sectors" | "industries" | "screener" | "backtest" | "history";
 
 export default function App() {
   const market = useMarketData();
@@ -130,6 +131,7 @@ export default function App() {
                 { key: "industries", label: `Industries (${market.dashboardData.industries.length})` },
                 { key: "screener", label: `Stock Screener (${market.dashboardData.stockScreen.length})` },
                 { key: "backtest", label: "Backtest" },
+                { key: "history", label: `History (${market.snapshotHistory.length})` },
               ]}
               active={activeTab}
               onChange={(k) => setActiveTab(k as TabKey)}
@@ -193,6 +195,13 @@ export default function App() {
 
             {activeTab === "backtest" && market.rawDataset && (
               <BacktestPanel rawDataset={market.rawDataset} settings={market.settings} />
+            )}
+
+            {activeTab === "history" && (
+              <HistoryPanel
+                history={market.snapshotHistory}
+                onExportJson={() => downloadJson(`nse-sector-dashboard-history.json`, { entries: market.snapshotHistory })}
+              />
             )}
           </>
         )}

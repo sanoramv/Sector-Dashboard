@@ -1,6 +1,4 @@
-import type { DashboardData } from "../dashboard";
-
-export function downloadJson(filename: string, data: DashboardData): void {
+export function downloadJson<T extends object>(filename: string, data: T): void {
   const payload = {
     exportSchemaVersion: 1,
     exportedAt: new Date().toISOString(),

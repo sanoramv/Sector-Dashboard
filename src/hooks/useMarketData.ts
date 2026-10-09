@@ -6,6 +6,8 @@ import { StaticSnapshotProvider } from "../lib/providers/staticSnapshotProvider"
 import { buildDashboardData, type DashboardData } from "../lib/dashboard";
 import { idbDelete, idbGet, idbSet } from "../lib/storage/idbCache";
 import { loadSettings, saveSettings } from "../lib/storage/settings";
+import { listSnapshotHistory, recordSnapshot } from "../lib/storage/snapshotHistory";
+import type { SnapshotHistoryEntry } from "../types/snapshotHistory";
 
 const CACHE_KEY = "lastSnapshot:v1";
 const REFRESH_TIMEOUT_MS = 45_000;
@@ -29,6 +31,7 @@ export interface MarketDataState {
   lastSuccessfulFetchAt: string | null;
   lastRefreshOutcome: RefreshOutcome;
   providerName: string;
+  snapshotHistory: SnapshotHistoryEntry[];
   refresh: () => Promise<void>;
   updateSettings: (settings: AppSettings) => void;
   clearCache: () => Promise<void>;
@@ -45,6 +48,7 @@ export function useMarketData(): MarketDataState {
   const [lastFetchAttemptAt, setLastFetchAttemptAt] = useState<string | null>(null);
   const [lastSuccessfulFetchAt, setLastSuccessfulFetchAt] = useState<string | null>(null);
   const [lastRefreshOutcome, setLastRefreshOutcome] = useState<RefreshOutcome>(null);
+  const [snapshotHistory, setSnapshotHistory] = useState<SnapshotHistoryEntry[]>([]);
 
   const isRefreshingRef = useRef(false);
   const hasAutoFetchedRef = useRef(false);
@@ -60,6 +64,10 @@ export function useMarketData(): MarketDataState {
       setRawDataset(cached.dataset);
       setStatus("cached");
       setLastSuccessfulFetchAt(cached.cachedAt);
+    })();
+    (async () => {
+      const history = await listSnapshotHistory();
+      if (!cancelled) setSnapshotHistory(history);
     })();
     return () => {
       cancelled = true;
@@ -85,6 +93,10 @@ export function useMarketData(): MarketDataState {
       setLastSuccessfulFetchAt(new Date().toISOString());
       setLastRefreshOutcome(result.status === "partial" || result.status === "stale" ? "partial" : "success");
       await idbSet<CachedSnapshot>(CACHE_KEY, { dataset: result.dataset, cachedAt: new Date().toISOString() });
+      // Only record history for a genuinely fresh fetch, never for cache fallback -
+      // otherwise reloading the page would spuriously re-timestamp old data.
+      await recordSnapshot(buildDashboardData(result.dataset, settings));
+      setSnapshotHistory(await listSnapshotHistory());
     } catch (err) {
       const message =
         err instanceof DOMException && err.name === "AbortError"
@@ -101,7 +113,7 @@ export function useMarketData(): MarketDataState {
       isRefreshingRef.current = false;
       setIsRefreshing(false);
     }
-  }, [provider]);
+  }, [provider, settings]);
 
   // One automatic refresh attempt on first load, after the cache (if any) has
   // already been shown. This is the dashboard trying to get current data by
@@ -144,6 +156,7 @@ export function useMarketData(): MarketDataState {
     lastSuccessfulFetchAt,
     lastRefreshOutcome,
     providerName: provider.name,
+    snapshotHistory,
     refresh,
     updateSettings,
     clearCache,
