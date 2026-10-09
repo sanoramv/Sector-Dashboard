@@ -386,6 +386,17 @@ requires evidence before any rule's language could be read as a claim of effecti
   section 1). Subsequent runs are incremental.
 - `stocks.json` is now ~17MB after adding the Microcap 250 universe (was 12MB). Still fine for git/IndexedDB/gzip,
   but worth knowing if you're tracking repo size.
+- **The "N of M tracked constituent references have no price history yet" warning is expected to show a small
+  non-zero number**, and is not a bug - it means exactly what it says: a handful of constituent-list entries have
+  no matching price row in NSE's equity bhavcopy archive. Investigated down to individual symbols; as of this
+  writing the only remaining cases are NSE's own temporary "DUMMY" placeholder symbols (issued during corporate
+  actions like demergers, before the resulting entity actually lists and trades) and one constituent
+  (`TRIVENIPT`) that doesn't currently appear in NSE's bhavcopy under any series, at all - i.e. it genuinely isn't
+  trading yet, not a fetch failure. (An earlier version of this warning also included 3 REITs - BAGMANE, BIRET,
+  EMBASSY - that trade under NSE's "RR" series rather than "EQ"; `scripts/fetch-stock-bhavcopy.mts` originally
+  only kept "EQ" rows, which silently excluded legitimate, actively-traded constituents. Fixed to track both
+  series.) None of these cases are silently treated as zero or as a failing breadth/MA condition - they are
+  excluded from eligible counts exactly as the "missing data is never fabricated" rule requires.
 - NIFTY Chemicals has less historical depth in NSE's archive than the other tracked sectors as of this writing,
   so its 52-week-high distance is currently shown as unavailable rather than computed from a partial year - this
   will resolve automatically as more daily data accumulates, or sooner if NSE backfills the archive.

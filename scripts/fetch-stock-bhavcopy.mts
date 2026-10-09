@@ -13,9 +13,18 @@
  * trendlines) needs the daily high/low, not just the close.
  *
  * Requires public/data/constituents.json to already exist (run
- * `npm run fetch:constituents` first). Only EQ-series rows for symbols that
- * actually appear in the tracked universe are kept; everything else in the
- * ~3000-row daily file is discarded immediately to keep storage small.
+ * `npm run fetch:constituents` first). Only rows for symbols that actually
+ * appear in the tracked universe are kept, and only in the series NSE uses
+ * for their instrument type; everything else in the ~3000-row daily file is
+ * discarded immediately to keep storage small. TRACKED_SERIES below is
+ * deliberately not just "EQ": a handful of legitimate index constituents
+ * (e.g. BAGMANE, BIRET, EMBASSY - REITs that are real NIFTY 500/Smallcap 250
+ * constituents) trade under NSE's "RR" (REIT/InvIT) series, not "EQ". An
+ * earlier EQ-only filter silently excluded them, surfacing as a
+ * "no price history" data-quality warning for stocks that actually do
+ * trade - see README's "Known limitations" for the remaining, genuinely
+ * non-trading cases (dummy corporate-action placeholder symbols, and
+ * constituent-list entries ahead of their actual trading start).
  *
  * Incremental like fetch-index-history.mts: fetches only missing dates,
  * merges with the existing public/data/stocks.json, prunes anything older
@@ -37,6 +46,10 @@ const PRUNE_BEYOND_DAYS = 450;
 const CONSTITUENTS_PATH = path.resolve("public/data/constituents.json");
 const OUT_PATH = path.resolve("public/data/stocks.json");
 const CONCURRENCY = 4;
+// "EQ" covers ordinary equity shares; "RR" covers REITs/InvITs (e.g. BAGMANE,
+// BIRET, EMBASSY), which are legitimate index constituents but trade under a
+// different NSE series code, not "EQ".
+const TRACKED_SERIES = new Set(["EQ", "RR"]);
 
 async function loadRequiredSymbols(): Promise<Set<string>> {
   const text = await readFile(CONSTITUENTS_PATH, "utf-8");
@@ -111,7 +124,7 @@ async function main() {
 
     const rows = parseCsvObjects(text);
     for (const row of rows) {
-      if (row["SERIES"] !== "EQ") continue;
+      if (!TRACKED_SERIES.has(row["SERIES"])) continue;
       const symbol = row["SYMBOL"];
       if (!requiredSymbols.has(symbol)) continue;
       const bar = {
