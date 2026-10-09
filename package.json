@@ -1,0 +1,34 @@
+{
+  "name": "nse-sector-strength-dashboard",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -b --noEmit",
+    "fetch:constituents": "tsx scripts/fetch-constituents.mts",
+    "fetch:index-history": "tsx scripts/fetch-index-history.mts",
+    "fetch:stocks": "tsx scripts/fetch-stock-bhavcopy.mts",
+    "fetch:all": "npm run fetch:index-history && npm run fetch:stocks && npm run build:manifest",
+    "build:manifest": "tsx scripts/build-manifest.mts"
+  },
+  "dependencies": {
+    "lightweight-charts": "^5.0.9",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tsx": "^4.19.2",
+    "typescript": "~5.7.2",
+    "vite": "^6.0.0",
+    "vitest": "^5.0.3"
+  }
+}

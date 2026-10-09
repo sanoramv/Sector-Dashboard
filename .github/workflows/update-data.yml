@@ -1,0 +1,52 @@
+name: Update NSE sector data
+
+on:
+  schedule:
+    # 14:30 UTC = 20:00 IST, weekdays. Gives NSE's archive hosts a few hours
+    # after the 15:30 IST close to publish the day's index/bhavcopy files.
+    - cron: "30 14 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fetch index history (official NSE archive)
+        run: npm run fetch:index-history
+
+      - name: Fetch equity bhavcopy (official NSE archive)
+        run: npm run fetch:stocks
+
+      - name: Build manifest
+        run: npm run build:manifest
+
+      - name: Validate the pipeline output with the test suite
+        run: npm run test
+
+      - name: Commit updated data if anything changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data
+          if git diff --cached --quiet; then
+            echo "No data changes to commit."
+          else
+            git commit -m "chore: scheduled NSE sector data update"
+            git push
+          fi

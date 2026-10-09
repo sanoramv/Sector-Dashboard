@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-09T08:27:35.653Z",
+  "latestMarketDate": "2026-10-08",
+  "source": {
+    "name": "NSE (National Stock Exchange of India) - official archives, fetched by a scheduled pipeline",
+    "indexDataUrl": "https://nsearchives.nseindia.com/content/indices/",
+    "constituentDataUrl": "https://niftyindices.com/IndexConstituent/",
+    "equityDataUrl": "https://nsearchives.nseindia.com/products/content/"
+  },
+  "sectors": [
+    "auto",
+    "bank",
+    "financial-services",
+    "fmcg",
+    "healthcare",
+    "it",
+    "metal",
+    "oil-gas",
+    "pharma",
+    "realty",
+    "psu-bank",
+    "private-bank",
+    "consumer-durables",
+    "media",
+    "chemicals"
+  ],
+  "benchmark": "nifty500",
+  "warnings": [
+    "4 of 721 tracked constituent references have no price history yet (breadth for affected sectors will show reduced eligibility)."
+  ]
+}
