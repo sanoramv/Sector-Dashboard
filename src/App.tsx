@@ -8,6 +8,7 @@ import { IndustryTable } from "./components/IndustryTable";
 import { IndustryDetailPanel } from "./components/IndustryDetailPanel";
 import { StockScreenerTable } from "./components/StockScreenerTable";
 import { StockDetailPanel } from "./components/StockDetailPanel";
+import { BacktestPanel } from "./components/BacktestPanel";
 import { Tabs } from "./components/Tabs";
 import { SettingsPanel } from "./components/SettingsPanel";
 import { HelpModal } from "./components/HelpModal";
@@ -16,7 +17,7 @@ import { sectorsToCsv, stocksToCsv, downloadCsv } from "./lib/export/csv";
 import { downloadJson } from "./lib/export/json";
 import { computeRegimeHistory } from "./lib/dashboard";
 
-type TabKey = "sectors" | "industries" | "screener";
+type TabKey = "sectors" | "industries" | "screener" | "backtest";
 
 export default function App() {
   const market = useMarketData();
@@ -128,6 +129,7 @@ export default function App() {
                 { key: "sectors", label: "Sectors" },
                 { key: "industries", label: `Industries (${market.dashboardData.industries.length})` },
                 { key: "screener", label: `Stock Screener (${market.dashboardData.stockScreen.length})` },
+                { key: "backtest", label: "Backtest" },
               ]}
               active={activeTab}
               onChange={(k) => setActiveTab(k as TabKey)}
@@ -187,6 +189,10 @@ export default function App() {
                   onSelect={setSelectedStockSymbol}
                 />
               </>
+            )}
+
+            {activeTab === "backtest" && market.rawDataset && (
+              <BacktestPanel rawDataset={market.rawDataset} settings={market.settings} />
             )}
           </>
         )}
