@@ -1,6 +1,6 @@
 import type { RawDataset, Manifest } from "../../types/dataset";
 import { SCHEMA_VERSION } from "../../types/dataset";
-import type { IndexSeries, SectorConstituents, StockCloseSeries } from "../../types/market";
+import type { IndexSeries, SectorConstituents, StockSeries } from "../../types/market";
 import type { DataStatus, FetchResult, MarketDataProvider } from "./types";
 
 const DATA_BASE = `${import.meta.env.BASE_URL}data`;
@@ -50,13 +50,13 @@ export class StaticSnapshotProvider implements MarketDataProvider {
       );
     }
 
-    const [indexSeries, constituents, stockCloses] = await Promise.all([
+    const [indexSeries, constituents, stocks] = await Promise.all([
       fetchJson<Record<string, IndexSeries>>("index-series.json", signal),
       fetchJson<Record<string, SectorConstituents>>("constituents.json", signal),
-      fetchJson<Record<string, StockCloseSeries>>("stocks.json", signal),
+      fetchJson<Record<string, StockSeries>>("stocks.json", signal),
     ]);
 
-    const dataset: RawDataset = { manifest, indexSeries, constituents, stockCloses };
+    const dataset: RawDataset = { manifest, indexSeries, constituents, stocks };
 
     const today = new Date().toISOString().slice(0, 10);
     const staleDays = daysBetween(manifest.latestMarketDate, today);

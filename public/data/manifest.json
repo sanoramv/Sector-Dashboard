@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "generatedAt": "2026-10-09T08:27:35.653Z",
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-09T11:00:51.213Z",
   "latestMarketDate": "2026-10-08",
   "source": {
     "name": "NSE (National Stock Exchange of India) - official archives, fetched by a scheduled pipeline",

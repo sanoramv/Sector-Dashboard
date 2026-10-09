@@ -3,8 +3,12 @@
  * pipeline (scripts/*.mts) and consumed by StaticSnapshotProvider at runtime.
  * Bump SCHEMA_VERSION whenever a breaking shape change is made, so old cached
  * copies in a user's browser are detected and discarded instead of misread.
+ *
+ * v2: stock series store full OHLC bars (not close-only), and constituent
+ * records carry an `industry` classification - both needed for stock
+ * screening, pattern detection and industry-level analysis.
  */
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export interface Manifest {
   schemaVersion: number;
@@ -25,11 +29,11 @@ export interface Manifest {
   warnings: string[];
 }
 
-import type { IndexSeries, SectorConstituents, StockCloseSeries } from "./market";
+import type { IndexSeries, SectorConstituents, StockSeries } from "./market";
 
 export interface RawDataset {
   manifest: Manifest;
   indexSeries: Record<string, IndexSeries>; // keyed by slug, includes benchmark
   constituents: Record<string, SectorConstituents>; // keyed by slug
-  stockCloses: Record<string, StockCloseSeries>; // keyed by symbol
+  stocks: Record<string, StockSeries>; // keyed by symbol
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { isAboveMovingAverage, computeBreadth } from "../../src/lib/calculations/breadth";
-import type { StockCloseSeries } from "../../src/types/market";
+import type { StockSeries } from "../../src/types/market";
 
 describe("isAboveMovingAverage", () => {
   it("returns null when there isn't enough history for the window", () => {
@@ -16,16 +16,22 @@ describe("isAboveMovingAverage", () => {
   });
 });
 
-function series(symbol: string, closes: number[]): StockCloseSeries {
+function series(symbol: string, closes: number[]): StockSeries {
   return {
     symbol,
-    closes: closes.map((close, i) => ({ date: `2024-01-${String(i + 1).padStart(2, "0")}`, close })),
+    bars: closes.map((close, i) => ({
+      date: `2024-01-${String(i + 1).padStart(2, "0")}`,
+      open: close,
+      high: close,
+      low: close,
+      close,
+    })),
   };
 }
 
 describe("computeBreadth", () => {
   it("computes the percentage of ELIGIBLE constituents above each MA, not of the full universe", () => {
-    const stocks: StockCloseSeries[] = [
+    const stocks: StockSeries[] = [
       series("A", Array.from({ length: 25 }, () => 10).map((v, i) => (i === 24 ? 20 : v))), // above 20dma
       series("B", Array.from({ length: 25 }, () => 10)), // at/below 20dma (flat, not above)
       series("C", [1, 2, 3]), // ineligible for 20dma (not enough history)
@@ -40,7 +46,7 @@ describe("computeBreadth", () => {
   });
 
   it("marks a window unavailable when no constituent has enough history, never inventing 0%", () => {
-    const stocks: StockCloseSeries[] = [series("A", [1, 2, 3])];
+    const stocks: StockSeries[] = [series("A", [1, 2, 3])];
     const result = computeBreadth(stocks, "2024-01-03", false);
     expect(result.above200dma.pct.available).toBe(false);
     expect(result.above200dma.eligible).toBe(0);
@@ -58,7 +64,7 @@ describe("computeBreadth", () => {
   });
 
   it("only counts closes up to and including asOfDate (no look-ahead)", () => {
-    const stocks: StockCloseSeries[] = [
+    const stocks: StockSeries[] = [
       series("A", Array.from({ length: 30 }, (_, i) => (i < 25 ? 10 : 1000))), // huge jump AFTER the asOf date
     ];
     const result = computeBreadth(stocks, "2024-01-25", false); // cutoff before the jump

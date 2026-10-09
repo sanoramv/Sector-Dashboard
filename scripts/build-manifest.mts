@@ -8,7 +8,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { BENCHMARK, SECTOR_UNIVERSE } from "../src/config/sectorUniverse.ts";
-import type { IndexSeries, SectorConstituents, StockCloseSeries } from "../src/types/market.ts";
+import type { IndexSeries, SectorConstituents, StockSeries } from "../src/types/market.ts";
 import type { Manifest } from "../src/types/dataset.ts";
 import { SCHEMA_VERSION } from "../src/types/dataset.ts";
 
@@ -21,7 +21,7 @@ async function readJson<T>(file: string): Promise<T> {
 async function main() {
   const indexSeries = await readJson<Record<string, IndexSeries>>("index-series.json");
   const constituents = await readJson<Record<string, SectorConstituents>>("constituents.json");
-  const stocks = await readJson<Record<string, StockCloseSeries>>("stocks.json");
+  const stocks = await readJson<Record<string, StockSeries>>("stocks.json");
 
   const latestDates = Object.values(indexSeries)
     .map((s) => s.bars.at(-1)?.date)
@@ -44,7 +44,7 @@ async function main() {
   for (const sector of Object.values(constituents)) {
     for (const c of sector.constituents) {
       totalSymbols += 1;
-      if (!stocks[c.symbol] || stocks[c.symbol].closes.length === 0) symbolsWithNoData += 1;
+      if (!stocks[c.symbol] || stocks[c.symbol].bars.length === 0) symbolsWithNoData += 1;
     }
   }
   if (symbolsWithNoData > 0) {

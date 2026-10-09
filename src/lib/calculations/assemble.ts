@@ -1,4 +1,4 @@
-import type { DailyBar, StockCloseSeries } from "../../types/market";
+import type { DailyBar, StockSeries } from "../../types/market";
 import type { AppSettings } from "../../types/config";
 import { ok, unavailable, type SectorMetrics } from "../../types/metrics";
 import { validateBars } from "./validation";
@@ -14,7 +14,7 @@ export interface SectorInput {
   displayName: string;
   rawBars: DailyBar[];
   constituentSymbols: string[];
-  stockCloses: Record<string, StockCloseSeries>;
+  stocks: Record<string, StockSeries>;
   isBreadthProxy: boolean;
   excludeFromHeadlineCount?: boolean;
   overlapNote?: string;
@@ -81,8 +81,8 @@ export function assembleSectorMetrics(
   const relativeStrength = computeRelativeStrength(bars, validatedBenchmarkBars);
 
   const stocks = input.constituentSymbols
-    .map((sym) => input.stockCloses[sym])
-    .filter((s): s is StockCloseSeries => s !== undefined);
+    .map((sym) => input.stocks[sym])
+    .filter((s): s is StockSeries => s !== undefined);
   const breadth = computeBreadth(stocks, latestBar.date, input.isBreadthProxy);
 
   const score = computeScore(

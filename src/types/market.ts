@@ -16,16 +16,23 @@ export interface IndexSeries {
   bars: DailyBar[];
 }
 
-/** Close-only series for one constituent stock (sufficient for MA breadth). */
-export interface StockCloseSeries {
+/**
+ * Full OHLC historical series for one constituent stock. Full OHLC (not just
+ * close) is needed for 52-week-high distance (uses the daily high) and for
+ * pattern detection (consolidation range, triangle trendlines), both of
+ * which need the intraday high/low, not just the closing price.
+ */
+export interface StockSeries {
   symbol: string;
-  /** Ascending by date. */
-  closes: Array<{ date: string; close: number }>;
+  /** Ascending by date, deduplicated. */
+  bars: DailyBar[];
 }
 
 export interface ConstituentRef {
   symbol: string;
   companyName: string;
+  /** NSE's published industry classification for this stock (from the constituent list CSV's "Industry" column). */
+  industry: string;
 }
 
 export interface SectorConstituents {

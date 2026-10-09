@@ -2,16 +2,19 @@ import { BENCHMARK, findSectorBySlug, SECTOR_UNIVERSE } from "../config/sectorUn
 import type { AppSettings } from "../types/config";
 import type { RawDataset } from "../types/dataset";
 import type { MarketOverview, Regime, SectorMetrics } from "../types/metrics";
+import type { IndustryMetrics } from "../types/industry";
 import { validateBars } from "./calculations/validation";
 import { computeReturns } from "./calculations/returns";
 import { computeBreadth } from "./calculations/breadth";
 import { assembleSectorMetrics } from "./calculations/assemble";
+import { computeIndustryMetrics, groupSymbolsByIndustry } from "./calculations/industry";
 
 export interface DashboardData {
   generatedAt: string;
   latestMarketDate: string;
   benchmark: SectorMetrics;
   sectors: SectorMetrics[];
+  industries: IndustryMetrics[];
   overview: MarketOverview;
 }
 
@@ -31,7 +34,7 @@ export function buildDashboardData(dataset: RawDataset, settings: AppSettings): 
       displayName: BENCHMARK.displayName,
       rawBars: benchmarkSeries?.bars ?? [],
       constituentSymbols: benchmarkConstituents,
-      stockCloses: dataset.stockCloses,
+      stocks: dataset.stocks,
       isBreadthProxy: false,
     },
     validatedBenchmarkBars,
@@ -47,7 +50,7 @@ export function buildDashboardData(dataset: RawDataset, settings: AppSettings): 
         displayName: def.displayName,
         rawBars: series?.bars ?? [],
         constituentSymbols: constituents,
-        stockCloses: dataset.stockCloses,
+        stocks: dataset.stocks,
         isBreadthProxy: false,
         excludeFromHeadlineCount: def.excludeFromHeadlineCount,
         overlapNote: def.overlapNote,
@@ -64,12 +67,22 @@ export function buildDashboardData(dataset: RawDataset, settings: AppSettings): 
   const insufficientDataCount = headlineSectors.filter((s) => s.regime.regime === "insufficient-data").length;
 
   const broadMarketStocks = benchmarkConstituents
-    .map((sym) => dataset.stockCloses[sym])
+    .map((sym) => dataset.stocks[sym])
     .filter((s): s is NonNullable<typeof s> => s !== undefined);
   const broadMarketBreadth =
     broadMarketStocks.length > 0 && validatedBenchmarkBars.length > 0
       ? computeBreadth(broadMarketStocks, validatedBenchmarkBars[validatedBenchmarkBars.length - 1].date, false)
       : null;
+
+  // Industry analysis uses NIFTY 500's constituent list as the universe - it's
+  // the broadest tagged universe available, and its "Industry" field is NSE's
+  // own published macro-industry classification (verified: 20 industries
+  // across ~500 stocks), not an invented grouping.
+  const benchmarkConstituentRecords = dataset.constituents[BENCHMARK.slug]?.constituents ?? [];
+  const industryGroups = groupSymbolsByIndustry(benchmarkConstituentRecords);
+  const industries = Object.entries(industryGroups)
+    .map(([name, symbols]) => computeIndustryMetrics(name, symbols, dataset.stocks, validatedBenchmarkBars, settings))
+    .sort((a, b) => b.stockCount - a.stockCount);
 
   const overview: MarketOverview = {
     benchmarkDisplayName: BENCHMARK.displayName,
@@ -86,6 +99,7 @@ export function buildDashboardData(dataset: RawDataset, settings: AppSettings): 
     latestMarketDate: dataset.manifest.latestMarketDate,
     benchmark,
     sectors,
+    industries,
     overview,
   };
 }
@@ -133,7 +147,7 @@ export function computeRegimeHistory(
         displayName: def.displayName,
         rawBars: truncatedBars,
         constituentSymbols: constituents,
-        stockCloses: dataset.stockCloses,
+        stocks: dataset.stocks,
         isBreadthProxy: false,
       },
       validatedBenchmark,

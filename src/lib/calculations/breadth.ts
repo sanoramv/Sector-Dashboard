@@ -1,4 +1,4 @@
-import type { StockCloseSeries } from "../../types/market";
+import type { StockSeries } from "../../types/market";
 import type { BreadthMetrics, BreadthWindowResult } from "../../types/metrics";
 import { ok, unavailable } from "../../types/metrics";
 
@@ -19,7 +19,7 @@ export function isAboveMovingAverage(closes: number[], window: MaWindow): boolea
 }
 
 function computeWindow(
-  stocks: StockCloseSeries[],
+  stocks: StockSeries[],
   asOfDate: string,
   window: MaWindow,
 ): BreadthWindowResult {
@@ -27,9 +27,9 @@ function computeWindow(
   let above = 0;
 
   for (const stock of stocks) {
-    const closesUpToDate = stock.closes
-      .filter((c) => c.date <= asOfDate)
-      .map((c) => c.close);
+    const closesUpToDate = stock.bars
+      .filter((b) => b.date <= asOfDate)
+      .map((b) => b.close);
     const result = isAboveMovingAverage(closesUpToDate, window);
     if (result === null) continue;
     eligible += 1;
@@ -51,7 +51,7 @@ function computeWindow(
  * index constituent list (e.g. a broader sector-stock universe substitute).
  */
 export function computeBreadth(
-  stocks: StockCloseSeries[],
+  stocks: StockSeries[],
   asOfDate: string,
   isProxy: boolean,
 ): BreadthMetrics {

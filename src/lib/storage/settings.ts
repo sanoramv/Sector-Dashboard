@@ -11,6 +11,8 @@ export function loadSettings(): AppSettings {
     return {
       scoring: { ...DEFAULT_SETTINGS.scoring, ...parsed.scoring },
       regime: { ...DEFAULT_SETTINGS.regime, ...parsed.regime },
+      industry: { ...DEFAULT_SETTINGS.industry, ...parsed.industry },
+      screening: { ...DEFAULT_SETTINGS.screening, ...parsed.screening },
     };
   } catch {
     return DEFAULT_SETTINGS;

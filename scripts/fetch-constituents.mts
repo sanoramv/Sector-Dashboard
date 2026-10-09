@@ -44,7 +44,11 @@ async function main() {
         slug: def.slug,
         constituents: rows
           .filter((r) => r["Symbol"])
-          .map((r) => ({ symbol: r["Symbol"].trim(), companyName: r["Company Name"]?.trim() ?? "" })),
+          .map((r) => ({
+            symbol: r["Symbol"].trim(),
+            companyName: r["Company Name"]?.trim() ?? "",
+            industry: r["Industry"]?.trim() || "Unclassified",
+          })),
         fetchedAt: now,
       };
       console.log(`[constituents] ${def.slug}: ${result[def.slug].constituents.length} constituents`);

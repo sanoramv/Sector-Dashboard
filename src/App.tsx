@@ -4,6 +4,9 @@ import { Header } from "./components/Header";
 import { MarketOverview } from "./components/MarketOverview";
 import { SectorTable } from "./components/SectorTable";
 import { SectorDetailPanel } from "./components/SectorDetailPanel";
+import { IndustryTable } from "./components/IndustryTable";
+import { IndustryDetailPanel } from "./components/IndustryDetailPanel";
+import { Tabs } from "./components/Tabs";
 import { SettingsPanel } from "./components/SettingsPanel";
 import { HelpModal } from "./components/HelpModal";
 import { UNAVAILABLE_SECTORS } from "./config/sectorUniverse";
@@ -11,9 +14,13 @@ import { sectorsToCsv, downloadCsv } from "./lib/export/csv";
 import { downloadJson } from "./lib/export/json";
 import { computeRegimeHistory } from "./lib/dashboard";
 
+type TabKey = "sectors" | "industries";
+
 export default function App() {
   const market = useMarketData();
+  const [activeTab, setActiveTab] = useState<TabKey>("sectors");
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [selectedIndustrySlug, setSelectedIndustrySlug] = useState<string | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [showUnavailable, setShowUnavailable] = useState(false);
@@ -21,6 +28,11 @@ export default function App() {
   const selectedSector = useMemo(
     () => market.dashboardData?.sectors.find((s) => s.slug === selectedSlug) ?? null,
     [market.dashboardData, selectedSlug],
+  );
+
+  const selectedIndustry = useMemo(
+    () => market.dashboardData?.industries.find((i) => i.slug === selectedIndustrySlug) ?? null,
+    [market.dashboardData, selectedIndustrySlug],
   );
 
   const regimeHistory = useMemo(() => {
@@ -98,42 +110,64 @@ export default function App() {
           <>
             <MarketOverview overview={market.dashboardData.overview} />
 
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginBottom: 10 }}>
-              <button type="button" className="btn" onClick={handleExportCsv}>
-                Export CSV
-              </button>
-              <button type="button" className="btn" onClick={handleExportJson}>
-                Export JSON
-              </button>
-            </div>
+            <Tabs
+              tabs={[
+                { key: "sectors", label: "Sectors" },
+                { key: "industries", label: `Industries (${market.dashboardData.industries.length})` },
+              ]}
+              active={activeTab}
+              onChange={(k) => setActiveTab(k as TabKey)}
+            />
 
-            <SectorTable sectors={market.dashboardData.sectors} onSelect={setSelectedSlug} />
+            {activeTab === "sectors" && (
+              <>
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginBottom: 10 }}>
+                  <button type="button" className="btn" onClick={handleExportCsv}>
+                    Export CSV
+                  </button>
+                  <button type="button" className="btn" onClick={handleExportJson}>
+                    Export JSON
+                  </button>
+                </div>
 
-            <div className="card" style={{ padding: 14, marginTop: 16, fontSize: 12.5 }}>
-              <button
-                type="button"
-                className="btn"
-                onClick={() => setShowUnavailable((v) => !v)}
-                aria-expanded={showUnavailable}
-              >
-                {showUnavailable ? "Hide" : "Show"} sectors not currently tracked ({UNAVAILABLE_SECTORS.length})
-              </button>
-              {showUnavailable && (
-                <ul style={{ marginTop: 10, paddingLeft: 18 }}>
-                  {UNAVAILABLE_SECTORS.map((s) => (
-                    <li key={s.slug} style={{ marginBottom: 4 }}>
-                      <strong>{s.displayName}</strong> — {s.reason}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+                <SectorTable sectors={market.dashboardData.sectors} onSelect={setSelectedSlug} />
+
+                <div className="card" style={{ padding: 14, marginTop: 16, fontSize: 12.5 }}>
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={() => setShowUnavailable((v) => !v)}
+                    aria-expanded={showUnavailable}
+                  >
+                    {showUnavailable ? "Hide" : "Show"} sectors not currently tracked ({UNAVAILABLE_SECTORS.length})
+                  </button>
+                  {showUnavailable && (
+                    <ul style={{ marginTop: 10, paddingLeft: 18 }}>
+                      {UNAVAILABLE_SECTORS.map((s) => (
+                        <li key={s.slug} style={{ marginBottom: 4 }}>
+                          <strong>{s.displayName}</strong> — {s.reason}. Its industry equivalent may still be viewable
+                          under the Industries tab, computed from real constituent stocks.
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </>
+            )}
+
+            {activeTab === "industries" && (
+              <IndustryTable industries={market.dashboardData.industries} onSelect={setSelectedIndustrySlug} />
+            )}
           </>
         )}
       </main>
 
       {selectedSector && market.dashboardData && (
         <SectorDetailPanel sector={selectedSector} regimeHistory={regimeHistory} onClose={() => setSelectedSlug(null)} />
+      )}
+
+      {selectedIndustry && (
+        <IndustryDetailPanel industry={selectedIndustry} onClose={() => setSelectedIndustrySlug(null)} />
       )}
 
       {settingsOpen && (
