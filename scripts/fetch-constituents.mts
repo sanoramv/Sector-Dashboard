@@ -9,12 +9,16 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { BENCHMARK, SECTOR_UNIVERSE } from "../src/config/sectorUniverse.ts";
+import { MARKET_CAP_SEGMENTS } from "../src/config/marketCapSegments.ts";
 import type { SectorConstituents } from "../src/types/market.ts";
 import { fetchText, mapWithConcurrency, sleep } from "./lib/http.mts";
 import { parseCsvObjects } from "./lib/csv.mts";
 
 const OUT_PATH = path.resolve("public/data/constituents.json");
-const ALL_DEFS = [BENCHMARK, ...SECTOR_UNIVERSE];
+// MARKET_CAP_SEGMENTS includes NIFTY 500 again (as the self-benchmark entry) -
+// excluded here since it's already covered by BENCHMARK, same slug/file.
+const NEW_SEGMENT_DEFS = MARKET_CAP_SEGMENTS.filter((s) => s.slug !== BENCHMARK.slug);
+const ALL_DEFS = [BENCHMARK, ...SECTOR_UNIVERSE, ...NEW_SEGMENT_DEFS];
 
 async function loadExisting(): Promise<Record<string, SectorConstituents>> {
   try {

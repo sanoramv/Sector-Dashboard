@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-09T11:00:51.213Z",
-  "latestMarketDate": "2026-10-08",
+  "generatedAt": "2026-10-09T19:17:16.042Z",
+  "latestMarketDate": "2026-10-09",
   "source": {
     "name": "NSE (National Stock Exchange of India) - official archives, fetched by a scheduled pipeline",
     "indexDataUrl": "https://nsearchives.nseindia.com/content/indices/",
@@ -27,6 +27,6 @@
   ],
   "benchmark": "nifty500",
   "warnings": [
-    "4 of 721 tracked constituent references have no price history yet (breadth for affected sectors will show reduced eligibility)."
+    "12 of 1376 tracked constituent references have no price history yet (breadth for affected sectors will show reduced eligibility)."
   ]
 }

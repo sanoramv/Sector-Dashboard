@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useMarketData } from "./hooks/useMarketData";
 import { Header } from "./components/Header";
 import { MarketOverview } from "./components/MarketOverview";
+import { MarketCapSegmentsSection } from "./components/MarketCapSegmentsSection";
 import { SectorTable } from "./components/SectorTable";
 import { SectorDetailPanel } from "./components/SectorDetailPanel";
 import { IndustryTable } from "./components/IndustryTable";
@@ -123,6 +124,8 @@ export default function App() {
 
         {market.dashboardData && (
           <>
+            <MarketCapSegmentsSection segments={market.dashboardData.marketCapSegments} />
+
             <MarketOverview overview={market.dashboardData.overview} />
 
             <Tabs

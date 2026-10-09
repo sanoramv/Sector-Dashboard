@@ -11,6 +11,19 @@ export interface RegimeInput {
   breadth200: Maybe<number>;
 }
 
+export interface RegimeOptions {
+  /**
+   * Whether 3M relative performance is a required input and a bullish/bearish
+   * condition. Must be `false` when classifying NIFTY 500 itself against
+   * itself: a benchmark's return minus its own return is always exactly 0,
+   * so requiring it to be "positive" would make the benchmark structurally
+   * unable to ever classify as bullish - a misleading artifact, not a real
+   * signal. Defaults to `true` (the normal case: sectors, industries, stocks
+   * and every other segment compared against the distinct NIFTY 500 benchmark).
+   */
+  requireRelativePerformance?: boolean;
+}
+
 /**
  * Rules-based bullish/bearish/sideways classification, per the product spec:
  *
@@ -25,11 +38,12 @@ export interface RegimeInput {
  * available than `config.minBreadthMeasuresRequired`, the result is
  * "insufficient-data" instead.
  */
-export function computeRegime(input: RegimeInput, config: RegimeConfig): RegimeAssessment {
+export function computeRegime(input: RegimeInput, config: RegimeConfig, options: RegimeOptions = {}): RegimeAssessment {
+  const requireRS = options.requireRelativePerformance ?? true;
   const missingRequired: string[] = [];
   if (!input.return1m.available) missingRequired.push("1M return");
   if (!input.return3m.available) missingRequired.push("3M return");
-  if (!input.relativePerformance3m.available) missingRequired.push("3M relative performance vs NIFTY 500");
+  if (requireRS && !input.relativePerformance3m.available) missingRequired.push("3M relative performance vs NIFTY 500");
 
   const breadthEntries = [
     { label: "20-DMA breadth", metric: input.breadth20 },
@@ -59,20 +73,26 @@ export function computeRegime(input: RegimeInput, config: RegimeConfig): RegimeA
 
   const m1 = (input.return1m as { available: true; value: number }).value;
   const m3 = (input.return3m as { available: true; value: number }).value;
-  const rs3m = (input.relativePerformance3m as { available: true; value: number }).value;
+  const rs3m = input.relativePerformance3m.available ? input.relativePerformance3m.value : null;
 
   const aboveCount = availableBreadth.filter((b) => b.metric.value > config.breadthThresholdPct).length;
   const belowCount = availableBreadth.filter((b) => b.metric.value < config.breadthThresholdPct).length;
 
-  const isBullish = m1 > 0 && m3 > 0 && rs3m > 0 && aboveCount >= 2;
-  const isBearish = m1 < 0 && m3 < 0 && rs3m < 0 && belowCount >= 2;
+  const isBullish = m1 > 0 && m3 > 0 && (!requireRS || (rs3m as number) > 0) && aboveCount >= 2;
+  const isBearish = m1 < 0 && m3 < 0 && (!requireRS || (rs3m as number) < 0) && belowCount >= 2;
 
   const reasons: string[] = [
     `1M return is ${m1 > 0 ? "positive" : m1 < 0 ? "negative" : "flat"} (${m1.toFixed(2)}%).`,
     `3M return is ${m3 > 0 ? "positive" : m3 < 0 ? "negative" : "flat"} (${m3.toFixed(2)}%).`,
-    `3M relative performance vs NIFTY 500 is ${rs3m > 0 ? "positive" : rs3m < 0 ? "negative" : "flat"} (${rs3m.toFixed(2)} pp).`,
-    `${aboveCount} of ${availableBreadth.length} available breadth measures are above ${config.breadthThresholdPct}%, ${belowCount} are below.`,
   ];
+  if (requireRS) {
+    reasons.push(
+      `3M relative performance vs NIFTY 500 is ${(rs3m as number) > 0 ? "positive" : (rs3m as number) < 0 ? "negative" : "flat"} (${(rs3m as number).toFixed(2)} pp).`,
+    );
+  } else {
+    reasons.push("This is the NIFTY 500 benchmark itself, so relative performance against NIFTY 500 is not meaningful and was not used to classify it.");
+  }
+  reasons.push(`${aboveCount} of ${availableBreadth.length} available breadth measures are above ${config.breadthThresholdPct}%, ${belowCount} are below.`);
 
   const regime = isBullish ? "bullish" : isBearish ? "bearish" : "sideways";
 

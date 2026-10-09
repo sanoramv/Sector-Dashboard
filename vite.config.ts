@@ -30,7 +30,11 @@ export default defineConfig({
     },
   },
   test: {
+    // Default environment is "node" (fast, used by the large majority of
+    // tests - pure calculation logic with no DOM). Component tests that need
+    // the DOM opt in per-file with a `// @vitest-environment jsdom` pragma at
+    // the top of the file instead of paying jsdom's setup cost everywhere.
     environment: "node",
-    include: ["tests/**/*.test.ts"],
+    include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
   },
 });

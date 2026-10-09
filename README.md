@@ -97,6 +97,48 @@ window (e.g. 200 trading sessions for the 200-DMA); the eligible/total counts ar
 view. If zero constituents have enough history for a window, that window is shown as unavailable - never
 invented as 0%.
 
+### Market-capitalisation segments (homepage panels)
+
+The homepage's four Market Capitalisation Segment panels (NIFTY 500, Midcap 150, Smallcap 250, Microcap 250) are
+all official NSE benchmarks, verified individually against live NSE sources on 2026-10-10 - same methodology as
+the sector universe above:
+
+- Index-level returns come from the same official `ind_close_all` archive used for sectors (all four index
+  names - "Nifty 500", "Nifty Midcap 150", "Nifty Smallcap 250", "Nifty Microcap 250" - are confirmed present).
+- Constituent lists come from the same `niftyindices.com/IndexConstituent/` source. NIFTY Microcap 250's filename
+  is notably `ind_niftymicrocap250_list.csv` (an underscore before "list", unlike every other index on the
+  site) - found by scraping the index's own product page rather than guessing a pattern, after the
+  pattern-guessed filename returned a misleading `200 OK` HTML error page instead of a clean 404 (see
+  `scripts/fetch-constituents.mts`'s shape-validation check, which exists specifically to catch this).
+
+**Verified universe relationships** (by actually diffing the constituent symbol lists, not assumed from index
+names - see `tests/data/marketCapUniverse.test.ts`, which re-verifies this against the real committed dataset on
+every test run):
+
+- **NIFTY Midcap 150** (150 constituents) and **NIFTY Smallcap 250** (251 constituents): every constituent of
+  each is also a NIFTY 500 constituent. Both are strict subsets of the broad-market universe, not additional
+  universes - their constituent counts are never added to NIFTY 500's.
+- **NIFTY Microcap 250** (254 constituents): **zero overlap** with NIFTY 500. A fully separate, additional
+  universe of smaller companies ranked just beyond the NIFTY 500 cutoff. Because of this, it needed its own full
+  bhavcopy backfill (250 brand-new symbols never previously tracked) - see "Pipeline correctness fix" below.
+- Midcap 150, Smallcap 250 and Microcap 250 also do not overlap each other (NSE's size-rank segments partition
+  the market, they don't overlap one another).
+
+**Relative performance vs NIFTY 500 for the NIFTY 500 panel itself**: comparing a benchmark to itself always
+produces exactly 0 percentage points - not a real signal. Rather than show a meaningless 0.00pp, or let the
+standard bullish/bearish rule (which requires positive relative performance) silently make the broad-market panel
+structurally unable to ever classify as bullish, `computeRegime()` takes an explicit
+`{ requireRelativePerformance: false }` option used only for this one panel - see `src/lib/calculations/regime.ts`
+and the "Why the NIFTY 500 panel has no regime/relative-performance badge" explanation in the in-app Help modal.
+The other three panels are compared against NIFTY 500 using the normal, unmodified rule.
+
+**Pipeline correctness fix**: the original `scripts/fetch-stock-bhavcopy.mts` used a single "sample symbol" to
+decide which trading dates were already fetched - correct for daily incremental refreshes, but wrong the moment a
+new segment (like Microcap 250) adds symbols that were never tracked before: the sample-symbol check would see
+"today" already covered for long-tracked symbols and wrongly skip backfilling the *entire* historical window for
+the new ones. Fixed to check coverage per-symbol (not via one sample) before this phase's data was generated -
+the extra cost is O(symbols x dates) set lookups, trivial in practice (~750 x ~320 = 241,500 lookups, sub-second).
+
 ### What this project does **not** do
 
 - It does not scrape pages that require login, defeat a CAPTCHA, or bypass NSE's bot-detection.
@@ -109,8 +151,16 @@ invented as 0%.
 
 ## 2. Features
 
-The dashboard has five tabs: **Sectors**, **Industries**, **Stock Screener**, **Backtest**, and **History**.
+The homepage leads with a **Market Capitalisation Segments** section (four panels: NIFTY 500, Midcap 150,
+Smallcap 250, Microcap 250 - see section 1), then the existing NIFTY-500-and-sectors Market Overview, then five
+tabs: **Sectors**, **Industries**, **Stock Screener**, **Backtest**, and **History**.
 
+- **Market Capitalisation Segments** (homepage, above the tabs): one card per benchmark with 1D/1W/1M/3M/6M
+  index-level returns, % of constituents above their 20/50/200-day moving averages (with eligible/total counts),
+  a bullish/sideways/bearish/insufficient-data classification (or an explicit "Benchmark" label for the NIFTY 500
+  panel itself, which isn't classified against itself - see section 1), relative performance vs NIFTY 500 for the
+  other three panels, constituent coverage (how many have price history vs. are missing), and each panel's
+  verified universe-overlap relationship to NIFTY 500. Responsive down to phone width (stacks to one column).
 - **Sectors tab**: 15 tracked NIFTY sectoral indices, sortable/filterable ranking table. Per sector: 1D/1W/1M/3M/6M
   returns (actual trading sessions, not calendar days), % of constituents above their 20/50/200-day moving
   averages, distance from the 52-week high, 3M relative performance vs NIFTY 500, a 0-9 transparent strength
@@ -152,12 +202,13 @@ The dashboard has five tabs: **Sectors**, **Industries**, **Stock Screener**, **
 ```
 src/
   types/             Shared TypeScript types (market data, metrics, config, dataset,
-                      industry, stockScreen, snapshotHistory)
+                      industry, stockScreen, snapshotHistory, marketCapSegment)
   config/            sectorUniverse.ts - the single source of truth for which sectors exist
+                      marketCapSegments.ts - the four market-cap benchmark definitions
   lib/calculations/  Pure, independently-tested functions: returns, breadth, 52w distance,
                       relative strength, scoring, regime classification, validation,
                       industry aggregation, pattern detection (resistance/consolidation/
-                      triangle), stock-level scoring/assembly
+                      triangle), stock-level scoring/assembly, market-cap segment assembly
   lib/backtest/      Look-ahead-safe backtest engine, the rule catalog, and the
                       dataset-level orchestrator (src/lib/backtest/engine.ts has the
                       core no-look-ahead loop)
@@ -219,11 +270,16 @@ npm run test          # run once
 npm run test:watch    # watch mode
 ```
 
-78 unit tests cover returns, 52-week-high distance, relative strength, breadth, scoring, regime classification,
-industry aggregation, pattern detection (resistance/consolidation/triangle, on synthetic fixtures with known
-expected slopes), stock-level scoring/assembly, the backtest engine (including an explicit structural check that
-no signal function is ever handed data past its evaluation date), and local snapshot-history summarization -
-including edge cases: empty/zero-price/duplicate-date/insufficient-history input, and deterministic-output checks.
+97 unit/component tests cover returns, 52-week-high distance, relative strength, breadth, scoring, regime
+classification (including the NIFTY-500-vs-itself exemption), industry aggregation, pattern detection
+(resistance/consolidation/triangle, on synthetic fixtures with known expected slopes), stock-level
+scoring/assembly, market-cap segment assembly, the backtest engine (including an explicit structural check that no
+signal function is ever handed data past its evaluation date), local snapshot-history summarization, and a
+data-contract test that re-verifies the real committed constituent data's universe-overlap relationships
+(Midcap/Smallcap as NIFTY 500 subsets, Microcap's zero overlap) on every run. Includes edge cases:
+empty/zero-price/duplicate-date/insufficient-history input, and deterministic-output checks. A small number of
+component-rendering tests (`tests/components/`) use `@testing-library/react` under a per-file jsdom environment
+(`// @vitest-environment jsdom`) - the rest run under the default, faster Node environment.
 
 ### Type checking & build
 
@@ -325,7 +381,11 @@ requires evidence before any rule's language could be read as a claim of effecti
 - Breadth/52-week-high eligibility depends on the equity bhavcopy backfill window (420 calendar days by default,
   in `scripts/fetch-stock-bhavcopy.mts` - extended from an initial 300 days specifically so stock-level 52-week-
   high distance is computable); a freshly-cloned repo's very first `npm run fetch:stocks` run will take several
-  minutes and download roughly 100-110MB of daily bhavcopy files. Subsequent runs are incremental.
+  minutes and download roughly 100-110MB of daily bhavcopy files (now tracking ~760 symbols across sectors +
+  market-cap segments, including NIFTY Microcap 250's ~250 symbols that sit entirely outside NIFTY 500 - see
+  section 1). Subsequent runs are incremental.
+- `stocks.json` is now ~17MB after adding the Microcap 250 universe (was 12MB). Still fine for git/IndexedDB/gzip,
+  but worth knowing if you're tracking repo size.
 - NIFTY Chemicals has less historical depth in NSE's archive than the other tracked sectors as of this writing,
   so its 52-week-high distance is currently shown as unavailable rather than computed from a partial year - this
   will resolve automatically as more daily data accumulates, or sooner if NSE backfills the archive.

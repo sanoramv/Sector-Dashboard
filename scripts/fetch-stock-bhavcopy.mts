@@ -70,12 +70,22 @@ async function main() {
   }
 
   const targetDates = weekdaysBack(BACKFILL_DAYS);
-  // A date needs fetching if ANY tracked symbol is missing it. Checking one
-  // representative symbol's date set is a good-enough heuristic for "have we
-  // already processed this date" without an O(symbols x dates) scan.
-  const sampleSymbol = [...requiredSymbols][0];
-  const haveDate = new Set(existing[sampleSymbol]?.bars.map((b) => b.date) ?? []);
-  const missingDates = targetDates.filter((d) => !haveDate.has(toIsoDate(d)));
+  // A date needs fetching if ANY tracked symbol is missing it - checked
+  // per-symbol, not via a single sample symbol. This matters whenever the
+  // required-symbol set grows (e.g. a newly-added market-cap segment like
+  // Microcap 250 adds ~250 symbols that have never been fetched before): a
+  // single-sample check would see "today" already covered for long-tracked
+  // symbols and wrongly skip the full historical backfill the new symbols
+  // still need, leaving them with near-empty price history.
+  const targetIsoDates = targetDates.map(toIsoDate);
+  const missingIsoDates = new Set<string>();
+  for (const symbol of requiredSymbols) {
+    const haveForSymbol = new Set(existing[symbol]?.bars.map((b) => b.date) ?? []);
+    for (const iso of targetIsoDates) {
+      if (!haveForSymbol.has(iso)) missingIsoDates.add(iso);
+    }
+  }
+  const missingDates = targetDates.filter((d) => missingIsoDates.has(toIsoDate(d)));
 
   console.log(`[stocks] ${missingDates.length} of ${targetDates.length} target dates need fetching.`);
 

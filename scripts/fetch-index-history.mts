@@ -14,6 +14,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { BENCHMARK, SECTOR_UNIVERSE } from "../src/config/sectorUniverse.ts";
+import { MARKET_CAP_SEGMENTS } from "../src/config/marketCapSegments.ts";
 import type { IndexSeries } from "../src/types/market.ts";
 import { fetchTextOrNull, mapWithConcurrency } from "./lib/http.mts";
 import { toDdMmYyyy, toIsoDate, nseDateToIso, weekdaysBack } from "./lib/dates.mts";
@@ -24,7 +25,10 @@ const PRUNE_BEYOND_DAYS = 450;
 const OUT_PATH = path.resolve("public/data/index-series.json");
 const CONCURRENCY = 5;
 
-const ALL_DEFS = [BENCHMARK, ...SECTOR_UNIVERSE];
+// MARKET_CAP_SEGMENTS includes NIFTY 500 again (as the self-benchmark entry) -
+// excluded here since it's already covered by BENCHMARK, same slug/index name.
+const NEW_SEGMENT_DEFS = MARKET_CAP_SEGMENTS.filter((s) => s.slug !== BENCHMARK.slug);
+const ALL_DEFS = [BENCHMARK, ...SECTOR_UNIVERSE, ...NEW_SEGMENT_DEFS];
 
 async function loadExisting(): Promise<Record<string, IndexSeries>> {
   try {

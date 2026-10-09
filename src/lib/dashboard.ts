@@ -1,15 +1,18 @@
 import { BENCHMARK, findSectorBySlug, SECTOR_UNIVERSE } from "../config/sectorUniverse";
+import { MARKET_CAP_SEGMENTS } from "../config/marketCapSegments";
 import type { AppSettings } from "../types/config";
 import type { RawDataset } from "../types/dataset";
 import type { MarketOverview, Regime, SectorMetrics } from "../types/metrics";
 import type { IndustryMetrics } from "../types/industry";
 import type { StockScreenResult } from "../types/stockScreen";
+import type { MarketCapSegmentMetrics } from "../types/marketCapSegment";
 import { validateBars } from "./calculations/validation";
 import { computeReturns } from "./calculations/returns";
 import { computeBreadth } from "./calculations/breadth";
 import { assembleSectorMetrics } from "./calculations/assemble";
 import { computeIndustryMetrics, groupSymbolsByIndustry } from "./calculations/industry";
 import { assembleStockScreenResult } from "./calculations/stockScreen";
+import { computeMarketCapSegmentMetrics } from "./calculations/marketCapSegments";
 
 export interface DashboardData {
   generatedAt: string;
@@ -18,6 +21,7 @@ export interface DashboardData {
   sectors: SectorMetrics[];
   industries: IndustryMetrics[];
   stockScreen: StockScreenResult[];
+  marketCapSegments: MarketCapSegmentMetrics[];
   overview: MarketOverview;
 }
 
@@ -111,6 +115,10 @@ export function buildDashboardData(dataset: RawDataset, settings: AppSettings): 
     ),
   );
 
+  const marketCapSegments = MARKET_CAP_SEGMENTS.map((def) =>
+    computeMarketCapSegmentMetrics(def, dataset, validatedBenchmarkBars, settings),
+  );
+
   const overview: MarketOverview = {
     benchmarkDisplayName: BENCHMARK.displayName,
     benchmarkReturns: computeReturns(validatedBenchmarkBars),
@@ -128,6 +136,7 @@ export function buildDashboardData(dataset: RawDataset, settings: AppSettings): 
     sectors,
     industries,
     stockScreen,
+    marketCapSegments,
     overview,
   };
 }

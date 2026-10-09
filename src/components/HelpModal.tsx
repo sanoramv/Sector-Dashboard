@@ -56,6 +56,7 @@ export function HelpModal({ onClose }: { onClose: () => void }) {
               <li>Five sectors named in common NSE sector lists (Capital Goods, Power, Construction, Insurance, Telecommunications) do not have an official NSE index tracked here because no reliable, browser/server-accessible historical data source was found for one - but real constituent-stock data for most of them is viewable under the Industries tab, clearly labeled as a computed aggregate, not an official index. See the README for details.</li>
               <li>Stock-screening patterns (near 52-week high, resistance, consolidation, triangle structure) are disclosed heuristics, not a validated chart-pattern recognizer, and are not predictions of future direction - see the Backtest tab for actual historical evidence on each one before treating any of them as effective.</li>
               <li>Nothing in this dashboard is a buy or sell recommendation. No entry price, stop-loss, or price target is ever shown.</li>
+              <li>The four Market Capitalisation Segment panels use verified official NSE constituent lists: NIFTY Midcap 150 and NIFTY Smallcap 250 are confirmed strict subsets of NIFTY 500 (do not add their constituent counts to NIFTY 500's), while NIFTY Microcap 250 is a confirmed, fully separate universe with zero overlap with NIFTY 500.</li>
             </ul>
           </div>
         </div>

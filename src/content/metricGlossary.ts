@@ -136,6 +136,20 @@ export const METRIC_GLOSSARY: Record<string, MetricHelpContent> = {
     example:
       "A stock with 3 swing highs trending down and 3 swing lows trending up over the last 40 sessions would be classified 'symmetrical' - whether that resolves upward, downward, or not at all is exactly what the Backtest tab investigates, with real historical evidence rather than assumption.",
   },
+  marketCapSegment: {
+    title: "Market Capitalisation Segments",
+    explanation:
+      "Four official NSE benchmarks grouping companies by size: NIFTY 500 (broad market, top ~500 by market cap), NIFTY Midcap 150 and NIFTY Smallcap 250 (both verified strict subsets of NIFTY 500 - every one of their constituents is also a NIFTY 500 constituent), and NIFTY Microcap 250 (verified to have ZERO overlap with NIFTY 500 - a separate universe of smaller companies ranked just beyond it). Because Midcap/Smallcap are subsets, their constituent counts should never be added to NIFTY 500's as if they were additional companies; Microcap's constituents are genuinely additional, but still don't represent every NSE-listed company below NIFTY 500 - smaller companies exist beyond even this universe.",
+    example:
+      "If NIFTY 500 has 501 constituents and Microcap 250 has 254, the two together cover 755 distinct companies (verified zero overlap) - not 501, and not an arbitrary larger or smaller number.",
+  },
+  marketCapSelfBenchmark: {
+    title: "Why the NIFTY 500 panel has no 'relative performance' or Bullish/Bearish badge",
+    explanation:
+      "NIFTY 500 is the benchmark every other panel is measured against. Comparing it to itself would always produce exactly 0 percentage points - not a real signal, just an artifact of self-comparison. Rather than show a meaningless 0.00pp or let a classification rule that requires 'positive relative performance' silently make the broad-market panel structurally unable to ever show as bullish, this dashboard explicitly marks relative performance 'not meaningful' for this one panel and classifies it from returns and breadth alone instead.",
+    example:
+      "If NIFTY 500 is up 5% over 1M and 3M with broad participation (most constituents above their moving averages), it is classified bullish on that basis - the other three panels are still fully compared against it using the normal rules, since they are genuinely different universes.",
+  },
   backtestEdge: {
     title: "Backtest: Edge vs. Baseline",
     formula: "Signal's average net forward return - unconditional baseline's average net forward return, over the same dates/holding period",
