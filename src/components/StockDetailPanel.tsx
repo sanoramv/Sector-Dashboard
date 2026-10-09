@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import type { StockScreenResult } from "../types/stockScreen";
 import { formatDateHuman, formatMaybeNumber, formatMaybePct, formatMaybePp, signClass } from "../lib/format";
 import { LineChart } from "./LineChart";
+import { MetricHelp } from "./MetricHelp";
+import { METRIC_GLOSSARY } from "../content/metricGlossary";
 
 export interface StockDetailPanelProps {
   stock: StockScreenResult;
@@ -108,7 +110,9 @@ export function StockDetailPanel({ stock, onClose }: StockDetailPanelProps) {
             </p>
             <div style={{ display: "grid", gap: 10 }}>
               <div>
-                <strong style={{ fontSize: 12.5 }}>Resistance proximity: </strong>
+                <strong style={{ fontSize: 12.5 }}>
+                  Resistance proximity: <MetricHelp content={METRIC_GLOSSARY.patternResistance} />
+                </strong>{" "}
                 {stock.resistance.available ? (
                   <span style={{ fontSize: 12.5 }}>
                     nearest prior swing high = <span className="num">{stock.resistance.value.level.toFixed(2)}</span> on{" "}
@@ -121,7 +125,9 @@ export function StockDetailPanel({ stock, onClose }: StockDetailPanelProps) {
                 )}
               </div>
               <div>
-                <strong style={{ fontSize: 12.5 }}>Consolidation: </strong>
+                <strong style={{ fontSize: 12.5 }}>
+                  Consolidation: <MetricHelp content={METRIC_GLOSSARY.patternConsolidation} />
+                </strong>{" "}
                 {stock.consolidation.available ? (
                   <span style={{ fontSize: 12.5 }}>
                     recent avg daily range <span className="num">{stock.consolidation.value.recentRangePct.toFixed(2)}%</span> vs. baseline{" "}
@@ -134,7 +140,9 @@ export function StockDetailPanel({ stock, onClose }: StockDetailPanelProps) {
                 )}
               </div>
               <div>
-                <strong style={{ fontSize: 12.5 }}>Triangle structure: </strong>
+                <strong style={{ fontSize: 12.5 }}>
+                  Triangle structure: <MetricHelp content={METRIC_GLOSSARY.patternTriangle} />
+                </strong>{" "}
                 {stock.triangle.available ? (
                   <span style={{ fontSize: 12.5 }}>
                     type = <strong>{stock.triangle.value.type}</strong> (highs slope{" "}

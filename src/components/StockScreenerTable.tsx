@@ -101,6 +101,7 @@ const COLUMNS: ColumnDef[] = [
   {
     key: "score",
     label: "Score",
+    helpKey: "stockScore",
     accessor: (s) => s.score.pointsEarned,
     render: (s) => (
       <span className="num">

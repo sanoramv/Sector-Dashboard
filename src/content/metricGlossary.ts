@@ -98,4 +98,50 @@ export const METRIC_GLOSSARY: Record<string, MetricHelpContent> = {
       "A heuristic indicator of how complete and internally consistent the inputs behind a regime classification are - NOT a statistically calibrated probability of anything. 'High' means all required data was available and the signals agreed; 'Low' means data was missing or signals conflicted.",
     example: "This dashboard will never claim something like an '80% chance of a breakout' - that would imply a validated statistical model, which this heuristic screening tool is not.",
   },
+  industryAggregate: {
+    title: "Industry Average Metrics",
+    formula: "Equal-weighted average of the industry's own constituent stocks' individually-computed metrics",
+    explanation:
+      "NSE does not publish a price index for most industry classifications (unlike the 15 NIFTY sectoral indices), so these figures are computed directly by this dashboard as a simple average across real constituent stocks - never an official index value, and never fabricated when data is missing.",
+    example:
+      "'Capital Goods' average 1M return of -4.9% (n=68) means the 1M returns of 68 real constituent stocks that had enough history were averaged, not that an official 'NIFTY Capital Goods' index fell 4.9% - no such index is published.",
+  },
+  stockScore: {
+    title: "Stock Screening Score",
+    explanation:
+      "A separate 0-10 scale from the sector/industry 0-9 score (different conditions: 52-week-high proximity, 1M/3M returns, the stock's own 50/200-DMA, 3M relative performance, and the three pattern heuristics below). Like every score in this app, a condition only counts toward the denominator when it could actually be evaluated - a lower 'of N' denominator means some data was missing, not that the stock failed those conditions.",
+    example: "A score of 6/9 (not /10) for one stock means one condition - most often a pattern heuristic needing more price history - could not be evaluated at all.",
+  },
+  patternResistance: {
+    title: "Approaching Resistance (heuristic)",
+    formula: "Highest intraday high in the trailing lookback window (default 60 sessions), excluding today",
+    explanation:
+      "Flags a stock trading below that prior swing-high level by less than the configured proximity (default 3%) and not yet closed above it. This is the simplest possible definition of a 'resistance' level - it does not account for how many times the level was tested, trading volume, or any other confirmation.",
+    example:
+      "A stock whose 60-session high was 500 and is now at 490 (2% below) would be flagged; the same stock at 450 (10% below) would not be, even though 500 is still technically its nearest prior high.",
+  },
+  patternConsolidation: {
+    title: "Consolidation / Range Contraction (heuristic)",
+    formula: "Average daily (High-Low)/Close over a short recent window, versus the same measure over a longer baseline window",
+    explanation:
+      "Flags a stock whose recent trading range has contracted well below its own longer-term baseline range (default: recent 15 sessions under 60% of the baseline 60-session range) - a commonly-watched sign of reduced short-term volatility. It flags contraction only; it does not forecast which direction a subsequent move would go.",
+    example:
+      "During a broad market selloff, genuine range contraction is rare across most stocks (volatility is elevated, not compressed) - so seeing very few stocks flagged at such times is an expected, not broken, result.",
+  },
+  patternTriangle: {
+    title: "Triangle Price Structure (heuristic)",
+    formula: "Linear-regression trendlines fit through recent swing-high and swing-low pivots",
+    explanation:
+      "Finds local swing highs/lows in a trailing window (default 40 sessions, pivots spaced at least 3 sessions apart), fits a straight line through each set, and classifies the pair of slopes as ascending (flat highs, rising lows), descending (falling highs, flat lows), symmetrical (falling highs, rising lows - converging from both sides), or none. This is a simplified heuristic, not a validated chart-pattern recognizer: it does not check touch count, volume, or fit quality, and 'detected' is not a prediction of a breakout or its direction.",
+    example:
+      "A stock with 3 swing highs trending down and 3 swing lows trending up over the last 40 sessions would be classified 'symmetrical' - whether that resolves upward, downward, or not at all is exactly what the Backtest tab investigates, with real historical evidence rather than assumption.",
+  },
+  backtestEdge: {
+    title: "Backtest: Edge vs. Baseline",
+    formula: "Signal's average net forward return - unconditional baseline's average net forward return, over the same dates/holding period",
+    explanation:
+      "Whether a screening rule's historical forward returns, net of assumed trading costs, were better or worse than simply holding anything unconditionally over the same period. This is descriptive evidence from a specific historical sample (with real limitations: survivorship bias, a simplified execution assumption, and no significance test) - not a guarantee, and not evidence a rule will keep working.",
+    example:
+      "If 'Near 52-week high' shows an edge of -0.38pp, stocks flagged by that rule actually underperformed an unconditional hold over the available history - a result worth taking seriously precisely because it is unflattering, not discarding.",
+  },
 };

@@ -23,8 +23,9 @@ NSE's website (`nseindia.com`) does **not** offer a stable, browser-accessible p
   session or API key:
   - `https://nsearchives.nseindia.com/content/indices/ind_close_all_DDMMYYYY.csv` - daily OHLC close values for
     all NSE indices (used for sector/benchmark returns, 52-week high, relative strength).
-  - `https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_DDMMYYYY.csv` - daily OHLC close data
-    for every listed equity (used for moving-average breadth, computed from real constituent stock prices).
+  - `https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_DDMMYYYY.csv` - daily OHLC data for
+    every listed equity (used for moving-average breadth, 52-week-high distance, and pattern detection, all
+    computed from real constituent stock prices - not just closing prices).
   - `https://niftyindices.com/IndexConstituent/<file>.csv` - official index constituent lists (one file per
     sectoral index).
 - **None of these three hosts send CORS headers that would allow a browser on a different origin (including
@@ -108,23 +109,37 @@ invented as 0%.
 
 ## 2. Features
 
-- **Sector ranking table**: 15 tracked sectors, sortable by any column, filterable by search/classification/
-  minimum score, with a reset-filters control.
-- **Metrics per sector**: 1D/1W/1M/3M/6M returns (computed over actual trading sessions, not calendar days),
-  % of constituents above their 20/50/200-day moving averages, distance from the 52-week high, 3M relative
-  performance vs NIFTY 500, a 0-9 transparent strength score, and a bullish/sideways/bearish/insufficient-data
-  classification with stated reasons and a heuristic confidence level.
-- **Sector detail view**: price chart, relative-strength-ratio chart (both via `lightweight-charts`), full
-  returns/breadth/score breakdown, classification rationale, a short recent-classification-history strip
-  (recomputed from the same price history, not stored separately), and data-quality disclosure.
-- **Market overview**: NIFTY 500 returns, bullish/sideways/bearish/insufficient-data sector counts, and
-  broad-market breadth.
-- **Help**: a "?" icon on every metric (table headers, overview, detail view) with a formula, plain-English
-  explanation and a worked example; a dedicated Help modal with the full glossary plus a worked example of why a
-  strong 1D return can hide a weak 3M/6M trend.
-- **Settings**: every scoring/classification threshold is editable, with defaults and explanations, applied
-  instantly to already-fetched data (no re-fetch needed).
-- **Export**: CSV (the ranking table) and JSON (the full computed dataset) downloads.
+The dashboard has five tabs: **Sectors**, **Industries**, **Stock Screener**, **Backtest**, and **History**.
+
+- **Sectors tab**: 15 tracked NIFTY sectoral indices, sortable/filterable ranking table. Per sector: 1D/1W/1M/3M/6M
+  returns (actual trading sessions, not calendar days), % of constituents above their 20/50/200-day moving
+  averages, distance from the 52-week high, 3M relative performance vs NIFTY 500, a 0-9 transparent strength
+  score, and a bullish/sideways/bearish/insufficient-data classification with stated reasons and a heuristic
+  confidence level. The detail view adds a price chart, a relative-strength-ratio chart, and a recent-
+  classification-history strip (recomputed from price history, not stored separately).
+- **Industries tab**: all ~20 of NSE's official macro-industry classifications (sourced from the same
+  constituent-list CSVs' "Industry" column), each with equal-weighted average returns/breadth/score/regime
+  computed from real constituent stocks - since NSE doesn't publish a price index for most industries, this is
+  explicitly disclosed as a derived aggregate, not an official index value. This also gives real visibility into
+  Capital Goods, Power, Construction and Telecommunication, whose official sector index isn't tracked (see
+  section 1), via their real constituent stocks instead.
+- **Stock Screener tab**: all ~500 NIFTY 500 constituents, filterable by sector/industry/"leading only"/pattern
+  checkboxes/minimum score. Screens for proximity to the 52-week high, approaching a prior resistance level,
+  trading-range consolidation, and a simplified triangle price-structure heuristic (swing-pivot trendlines) -
+  every pattern is a disclosed, parameterized heuristic, not a validated chart-pattern recognizer, with the exact
+  window/threshold shown. A separate 0-10 stock-level score and full pass/fail reason list is shown per stock.
+  The detail view carries an explicit "not a recommendation, no entry/stop/target" disclaimer.
+- **Backtest tab**: runs every screening rule above against the full available price history with no look-ahead
+  by construction, reporting forward-return evidence (sample size, win rate, average/median net return) against
+  an unconditional baseline - with explicit survivorship-bias, execution-assumption, and small-sample
+  disclosures, and no fabricated significance test. See section 6.
+- **History tab**: a compact local record of regime counts and top rankings every time a fresh refresh succeeds,
+  so you can see how things evolved across sessions (kept only in this browser's local storage).
+- **Help**: a "?" icon on every metric (table headers, overview, detail views) with a formula, plain-English
+  explanation and a worked example; a dedicated Help modal with the full glossary.
+- **Settings**: every scoring/classification/pattern-detection threshold is editable, with defaults and
+  explanations, applied instantly to already-fetched data (no re-fetch needed).
+- **Export**: CSV (sector table, stock screen) and JSON (the full computed dataset, the history log) downloads.
 - **Local caching**: the last valid snapshot is cached in IndexedDB and survives a page reload; a confirmation
   dialog is required to clear it.
 - **Accessible & responsive**: keyboard-navigable table rows, ARIA labels/roles on interactive elements and
@@ -136,24 +151,30 @@ invented as 0%.
 
 ```
 src/
-  types/            Shared TypeScript types (market data, metrics, config, dataset)
+  types/             Shared TypeScript types (market data, metrics, config, dataset,
+                      industry, stockScreen, snapshotHistory)
   config/            sectorUniverse.ts - the single source of truth for which sectors exist
   lib/calculations/  Pure, independently-tested functions: returns, breadth, 52w distance,
-                      relative strength, scoring, regime classification, validation
+                      relative strength, scoring, regime classification, validation,
+                      industry aggregation, pattern detection (resistance/consolidation/
+                      triangle), stock-level scoring/assembly
+  lib/backtest/      Look-ahead-safe backtest engine, the rule catalog, and the
+                      dataset-level orchestrator (src/lib/backtest/engine.ts has the
+                      core no-look-ahead loop)
   lib/dashboard.ts   Orchestrates the calculation engine over a full dataset
   lib/providers/     Data-provider abstraction (StaticSnapshotProvider reads /data/*.json)
-  lib/storage/       IndexedDB cache + localStorage settings persistence
+  lib/storage/       IndexedDB cache, localStorage settings, local snapshot history
   lib/export/        CSV/JSON export
-  hooks/useMarketData.ts   Refresh/cache/settings state machine used by the UI
-  components/        React UI components
+  hooks/useMarketData.ts   Refresh/cache/settings/history state machine used by the UI
+  components/        React UI components (one pair of Table+DetailPanel per tab)
   content/metricGlossary.ts   The text behind every "?" help icon
 scripts/             Node data-fetch pipeline (run locally or in GitHub Actions)
-  fetch-constituents.mts     niftyindices.com -> public/data/constituents.json
+  fetch-constituents.mts     niftyindices.com -> public/data/constituents.json (incl. Industry)
   fetch-index-history.mts    NSE archive -> public/data/index-series.json
-  fetch-stock-bhavcopy.mts   NSE archive -> public/data/stocks.json
+  fetch-stock-bhavcopy.mts   NSE archive -> public/data/stocks.json (full OHLC)
   build-manifest.mts         Writes public/data/manifest.json
 public/data/         The committed, versioned dataset snapshot the site reads
-tests/               Vitest unit tests for the calculation engine
+tests/               Vitest unit tests (calculation engine + backtest engine + storage)
 .github/workflows/   deploy.yml, update-data.yml, update-constituents.yml
 ```
 
@@ -198,9 +219,11 @@ npm run test          # run once
 npm run test:watch    # watch mode
 ```
 
-38 unit tests cover returns, 52-week-high distance, relative strength, breadth, scoring, and regime
-classification - including edge cases: empty/zero-price/duplicate-date/insufficient-history input, and
-deterministic-output checks.
+78 unit tests cover returns, 52-week-high distance, relative strength, breadth, scoring, regime classification,
+industry aggregation, pattern detection (resistance/consolidation/triangle, on synthetic fixtures with known
+expected slopes), stock-level scoring/assembly, the backtest engine (including an explicit structural check that
+no signal function is ever handed data past its evaluation date), and local snapshot-history summarization -
+including edge cases: empty/zero-price/duplicate-date/insufficient-history input, and deterministic-output checks.
 
 ### Type checking & build
 
@@ -245,7 +268,35 @@ to commit - no additional secrets need to be configured.
 
 ---
 
-## 6. Engineering notes
+## 6. Backtesting methodology
+
+The Backtest tab (`src/lib/backtest/`) exists because the engineering brief for the screening features explicitly
+requires evidence before any rule's language could be read as a claim of effectiveness. Design:
+
+- **No look-ahead by construction**: at every evaluation date `t`, the rule's signal function is only ever handed
+  price bars up to and including `t` (and, for rules needing the benchmark, NIFTY 500 bars independently
+  truncated to the same date). This is verified by an explicit structural test
+  (`tests/backtest/engine.test.ts`), not just asserted in a comment.
+- **Forward return**: assumes entry at `t`'s own closing price and exit at the closing price exactly N sessions
+  later (N configurable) - a simplifying assumption, not a realistic fill. Net return subtracts a configurable
+  flat round-trip cost (basis points) for transaction costs and slippage.
+- **Baseline comparison**: every rule's conditional forward-return sample is compared against the *unconditional*
+  forward-return sample over the same universe and dates - "what if you'd held anything, regardless of the
+  signal" - so a rule can be judged against doing nothing special, not against zero.
+- **No significance test**: observations overlap in time (rolling windows) and are correlated across related
+  stocks (same sector/industry moving together), so a naive t-test's p-value would be misleading. Sample size,
+  win rate and average/median return are reported as descriptive evidence only; a "too few observations" warning
+  appears below a configurable minimum (30).
+- **Survivorship bias is explicit and unavoidable with this data source**: today's NIFTY 500 constituent list is
+  applied across the entire backtest window, since no point-in-time historical constituent list is available from
+  the sources this project uses. This tends to inflate results relative to a true point-in-time universe, and the
+  UI says so on every run.
+- **Run it yourself**: all 9 current rules (every Stock Screener condition, including the composite 0-10 score)
+  are evaluated against the real ~500-stock universe in `src/lib/backtest/rules.ts`. As of this writing, most show
+  a small negative or near-zero edge versus baseline over the available ~1-year window (a volatile, single-regime
+  sample during a broad market selloff) - an unflattering, honestly-reported result, not a validated edge.
+
+## 7. Engineering notes
 
 - **Calculation engine is pure and framework-free** (`src/lib/calculations/*.ts`): every function takes
   plain data in, returns plain data out, and is independently unit-tested. The UI and the Node fetch scripts
@@ -259,19 +310,28 @@ to commit - no additional secrets need to be configured.
   recomputing from the already-fetched raw dataset - changing a threshold never requires a network refetch.
 - **The strength score and regime classification are disclosed heuristics**, not machine-learned or statistically
   validated models. The UI says so in multiple places (header subtitle, Help modal, Settings panel).
+- **Score aggregation is shared, not duplicated**: sector, industry and stock scoring all call the same
+  `aggregateScoreConditions` helper (`src/lib/calculations/scoring.ts`) - each defines its own list of conditions,
+  but the "missing data is excluded from both earned and possible points, never scored as a failure" rule is
+  implemented once.
 
 ---
 
-## 7. Known limitations
+## 8. Known limitations
 
-- Five sectors from the original brief (Capital Goods, Power, Construction, Insurance, Telecommunications) are
-  not tracked - see section 1.
-- Breadth eligibility depends on the equity bhavcopy backfill window (300 calendar days by default, in
-  `scripts/fetch-stock-bhavcopy.mts`); a freshly-cloned repo's very first `npm run fetch:stocks` run will take a
-  few minutes and download roughly 70-80MB of daily bhavcopy files to build full 200-DMA eligibility. Subsequent
-  runs are incremental.
+- Five sectors from the original brief (Capital Goods, Power, Construction, Insurance, Telecommunications) have
+  no official NSE index tracked - see section 1. Real constituent-stock data for most of them is still viewable
+  under the Industries tab.
+- Breadth/52-week-high eligibility depends on the equity bhavcopy backfill window (420 calendar days by default,
+  in `scripts/fetch-stock-bhavcopy.mts` - extended from an initial 300 days specifically so stock-level 52-week-
+  high distance is computable); a freshly-cloned repo's very first `npm run fetch:stocks` run will take several
+  minutes and download roughly 100-110MB of daily bhavcopy files. Subsequent runs are incremental.
 - NIFTY Chemicals has less historical depth in NSE's archive than the other tracked sectors as of this writing,
   so its 52-week-high distance is currently shown as unavailable rather than computed from a partial year - this
   will resolve automatically as more daily data accumulates, or sooner if NSE backfills the archive.
+- The industry and stock-screener universe is NIFTY 500 constituents; a stock only present in a narrower tracked
+  sector index but not in NIFTY 500 (none currently observed in practice) would not appear there.
+- Backtest results reflect a short (~1 year), single-regime, survivorship-biased sample - see section 6. Treat
+  them as preliminary evidence, not proof of anything.
 - This is a demo/reference implementation of the data pipeline, not a commercial data redistribution service -
   if you deploy this publicly, review NSE's and niftyindices.com's terms of use for your intended usage.

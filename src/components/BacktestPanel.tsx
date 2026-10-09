@@ -3,6 +3,8 @@ import type { RawDataset } from "../types/dataset";
 import type { AppSettings } from "../types/config";
 import type { BacktestResult } from "../lib/backtest/engine";
 import { runAllBacktests, DEFAULT_BACKTEST_CONFIG, type BacktestRunConfig } from "../lib/backtest/runAll";
+import { MetricHelp } from "./MetricHelp";
+import { METRIC_GLOSSARY } from "../content/metricGlossary";
 
 export interface BacktestPanelProps {
   rawDataset: RawDataset;
@@ -99,11 +101,17 @@ export function BacktestPanel({ rawDataset, settings }: BacktestPanelProps) {
           <table aria-label="Backtest results">
             <thead>
               <tr style={{ borderBottom: "2px solid var(--color-border)" }}>
-                {["Rule", "Signal N", "Win Rate", "Avg Net Return", "Median Net Return", "Baseline Avg Net Return", "Baseline N", "Edge vs Baseline"].map((h) => (
+                {["Rule", "Signal N", "Win Rate", "Avg Net Return", "Median Net Return", "Baseline Avg Net Return", "Baseline N"].map((h) => (
                   <th key={h} style={{ textAlign: "right", padding: "8px 10px", fontSize: 12, color: "var(--color-text-muted)", whiteSpace: "nowrap" }}>
                     {h}
                   </th>
                 ))}
+                <th style={{ textAlign: "right", padding: "8px 10px", fontSize: 12, color: "var(--color-text-muted)", whiteSpace: "nowrap" }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                    Edge vs Baseline
+                    <MetricHelp content={METRIC_GLOSSARY.backtestEdge} />
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>

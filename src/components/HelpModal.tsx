@@ -53,7 +53,9 @@ export function HelpModal({ onClose }: { onClose: () => void }) {
               <li>The strength score and regime classification are transparent heuristics, not validated predictive models.</li>
               <li>Breadth is computed from each sector index's official constituent stocks - never from the index's own moving average.</li>
               <li>During market hours, "latest market data" may be from the previous completed trading session - the header always shows the exact date.</li>
-              <li>Five sectors named in common NSE sector lists (Capital Goods, Power, Construction, Insurance, Telecommunications) are not currently tracked because no reliable, browser/server-accessible historical data source was found for them - see the README for details.</li>
+              <li>Five sectors named in common NSE sector lists (Capital Goods, Power, Construction, Insurance, Telecommunications) do not have an official NSE index tracked here because no reliable, browser/server-accessible historical data source was found for one - but real constituent-stock data for most of them is viewable under the Industries tab, clearly labeled as a computed aggregate, not an official index. See the README for details.</li>
+              <li>Stock-screening patterns (near 52-week high, resistance, consolidation, triangle structure) are disclosed heuristics, not a validated chart-pattern recognizer, and are not predictions of future direction - see the Backtest tab for actual historical evidence on each one before treating any of them as effective.</li>
+              <li>Nothing in this dashboard is a buy or sell recommendation. No entry price, stop-loss, or price target is ever shown.</li>
             </ul>
           </div>
         </div>
