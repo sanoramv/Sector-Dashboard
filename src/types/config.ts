@@ -34,6 +34,8 @@ export interface ScreeningConfig {
   trianglePivotSpacing: number; // default 3
   /** Minimum number of swing highs AND swing lows required to attempt a triangle fit. */
   triangleMinPivots: number; // default 2
+  /** A fitted trendline slope within +/- this %-of-price-per-session is treated as "flat" (horizontal support/resistance) rather than clearly rising or falling. */
+  triangleFlatSlopePctPerSession: number; // default 0.03
 }
 
 export interface AppSettings {
@@ -65,5 +67,6 @@ export const DEFAULT_SETTINGS: AppSettings = {
     triangleLookbackSessions: 40,
     trianglePivotSpacing: 3,
     triangleMinPivots: 2,
+    triangleFlatSlopePctPerSession: 0.03,
   },
 };

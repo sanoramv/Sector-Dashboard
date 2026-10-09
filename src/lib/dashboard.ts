@@ -3,11 +3,13 @@ import type { AppSettings } from "../types/config";
 import type { RawDataset } from "../types/dataset";
 import type { MarketOverview, Regime, SectorMetrics } from "../types/metrics";
 import type { IndustryMetrics } from "../types/industry";
+import type { StockScreenResult } from "../types/stockScreen";
 import { validateBars } from "./calculations/validation";
 import { computeReturns } from "./calculations/returns";
 import { computeBreadth } from "./calculations/breadth";
 import { assembleSectorMetrics } from "./calculations/assemble";
 import { computeIndustryMetrics, groupSymbolsByIndustry } from "./calculations/industry";
+import { assembleStockScreenResult } from "./calculations/stockScreen";
 
 export interface DashboardData {
   generatedAt: string;
@@ -15,6 +17,7 @@ export interface DashboardData {
   benchmark: SectorMetrics;
   sectors: SectorMetrics[];
   industries: IndustryMetrics[];
+  stockScreen: StockScreenResult[];
   overview: MarketOverview;
 }
 
@@ -84,6 +87,30 @@ export function buildDashboardData(dataset: RawDataset, settings: AppSettings): 
     .map(([name, symbols]) => computeIndustryMetrics(name, symbols, dataset.stocks, validatedBenchmarkBars, settings))
     .sort((a, b) => b.stockCount - a.stockCount);
 
+  // Stock screening universe = NIFTY 500 constituents (broadest tagged
+  // universe). Each stock also records which TRACKED sector indices it
+  // belongs to, so the screener can be filtered to "leading sectors".
+  const sectorMembership = new Map<string, string[]>();
+  for (const def of SECTOR_UNIVERSE) {
+    const symbols = dataset.constituents[def.slug]?.constituents.map((c) => c.symbol) ?? [];
+    for (const sym of symbols) {
+      (sectorMembership.get(sym) ?? sectorMembership.set(sym, []).get(sym)!).push(def.slug);
+    }
+  }
+  const stockScreen = benchmarkConstituentRecords.map((c) =>
+    assembleStockScreenResult(
+      {
+        symbol: c.symbol,
+        companyName: c.companyName,
+        industry: c.industry,
+        sectorSlugs: sectorMembership.get(c.symbol) ?? [],
+        rawBars: dataset.stocks[c.symbol]?.bars ?? [],
+      },
+      validatedBenchmarkBars,
+      settings,
+    ),
+  );
+
   const overview: MarketOverview = {
     benchmarkDisplayName: BENCHMARK.displayName,
     benchmarkReturns: computeReturns(validatedBenchmarkBars),
@@ -100,6 +127,7 @@ export function buildDashboardData(dataset: RawDataset, settings: AppSettings): 
     benchmark,
     sectors,
     industries,
+    stockScreen,
     overview,
   };
 }

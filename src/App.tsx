@@ -6,21 +6,24 @@ import { SectorTable } from "./components/SectorTable";
 import { SectorDetailPanel } from "./components/SectorDetailPanel";
 import { IndustryTable } from "./components/IndustryTable";
 import { IndustryDetailPanel } from "./components/IndustryDetailPanel";
+import { StockScreenerTable } from "./components/StockScreenerTable";
+import { StockDetailPanel } from "./components/StockDetailPanel";
 import { Tabs } from "./components/Tabs";
 import { SettingsPanel } from "./components/SettingsPanel";
 import { HelpModal } from "./components/HelpModal";
 import { UNAVAILABLE_SECTORS } from "./config/sectorUniverse";
-import { sectorsToCsv, downloadCsv } from "./lib/export/csv";
+import { sectorsToCsv, stocksToCsv, downloadCsv } from "./lib/export/csv";
 import { downloadJson } from "./lib/export/json";
 import { computeRegimeHistory } from "./lib/dashboard";
 
-type TabKey = "sectors" | "industries";
+type TabKey = "sectors" | "industries" | "screener";
 
 export default function App() {
   const market = useMarketData();
   const [activeTab, setActiveTab] = useState<TabKey>("sectors");
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [selectedIndustrySlug, setSelectedIndustrySlug] = useState<string | null>(null);
+  const [selectedStockSymbol, setSelectedStockSymbol] = useState<string | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [showUnavailable, setShowUnavailable] = useState(false);
@@ -33,6 +36,11 @@ export default function App() {
   const selectedIndustry = useMemo(
     () => market.dashboardData?.industries.find((i) => i.slug === selectedIndustrySlug) ?? null,
     [market.dashboardData, selectedIndustrySlug],
+  );
+
+  const selectedStock = useMemo(
+    () => market.dashboardData?.stockScreen.find((s) => s.symbol === selectedStockSymbol) ?? null,
+    [market.dashboardData, selectedStockSymbol],
   );
 
   const regimeHistory = useMemo(() => {
@@ -48,6 +56,11 @@ export default function App() {
   function handleExportJson() {
     if (!market.dashboardData) return;
     downloadJson(`nse-sector-dashboard-${market.dashboardData.latestMarketDate}.json`, market.dashboardData);
+  }
+
+  function handleExportStocksCsv() {
+    if (!market.dashboardData) return;
+    downloadCsv(`nse-stock-screen-${market.dashboardData.latestMarketDate}.csv`, stocksToCsv(market.dashboardData.stockScreen));
   }
 
   return (
@@ -114,6 +127,7 @@ export default function App() {
               tabs={[
                 { key: "sectors", label: "Sectors" },
                 { key: "industries", label: `Industries (${market.dashboardData.industries.length})` },
+                { key: "screener", label: `Stock Screener (${market.dashboardData.stockScreen.length})` },
               ]}
               active={activeTab}
               onChange={(k) => setActiveTab(k as TabKey)}
@@ -158,6 +172,22 @@ export default function App() {
             {activeTab === "industries" && (
               <IndustryTable industries={market.dashboardData.industries} onSelect={setSelectedIndustrySlug} />
             )}
+
+            {activeTab === "screener" && (
+              <>
+                <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+                  <button type="button" className="btn" onClick={handleExportStocksCsv}>
+                    Export CSV
+                  </button>
+                </div>
+                <StockScreenerTable
+                  stocks={market.dashboardData.stockScreen}
+                  sectors={market.dashboardData.sectors}
+                  industries={market.dashboardData.industries}
+                  onSelect={setSelectedStockSymbol}
+                />
+              </>
+            )}
           </>
         )}
       </main>
@@ -169,6 +199,8 @@ export default function App() {
       {selectedIndustry && (
         <IndustryDetailPanel industry={selectedIndustry} onClose={() => setSelectedIndustrySlug(null)} />
       )}
+
+      {selectedStock && <StockDetailPanel stock={selectedStock} onClose={() => setSelectedStockSymbol(null)} />}
 
       {settingsOpen && (
         <SettingsPanel

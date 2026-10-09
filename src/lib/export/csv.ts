@@ -1,4 +1,5 @@
 import type { SectorMetrics } from "../../types/metrics";
+import type { StockScreenResult } from "../../types/stockScreen";
 
 function fmtPct(m: { available: true; value: number } | { available: false; reason: string }): string {
   return m.available ? m.value.toFixed(2) : "N/A";
@@ -56,6 +57,65 @@ export function sectorsToCsv(sectors: SectorMetrics[]): string {
       .join(","),
   );
   return [COLUMNS.join(","), ...rows].join("\n");
+}
+
+const STOCK_COLUMNS = [
+  "Symbol",
+  "Company",
+  "Industry",
+  "Tracked Sectors",
+  "Current Close",
+  "1D Return %",
+  "1W Return %",
+  "1M Return %",
+  "3M Return %",
+  "6M Return %",
+  "Distance from 52W High %",
+  "3M Relative Performance (pp)",
+  "Above 50DMA",
+  "Above 200DMA",
+  "Near 52W High",
+  "Approaching Resistance",
+  "Consolidating",
+  "Triangle Type",
+  "Score",
+  "Score Completeness %",
+  "Data Quality",
+] as const;
+
+function fmtBool(m: { available: true; value: boolean } | { available: false; reason: string }): string {
+  return m.available ? (m.value ? "Yes" : "No") : "N/A";
+}
+
+export function stocksToCsv(stocks: StockScreenResult[]): string {
+  const rows = stocks.map((s) =>
+    [
+      s.symbol,
+      s.companyName,
+      s.industry,
+      s.sectorSlugs.join("; "),
+      s.currentClose.available ? s.currentClose.value.toFixed(2) : "N/A",
+      fmtPct(s.returns.d1),
+      fmtPct(s.returns.w1),
+      fmtPct(s.returns.m1),
+      fmtPct(s.returns.m3),
+      fmtPct(s.returns.m6),
+      fmtPct(s.distanceFrom52wHigh),
+      fmtPct(s.relativePerformance3m),
+      fmtBool(s.above50dma),
+      fmtBool(s.above200dma),
+      s.distanceFrom52wHigh.available ? (s.distanceFrom52wHigh.value >= -5 ? "Yes" : "No") : "N/A",
+      s.resistance.available ? (s.resistance.value.isApproaching ? "Yes" : "No") : "N/A",
+      s.consolidation.available ? (s.consolidation.value.isConsolidating ? "Yes" : "No") : "N/A",
+      s.triangle.available ? s.triangle.value.type : "N/A",
+      String(s.score.pointsEarned),
+      s.score.completenessPct.toFixed(0),
+      s.dataQuality.status,
+    ]
+      .map((v) => escapeCsvField(String(v)))
+      .join(","),
+  );
+  return [STOCK_COLUMNS.join(","), ...rows].join("\n");
 }
 
 export function downloadCsv(filename: string, csv: string): void {

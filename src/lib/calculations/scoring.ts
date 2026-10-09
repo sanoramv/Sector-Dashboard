@@ -9,8 +9,26 @@ export interface ScoringInput {
 }
 
 /** Evaluates `predicate(value)` only when the metric is available; null otherwise (never coerced to a failing condition). */
-function evalCondition(metric: Maybe<number>, predicate: (v: number) => boolean): boolean | null {
+export function evalCondition(metric: Maybe<number>, predicate: (v: number) => boolean): boolean | null {
   return metric.available ? predicate(metric.value) : null;
+}
+
+/**
+ * Shared scoring aggregator used by every scoring engine in this app (sector,
+ * stock, industry): sums points for conditions that evaluated to true, and
+ * separately tracks how many of `maxPossiblePoints` could even be evaluated
+ * (`pointsPossible`) - a condition with `passed === null` contributes to
+ * neither earned nor possible, so missing data is never scored as a failure.
+ */
+export function aggregateScoreConditions(conditions: ScoreCondition[], maxPossiblePoints: number): ScoreBreakdown {
+  const pointsPossible = conditions.filter((c) => c.passed !== null).reduce((s, c) => s + c.points, 0);
+  const pointsEarned = conditions.filter((c) => c.passed === true).reduce((s, c) => s + c.points, 0);
+  return {
+    conditions,
+    pointsEarned,
+    pointsPossible,
+    completenessPct: (pointsPossible / maxPossiblePoints) * 100,
+  };
 }
 
 /**
@@ -72,13 +90,5 @@ export function computeScore(input: ScoringInput, config: ScoringConfig): ScoreB
   ];
 
   const maxPossiblePoints = 1 + 1 + 1 + 1 + 1 + 1 + config.relativePerformancePoints + 1;
-  const pointsPossible = conditions.filter((c) => c.passed !== null).reduce((s, c) => s + c.points, 0);
-  const pointsEarned = conditions.filter((c) => c.passed === true).reduce((s, c) => s + c.points, 0);
-
-  return {
-    conditions,
-    pointsEarned,
-    pointsPossible,
-    completenessPct: (pointsPossible / maxPossiblePoints) * 100,
-  };
+  return aggregateScoreConditions(conditions, maxPossiblePoints);
 }

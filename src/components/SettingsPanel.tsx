@@ -81,6 +81,79 @@ export function SettingsPanel({ settings, onSave, onClose, onClearCache }: Setti
             max={3}
           />
 
+          <Field
+            label="Minimum stocks per industry"
+            help="Industries with fewer constituent stocks than this are forced to 'Insufficient data' rather than averaging over too small a sample."
+            value={draft.industry.minConstituentsForAggregate}
+            onChange={(v) => setDraft((d) => ({ ...d, industry: { ...d.industry, minConstituentsForAggregate: v } }))}
+            min={1}
+            max={10}
+          />
+
+          <details>
+            <summary style={{ cursor: "pointer", fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
+              Advanced: stock-screening pattern thresholds
+            </summary>
+            <div style={{ display: "grid", gap: 16, marginTop: 10 }}>
+              <Field
+                label="Resistance lookback (sessions)"
+                help="How many trading sessions back to search for the nearest prior swing high used as a resistance level."
+                value={draft.screening.resistanceLookbackSessions}
+                onChange={(v) => setDraft((d) => ({ ...d, screening: { ...d.screening, resistanceLookbackSessions: v } }))}
+                min={10}
+                max={250}
+              />
+              <Field
+                label="Resistance proximity (%)"
+                help="A stock is flagged 'approaching resistance' when below the level by no more than this percentage."
+                value={draft.screening.resistanceProximityPct}
+                onChange={(v) => setDraft((d) => ({ ...d, screening: { ...d.screening, resistanceProximityPct: v } }))}
+                min={0.5}
+                max={15}
+              />
+              <Field
+                label="Consolidation recent window (sessions)"
+                help="The short recent window whose average daily range is compared against the baseline window."
+                value={draft.screening.consolidationLookbackSessions}
+                onChange={(v) => setDraft((d) => ({ ...d, screening: { ...d.screening, consolidationLookbackSessions: v } }))}
+                min={5}
+                max={60}
+              />
+              <Field
+                label="Consolidation baseline window (sessions)"
+                help="The longer baseline window used as the 'normal' range for comparison."
+                value={draft.screening.consolidationBaselineSessions}
+                onChange={(v) => setDraft((d) => ({ ...d, screening: { ...d.screening, consolidationBaselineSessions: v } }))}
+                min={20}
+                max={250}
+              />
+              <Field
+                label="Consolidation contraction ratio"
+                help="Recent range must be below this fraction of the baseline range to count as consolidating (e.g. 0.6 = recent range is less than 60% of baseline)."
+                value={draft.screening.consolidationContractionRatio}
+                onChange={(v) => setDraft((d) => ({ ...d, screening: { ...d.screening, consolidationContractionRatio: v } }))}
+                min={0.1}
+                max={1}
+              />
+              <Field
+                label="Triangle lookback (sessions)"
+                help="Trailing window searched for swing-high/swing-low pivots used to fit the triangle trendlines."
+                value={draft.screening.triangleLookbackSessions}
+                onChange={(v) => setDraft((d) => ({ ...d, screening: { ...d.screening, triangleLookbackSessions: v } }))}
+                min={15}
+                max={120}
+              />
+              <Field
+                label="Triangle pivot spacing (sessions)"
+                help="Minimum bars on each side of a candidate pivot for it to count as a local swing high/low."
+                value={draft.screening.trianglePivotSpacing}
+                onChange={(v) => setDraft((d) => ({ ...d, screening: { ...d.screening, trianglePivotSpacing: v } }))}
+                min={1}
+                max={10}
+              />
+            </div>
+          </details>
+
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <button type="button" className="btn" onClick={() => setDraft(DEFAULT_SETTINGS)}>
               Reset to defaults
