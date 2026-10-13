@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch: {}
+  # Commits pushed by the scheduled data workflows use GITHUB_TOKEN, and GitHub
+  # never fires a "push" event for those - so redeploy when they finish instead.
+  workflow_run:
+    workflows: ["Update NSE sector data", "Update sector constituent lists"]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
@@ -16,6 +22,8 @@ concurrency:
 
 jobs:
   build:
+    # Skip redeploying after a data workflow that failed (and so pushed nothing).
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -313,8 +313,9 @@ none are embedded in the client bundle.
 `.github/workflows/update-data.yml` runs on a schedule (weekdays, 14:30 UTC / 20:00 IST - a few hours after the
 15:30 IST market close, to give NSE time to publish the day's archive files), fetches the latest index history
 and equity bhavcopy, rebuilds the manifest, runs the test suite as a validation gate, and - only if something
-actually changed - commits `public/data/*` and pushes. That push triggers `deploy.yml` automatically, so the
-live site picks up the new data without any manual step.
+actually changed - commits `public/data/*` and pushes. GitHub does not fire `push` events for commits made with
+`GITHUB_TOKEN`, so `deploy.yml` instead listens for this workflow (and `update-constituents.yml`) completing
+successfully via `workflow_run`, and redeploys then - the live site picks up the new data without any manual step.
 
 `.github/workflows/update-constituents.yml` is manual-only (`workflow_dispatch`) - run it from the Actions tab
 after NSE announces an index reconstitution.
