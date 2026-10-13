@@ -32,7 +32,7 @@ function series(symbol: string, closes: number[]): StockSeries {
 describe("computeBreadth", () => {
   it("computes the percentage of ELIGIBLE constituents above each MA, not of the full universe", () => {
     const stocks: StockSeries[] = [
-      series("A", Array.from({ length: 25 }, () => 10).map((v, i) => (i === 24 ? 20 : v))), // above 20dma
+      series("A", Array.from({ length: 25 }, () => 10).map((v, i) => (i === 24 ? 15 : v))), // above 20dma (a +50% day stays below the corporate-action break threshold)
       series("B", Array.from({ length: 25 }, () => 10)), // at/below 20dma (flat, not above)
       series("C", [1, 2, 3]), // ineligible for 20dma (not enough history)
     ];

@@ -1,6 +1,7 @@
 import type { StockSeries } from "../../types/market";
 import type { BreadthMetrics, BreadthWindowResult } from "../../types/metrics";
 import { ok, unavailable } from "../../types/metrics";
+import { isStale, validateBars } from "./validation";
 
 export type MaWindow = 20 | 50 | 200;
 
@@ -18,27 +19,38 @@ export function isAboveMovingAverage(closes: number[], window: MaWindow): boolea
   return latest > sma;
 }
 
-function computeWindow(
-  stocks: StockSeries[],
-  asOfDate: string,
-  window: MaWindow,
-): BreadthWindowResult {
+/**
+ * Closes (up to and including asOfDate) for each stock that is usable for
+ * breadth. Validation runs on the truncated history, so price-break
+ * detection only ever sees data available at asOfDate. A moving average is
+ * never taken across a price discontinuity (unadjusted corporate action,
+ * unverified gap-down, or missing sessions when `calendar` is given). Stocks with no bar
+ * within STALE_AFTER_CALENDAR_DAYS of asOfDate are dropped (ineligible)
+ * rather than counted on an old closing price.
+ */
+function eligibleCloses(stocks: StockSeries[], asOfDate: string, calendar?: readonly string[]): number[][] {
+  const out: number[][] = [];
+  for (const stock of stocks) {
+    const { bars } = validateBars(stock.bars.filter((b) => b.date <= asOfDate), { calendar });
+    if (bars.length === 0 || isStale(bars[bars.length - 1].date, asOfDate)) continue;
+    out.push(bars.map((b) => b.close));
+  }
+  return out;
+}
+
+function computeWindow(closesPerStock: number[][], total: number, window: MaWindow): BreadthWindowResult {
   let eligible = 0;
   let above = 0;
 
-  for (const stock of stocks) {
-    const closesUpToDate = stock.bars
-      .filter((b) => b.date <= asOfDate)
-      .map((b) => b.close);
-    const result = isAboveMovingAverage(closesUpToDate, window);
+  for (const closes of closesPerStock) {
+    const result = isAboveMovingAverage(closes, window);
     if (result === null) continue;
     eligible += 1;
     if (result) above += 1;
   }
 
-  const total = stocks.length;
   if (eligible === 0) {
-    return { pct: unavailable(`no constituent had ${window} days of price history`), eligible, total };
+    return { pct: unavailable(`no constituent had ${window} days of current price history`), eligible, total };
   }
   return { pct: ok((above / eligible) * 100), eligible, total };
 }
@@ -54,11 +66,13 @@ export function computeBreadth(
   stocks: StockSeries[],
   asOfDate: string,
   isProxy: boolean,
+  calendar?: readonly string[],
 ): BreadthMetrics {
+  const closesPerStock = eligibleCloses(stocks, asOfDate, calendar);
   return {
-    above20dma: computeWindow(stocks, asOfDate, 20),
-    above50dma: computeWindow(stocks, asOfDate, 50),
-    above200dma: computeWindow(stocks, asOfDate, 200),
+    above20dma: computeWindow(closesPerStock, stocks.length, 20),
+    above50dma: computeWindow(closesPerStock, stocks.length, 50),
+    above200dma: computeWindow(closesPerStock, stocks.length, 200),
     isProxy,
   };
 }

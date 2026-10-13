@@ -48,8 +48,14 @@ const OUT_PATH = path.resolve("public/data/stocks.json");
 const CONCURRENCY = 4;
 // "EQ" covers ordinary equity shares; "RR" covers REITs/InvITs (e.g. BAGMANE,
 // BIRET, EMBASSY), which are legitimate index constituents but trade under a
-// different NSE series code, not "EQ".
-const TRACKED_SERIES = new Set(["EQ", "RR"]);
+// different NSE series code, not "EQ". "BE"/"BZ" are NSE's trade-for-trade
+// series: a stock placed under surveillance moves from EQ to BE/BZ and keeps
+// trading there. The 2026-10 audit found NIFTY 500 constituents (HFCL,
+// MTARTECH, STLTECH, SCHNEIDER) trading normally - verified against an
+// independent source - while their EQ rows stopped, which an EQ/RR-only
+// filter silently turned into stale or gappy series. A stock is only ever in
+// one of these series on a given day, so no date gets two rows.
+const TRACKED_SERIES = new Set(["EQ", "RR", "BE", "BZ"]);
 
 async function loadRequiredSymbols(): Promise<Set<string>> {
   const text = await readFile(CONSTITUENTS_PATH, "utf-8");
@@ -105,6 +111,7 @@ async function main() {
   let fetched = 0;
   let notFound = 0;
   let failed = 0;
+  const rowsPerSeries = new Map<string, number>();
 
   await mapWithConcurrency(missingDates, CONCURRENCY, async (date) => {
     const url = buildUrl(date);
@@ -136,6 +143,7 @@ async function main() {
       };
       if (![bar.open, bar.high, bar.low, bar.close].every((v) => Number.isFinite(v) && v > 0)) continue;
       existing[symbol].bars.push(bar);
+      rowsPerSeries.set(row["SERIES"], (rowsPerSeries.get(row["SERIES"]) ?? 0) + 1);
     }
   });
 
@@ -154,6 +162,7 @@ async function main() {
   console.log(
     `[stocks] done. fetched=${fetched} notFound(holiday/weekend)=${notFound} failed=${failed}. ${withData}/${requiredSymbols.size} symbols have data. Wrote ${OUT_PATH}`,
   );
+  console.log(`[stocks] rows kept this run by series: ${JSON.stringify(Object.fromEntries(rowsPerSeries))}`);
 }
 
 main().catch((err) => {

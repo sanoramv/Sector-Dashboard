@@ -2,7 +2,7 @@ import type { DailyBar, StockSeries } from "../../types/market";
 import type { AppSettings } from "../../types/config";
 import type { IndustryMetrics } from "../../types/industry";
 import { ok, unavailable, type ReturnMetrics } from "../../types/metrics";
-import { validateBars } from "./validation";
+import { isStale, validateBars } from "./validation";
 import { computeReturns } from "./returns";
 import { computeDistanceFrom52wHigh } from "./distanceFromHigh";
 import { computeRelativeStrength } from "./relativeStrength";
@@ -40,12 +40,17 @@ export function computeIndustryMetrics(
 ): IndustryMetrics {
   const slug = slugifyIndustry(industryName);
 
+  // Stocks whose latest bar is stale relative to the market date are left out
+  // of every average, never averaged in on an old price.
+  const marketDate = validatedBenchmarkBars[validatedBenchmarkBars.length - 1]?.date;
+  const calendar = validatedBenchmarkBars.map((b) => b.date);
   const perStock = symbols
     .map((symbol) => {
       const series = stocks[symbol];
       if (!series) return null;
-      const { bars } = validateBars(series.bars);
+      const { bars } = validateBars(series.bars, { calendar });
       if (bars.length === 0) return null;
+      if (marketDate && isStale(bars[bars.length - 1].date, marketDate)) return null;
       return {
         symbol,
         bars,
@@ -80,7 +85,7 @@ export function computeIndustryMetrics(
 
   const stockSeriesList = symbols.map((sym) => stocks[sym]).filter((s): s is StockSeries => s !== undefined);
   const breadthAsOfDate = latestDate ?? validatedBenchmarkBars[validatedBenchmarkBars.length - 1]?.date ?? "";
-  const breadth = computeBreadth(stockSeriesList, breadthAsOfDate, false);
+  const breadth = computeBreadth(stockSeriesList, breadthAsOfDate, false, calendar);
 
   const score = computeScore(
     { returns, breadth, distanceFrom52wHigh: distance.value, relativePerformance3m: rs3m.value },

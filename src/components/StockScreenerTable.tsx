@@ -23,7 +23,8 @@ function patternBadges(s: StockScreenResult): React.ReactNode {
   if (s.resistance.available && s.resistance.value.isApproaching) items.push("Res");
   if (s.consolidation.available && s.consolidation.value.isConsolidating) items.push("Cons");
   if (s.triangle.available && s.triangle.value.detected) items.push("Tri");
-  if (items.length === 0) return <span className="text-faint">—</span>;
+  const tentativeTri = s.triangle.available && s.triangle.value.confidence === "tentative";
+  if (items.length === 0 && !tentativeTri) return <span className="text-faint">—</span>;
   return (
     <span style={{ display: "inline-flex", gap: 4, flexWrap: "wrap" }}>
       {items.map((i) => (
@@ -31,6 +32,32 @@ function patternBadges(s: StockScreenResult): React.ReactNode {
           {i}
         </span>
       ))}
+      {tentativeTri && (
+        <span
+          className="badge badge-insufficient"
+          style={{ fontSize: 10 }}
+          title={`Tentative triangle (not scored): ${s.triangle.available ? s.triangle.value.tentativeReason : ""}`}
+        >
+          Tri?
+        </span>
+      )}
+    </span>
+  );
+}
+
+/** Short, explicit label for a stock whose metrics do not rest on a full comparable price history. */
+export function priceIntegrityBadge(s: StockScreenResult): React.ReactNode {
+  const p = s.priceIntegrity;
+  if (p.state === "clean") return null;
+  const text =
+    p.state === "stale"
+      ? `Stale since ${s.latestDate.available ? s.latestDate.value : "?"}`
+      : p.state === "no-data"
+        ? "No price data"
+        : `Prices from ${p.usableFrom} only`;
+  return (
+    <span className={`badge ${p.state === "post-discontinuity-only" ? "badge-insufficient" : "badge-bearish"}`} style={{ fontSize: 10 }} title={p.note ?? undefined}>
+      {text}
     </span>
   );
 }
@@ -47,6 +74,7 @@ const COLUMNS: ColumnDef[] = [
         <div className="text-faint" style={{ fontSize: 11 }}>
           {s.industry}
         </div>
+        {priceIntegrityBadge(s)}
       </div>
     ),
     align: "left",

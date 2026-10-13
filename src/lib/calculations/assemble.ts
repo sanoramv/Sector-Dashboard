@@ -83,7 +83,8 @@ export function assembleSectorMetrics(
   const stocks = input.constituentSymbols
     .map((sym) => input.stocks[sym])
     .filter((s): s is StockSeries => s !== undefined);
-  const breadth = computeBreadth(stocks, latestBar.date, input.isBreadthProxy);
+  const calendar = validatedBenchmarkBars.map((b) => b.date);
+  const breadth = computeBreadth(stocks, latestBar.date, input.isBreadthProxy, calendar);
 
   const score = computeScore(
     {

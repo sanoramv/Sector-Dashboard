@@ -107,6 +107,15 @@ export function detectConsolidation(
 
 export type TriangleType = "ascending" | "descending" | "symmetrical" | "none";
 
+/**
+ * Minimum swing highs AND swing lows for a triangle to count as confirmed.
+ * Two points always define a line, so a "trendline" through two pivots says
+ * nothing about whether price actually respected it.
+ */
+export const TRIANGLE_MIN_CONFIRMING_PIVOTS = 3;
+/** Every pivot must lie within this % of the latest price of its fitted trendline (its "touch") for a confirmed triangle. */
+export const TRIANGLE_MAX_PIVOT_DEVIATION_PCT = 2;
+
 export interface TriangleResult {
   type: TriangleType;
   /** Fitted trendline slope through swing highs/lows, in % of latest price per session. */
@@ -114,7 +123,18 @@ export interface TriangleResult {
   lowSlopePctPerSession: number;
   swingHighCount: number;
   swingLowCount: number;
+  /** Largest distance of any pivot from its fitted trendline, in % of the latest price. */
+  maxPivotDeviationPct: number;
+  /**
+   * confirmed: shape matched AND >= TRIANGLE_MIN_CONFIRMING_PIVOTS pivots per line, all within
+   * TRIANGLE_MAX_PIVOT_DEVIATION_PCT of the line. tentative: shape matched but those touch criteria
+   * were not met. none: no triangle shape.
+   */
+  confidence: "confirmed" | "tentative" | "none";
+  /** True only for a confirmed triangle - this is what the score and backtest use. */
   detected: boolean;
+  /** Why a matched shape is only tentative (null otherwise). */
+  tentativeReason: string | null;
 }
 
 interface Pivot {
@@ -159,8 +179,8 @@ function findSwingLows(bars: DailyBar[], spacing: number): Pivot[] {
   return pivots;
 }
 
-/** Ordinary least-squares slope of y against x. */
-function regressionSlope(points: Array<{ x: number; y: number }>): number {
+/** Ordinary least-squares fit of y against x. */
+function regression(points: Array<{ x: number; y: number }>): { slope: number; intercept: number } {
   const n = points.length;
   const meanX = points.reduce((s, p) => s + p.x, 0) / n;
   const meanY = points.reduce((s, p) => s + p.y, 0) / n;
@@ -170,7 +190,13 @@ function regressionSlope(points: Array<{ x: number; y: number }>): number {
     num += (p.x - meanX) * (p.y - meanY);
     den += (p.x - meanX) ** 2;
   }
-  return den === 0 ? 0 : num / den;
+  const slope = den === 0 ? 0 : num / den;
+  return { slope, intercept: meanY - slope * meanX };
+}
+
+/** Largest |pivot - fitted line| across the pivots. */
+function maxDeviation(points: Array<{ x: number; y: number }>, fit: { slope: number; intercept: number }): number {
+  return Math.max(...points.map((p) => Math.abs(p.y - (fit.intercept + fit.slope * p.x))));
 }
 
 /**
@@ -179,9 +205,11 @@ function regressionSlope(points: Array<{ x: number; y: number }>): number {
  * classifies the pair of slopes as a simplified ascending/descending/
  * symmetrical triangle (converging highs/lows) or "none".
  *
- * This is a simplified heuristic, not a validated chart-pattern recognizer:
- * it only checks trendline slope direction and "flatness", not touch count,
- * volume confirmation, or the quality of the fit (R^2). Treat `detected` as
+ * This is a simplified heuristic, not a validated chart-pattern recognizer.
+ * A matched shape is only "confirmed" (and only then `detected`) with at
+ * least TRIANGLE_MIN_CONFIRMING_PIVOTS pivots per line, each within
+ * TRIANGLE_MAX_PIVOT_DEVIATION_PCT of its line; otherwise it is reported as
+ * "tentative" and never scored. Volume confirmation is not checked. Treat `detected` as
  * "the recent price structure resembles this simple definition", not as a
  * forecast of a breakout or its direction.
  */
@@ -205,10 +233,13 @@ export function detectTriangle(
   }
 
   const latestPrice = window[window.length - 1].close;
-  const highSlopeAbs = regressionSlope(highs.map((p) => ({ x: p.index, y: p.value })));
-  const lowSlopeAbs = regressionSlope(lows.map((p) => ({ x: p.index, y: p.value })));
-  const highSlopePctPerSession = (highSlopeAbs / latestPrice) * 100;
-  const lowSlopePctPerSession = (lowSlopeAbs / latestPrice) * 100;
+  const highPts = highs.map((p) => ({ x: p.index, y: p.value }));
+  const lowPts = lows.map((p) => ({ x: p.index, y: p.value }));
+  const highFit = regression(highPts);
+  const lowFit = regression(lowPts);
+  const highSlopePctPerSession = (highFit.slope / latestPrice) * 100;
+  const lowSlopePctPerSession = (lowFit.slope / latestPrice) * 100;
+  const maxPivotDeviationPct = (Math.max(maxDeviation(highPts, highFit), maxDeviation(lowPts, lowFit)) / latestPrice) * 100;
 
   const highsFalling = highSlopePctPerSession < -flatThreshold;
   const highsFlat = Math.abs(highSlopePctPerSession) <= flatThreshold;
@@ -220,12 +251,25 @@ export function detectTriangle(
   else if (highsFlat && lowsRising) type = "ascending";
   else if (highsFalling && lowsFlat) type = "descending";
 
+  let tentativeReason: string | null = null;
+  if (type !== "none") {
+    if (highs.length < TRIANGLE_MIN_CONFIRMING_PIVOTS || lows.length < TRIANGLE_MIN_CONFIRMING_PIVOTS) {
+      tentativeReason = `only ${highs.length} swing high(s) and ${lows.length} swing low(s); at least ${TRIANGLE_MIN_CONFIRMING_PIVOTS} of each are needed to confirm a trendline`;
+    } else if (maxPivotDeviationPct > TRIANGLE_MAX_PIVOT_DEVIATION_PCT) {
+      tentativeReason = `a pivot lies ${maxPivotDeviationPct.toFixed(2)}% from its fitted trendline (limit ${TRIANGLE_MAX_PIVOT_DEVIATION_PCT}%)`;
+    }
+  }
+  const confidence = type === "none" ? "none" : tentativeReason ? "tentative" : "confirmed";
+
   return ok({
     type,
     highSlopePctPerSession,
     lowSlopePctPerSession,
     swingHighCount: highs.length,
     swingLowCount: lows.length,
-    detected: type !== "none",
+    maxPivotDeviationPct,
+    confidence,
+    detected: confidence === "confirmed",
+    tentativeReason,
   });
 }

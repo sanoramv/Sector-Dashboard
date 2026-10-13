@@ -4,6 +4,7 @@ import { formatDateHuman, formatMaybeNumber, formatMaybePct, formatMaybePp, sign
 import { LineChart } from "./LineChart";
 import { MetricHelp } from "./MetricHelp";
 import { METRIC_GLOSSARY } from "../content/metricGlossary";
+import { describeBreak } from "../lib/calculations/validation";
 
 export interface StockDetailPanelProps {
   stock: StockScreenResult;
@@ -48,6 +49,22 @@ export function StockDetailPanel({ stock, onClose }: StockDetailPanelProps) {
             Research/screening information only. This is not a buy or sell recommendation, and includes no entry
             price, stop-loss, or price target.
           </div>
+
+          {stock.priceIntegrity.state !== "clean" && (
+            <div className="card" style={{ padding: 10, background: "var(--color-insufficient-bg)", fontSize: 12.5 }}>
+              <strong>
+                Price integrity: {stock.priceIntegrity.state.replace(/-/g, " ")} <MetricHelp content={METRIC_GLOSSARY.priceIntegrity} />
+              </strong>
+              <div style={{ marginTop: 4 }}>{stock.priceIntegrity.note}</div>
+              {stock.priceIntegrity.breaks.length > 0 && (
+                <ul style={{ margin: "6px 0 0", paddingLeft: 18 }} className="text-muted">
+                  {stock.priceIntegrity.breaks.map((b) => (
+                    <li key={`${b.kind}-${b.date}`}>{describeBreak(b)}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
 
           <div>
             <h3 style={{ fontSize: 13, margin: "0 0 8px" }}>Price history</h3>
@@ -145,7 +162,14 @@ export function StockDetailPanel({ stock, onClose }: StockDetailPanelProps) {
                 </strong>{" "}
                 {stock.triangle.available ? (
                   <span style={{ fontSize: 12.5 }}>
-                    type = <strong>{stock.triangle.value.type}</strong> (highs slope{" "}
+                    type = <strong>{stock.triangle.value.type}</strong>
+                    {stock.triangle.value.confidence === "tentative" && (
+                      <>
+                        {" "}
+                        <span className="badge badge-insufficient">tentative - not scored</span> ({stock.triangle.value.tentativeReason})
+                      </>
+                    )}{" "}
+                    (highs slope{" "}
                     <span className="num">{stock.triangle.value.highSlopePctPerSession.toFixed(3)}%/session</span>, lows slope{" "}
                     <span className="num">{stock.triangle.value.lowSlopePctPerSession.toFixed(3)}%/session</span>, from{" "}
                     {stock.triangle.value.swingHighCount} swing highs and {stock.triangle.value.swingLowCount} swing lows).

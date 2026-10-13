@@ -1,8 +1,8 @@
 import type { DailyBar } from "../../types/market";
 import type { AppSettings } from "../../types/config";
-import type { StockScreenResult } from "../../types/stockScreen";
+import type { PriceIntegrity, StockScreenResult } from "../../types/stockScreen";
 import { ok, unavailable, type Maybe } from "../../types/metrics";
-import { validateBars } from "./validation";
+import { describeBreak, isStale, validateBars } from "./validation";
 import { computeReturns } from "./returns";
 import { computeDistanceFrom52wHigh } from "./distanceFromHigh";
 import { computeRelativeStrength } from "./relativeStrength";
@@ -33,35 +33,68 @@ export function assembleStockScreenResult(
   validatedBenchmarkBars: DailyBar[],
   settings: AppSettings,
 ): StockScreenResult {
-  const { bars, warnings: validationWarnings } = validateBars(input.rawBars);
+  const calendar = validatedBenchmarkBars.map((b) => b.date);
+  const marketDate = calendar[calendar.length - 1];
+  const { bars, warnings: validationWarnings, breaks } = validateBars(input.rawBars, { calendar });
+  const usedBreak = breaks.length > 0 ? breaks[breaks.length - 1] : null;
+
+  const noMetrics = (
+    reason: string,
+    priceIntegrity: PriceIntegrity,
+    lastBar: DailyBar | undefined,
+    missing: string[],
+  ): StockScreenResult => ({
+    symbol: input.symbol,
+    companyName: input.companyName,
+    industry: input.industry,
+    sectorSlugs: input.sectorSlugs,
+    currentClose: lastBar ? ok(lastBar.close) : unavailable(reason),
+    latestDate: lastBar ? ok(lastBar.date) : unavailable(reason),
+    returns: {
+      d1: unavailable(reason),
+      w1: unavailable(reason),
+      m1: unavailable(reason),
+      m3: unavailable(reason),
+      m6: unavailable(reason),
+    },
+    distanceFrom52wHigh: unavailable(reason),
+    relativePerformance3m: unavailable(reason),
+    above50dma: unavailable(reason),
+    above200dma: unavailable(reason),
+    resistance: unavailable(reason),
+    consolidation: unavailable(reason),
+    triangle: unavailable(reason),
+    score: { conditions: [], pointsEarned: 0, pointsPossible: 0, completenessPct: 0 },
+    dataQuality: { status: "unavailable", missing },
+    priceIntegrity,
+    priceSeries: lastBar ? bars : [],
+  });
 
   if (bars.length === 0) {
-    return {
-      symbol: input.symbol,
-      companyName: input.companyName,
-      industry: input.industry,
-      sectorSlugs: input.sectorSlugs,
-      currentClose: unavailable("no valid price data"),
-      latestDate: unavailable("no valid price data"),
-      returns: {
-        d1: unavailable("no data"),
-        w1: unavailable("no data"),
-        m1: unavailable("no data"),
-        m3: unavailable("no data"),
-        m6: unavailable("no data"),
-      },
-      distanceFrom52wHigh: unavailable("no data"),
-      relativePerformance3m: unavailable("no data"),
-      above50dma: unavailable("no data"),
-      above200dma: unavailable("no data"),
-      resistance: unavailable("no data"),
-      consolidation: unavailable("no data"),
-      triangle: unavailable("no data"),
-      score: { conditions: [], pointsEarned: 0, pointsPossible: 0, completenessPct: 0 },
-      dataQuality: { status: "unavailable", missing: ["all price-derived metrics"] },
-      priceSeries: [],
-    };
+    return noMetrics("no data", { state: "no-data", usableFrom: null, breaks: [], note: "No valid price data." }, undefined, [
+      "all price-derived metrics",
+    ]);
   }
+
+  // A stale stock gets NO current metrics and no score, so an old price can
+  // never be ranked, filtered or pattern-matched as if it were current. Its
+  // last close and date are still shown, explicitly labelled.
+  const lastBar = bars[bars.length - 1];
+  if (marketDate !== undefined && isStale(lastBar.date, marketDate)) {
+    const note = `Stale price data - latest bar is ${lastBar.date} but the market date is ${marketDate}. No metric is computed until current prices arrive.`;
+    return noMetrics(`stale price data (last bar ${lastBar.date})`, { state: "stale", usableFrom: null, breaks, note }, lastBar, [
+      `data warning: ${note}`,
+    ]);
+  }
+
+  const priceIntegrity: PriceIntegrity = usedBreak
+    ? {
+        state: "post-discontinuity-only",
+        usableFrom: usedBreak.date,
+        breaks,
+        note: `Metrics use only prices from ${usedBreak.date} onward (${describeBreak(usedBreak)}). Anything needing a longer window is unavailable rather than computed across the discontinuity.`,
+      }
+    : { state: "clean", usableFrom: bars[0].date, breaks: [], note: null };
 
   const latestBar = bars[bars.length - 1];
   const returns = computeReturns(bars);
@@ -121,6 +154,7 @@ export function assembleStockScreenResult(
     triangle,
     score,
     dataQuality: { status, missing },
+    priceIntegrity,
     priceSeries: bars,
   };
 }

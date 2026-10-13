@@ -40,7 +40,7 @@ export const METRIC_GLOSSARY: Record<string, MetricHelpContent> = {
     title: "% Above 20-DMA",
     formula: "(Constituents trading above their own 20-day moving average / Eligible constituents) x 100",
     explanation:
-      "How many of the sector's constituent STOCKS (not the index itself) are in short-term uptrends. High breadth means strength is broad-based across many stocks; low breadth means the index move is being driven by just a few heavyweight stocks.",
+      "How many of the sector's constituent STOCKS (not the index itself) are in short-term uptrends. High breadth means strength is broad-based across many stocks; low breadth means the index move is being driven by just a few heavyweight stocks. A stock is only eligible if it has enough comparable, current prices: stale stocks, and moving averages that would span a price discontinuity (see Price Integrity), are excluded - so check the eligible count.",
     example:
       "If 18 of 20 eligible auto-sector stocks are trading above their own 20-day average, breadth is 90% - a broad, participative move, not just one or two large stocks pulling the index up.",
   },
@@ -58,9 +58,9 @@ export const METRIC_GLOSSARY: Record<string, MetricHelpContent> = {
   },
   distance52w: {
     title: "Distance from 52-Week High",
-    formula: "((Current Close / 52-Week High) - 1) x 100",
+    formula: "((Current Close / Highest intraday High in the trailing 365 calendar days) - 1) x 100",
     explanation:
-      "How close the sector is to its highest close in the last year. 0% means it's at a new high; -10% means it is 10% below that high.",
+      "How close the latest close is to the highest intraday high of the last year (requires ~a full year of history, otherwise shown as unavailable). 0% means it closed exactly at that high; -10% means it is 10% below it. Because the high is intraday, a close is usually slightly below 0% even on a new-high day.",
     example: "A sector that is up 3M but still -15% from its 52-week high is recovering, but hasn't yet reclaimed its prior strength.",
   },
   relativePerformance: {
@@ -102,7 +102,7 @@ export const METRIC_GLOSSARY: Record<string, MetricHelpContent> = {
     title: "Industry Average Metrics",
     formula: "Equal-weighted average of the industry's own constituent stocks' individually-computed metrics",
     explanation:
-      "NSE does not publish a price index for most industry classifications (unlike the 15 NIFTY sectoral indices), so these figures are computed directly by this dashboard as a simple average across real constituent stocks - never an official index value, and never fabricated when data is missing.",
+      "NSE does not publish a price index for most industry classifications (unlike the 15 NIFTY sectoral indices), so these figures are computed directly by this dashboard as a simple average across real constituent stocks - never an official index value, and never fabricated when data is missing. Stale stocks are left out, and a stock only contributes to windows that do not span a price discontinuity (see Price Integrity) - the n shown is the number of stocks actually averaged.",
     example:
       "'Capital Goods' average 1M return of -4.9% (n=68) means the 1M returns of 68 real constituent stocks that had enough history were averaged, not that an official 'NIFTY Capital Goods' index fell 4.9% - no such index is published.",
   },
@@ -132,9 +132,16 @@ export const METRIC_GLOSSARY: Record<string, MetricHelpContent> = {
     title: "Triangle Price Structure (heuristic)",
     formula: "Linear-regression trendlines fit through recent swing-high and swing-low pivots",
     explanation:
-      "Finds local swing highs/lows in a trailing window (default 40 sessions, pivots spaced at least 3 sessions apart), fits a straight line through each set, and classifies the pair of slopes as ascending (flat highs, rising lows), descending (falling highs, flat lows), symmetrical (falling highs, rising lows - converging from both sides), or none. This is a simplified heuristic, not a validated chart-pattern recognizer: it does not check touch count, volume, or fit quality, and 'detected' is not a prediction of a breakout or its direction.",
+      "Finds local swing highs/lows in a trailing window (default 40 sessions, pivots spaced at least 3 sessions apart), fits a straight line through each set, and classifies the pair of slopes as ascending (flat highs, rising lows), descending (falling highs, flat lows), symmetrical (falling highs, rising lows - converging from both sides), or none. A shape only counts as CONFIRMED (and only then earns a score point or fires in the backtest) when each line has at least 3 pivots and every pivot lies within 2% of its line. With fewer pivots or a looser fit it is shown as 'Tri?' / tentative and never scored - two points always define a line, so a two-pivot 'trendline' shows nothing. Volume is not checked, and even a confirmed triangle is not a prediction of a breakout or its direction.",
     example:
       "A stock with 3 swing highs trending down and 3 swing lows trending up over the last 40 sessions would be classified 'symmetrical' - whether that resolves upward, downward, or not at all is exactly what the Backtest tab investigates, with real historical evidence rather than assumption.",
+  },
+  priceIntegrity: {
+    title: "Price Integrity (stock data)",
+    explanation:
+      "NSE's daily equity prices are NOT adjusted for splits, bonuses, rights issues or demergers, and a stock can have missing sessions or stop updating. Comparing prices across any of these makes returns, moving averages, 52-week highs, relative strength and patterns wrong. So for each stock the dashboard checks for: (1) a suspected corporate action - open AND close both 40%+ away from the previous close; (2) an unverified discontinuity - open AND close both 15%+ below the previous close, which could be an unadjusted bonus/rights issue OR a genuine fall (official adjustment factors are not available to tell them apart); (3) missing trading sessions versus the NIFTY 500 calendar. After any of these, metrics use only prices from that date onward, and anything needing a longer window shows N/A ('Prices from DATE only'). A stock with no price within 7 days of the market date is 'Stale': it gets no metrics and no score, and is left out of breadth and industry averages. No adjustment factor is ever estimated.",
+    example:
+      "TRENT's 3:2 bonus on 2026-06-04 made its unadjusted price fall from 4257.6 to 2837.6. Its metrics now start on 2026-06-04, so its 6M return and 52-week-high distance show N/A instead of the misleading -25% and -40% the raw prices give. Limitation: bonuses smaller than about 6:5 and most rights issues move the price by under 15% and are NOT detected, so a 'clean' stock is not guaranteed to be adjusted correctly.",
   },
   marketCapSegment: {
     title: "Market Capitalisation Segments",

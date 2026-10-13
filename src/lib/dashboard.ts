@@ -78,7 +78,12 @@ export function buildDashboardData(dataset: RawDataset, settings: AppSettings): 
     .filter((s): s is NonNullable<typeof s> => s !== undefined);
   const broadMarketBreadth =
     broadMarketStocks.length > 0 && validatedBenchmarkBars.length > 0
-      ? computeBreadth(broadMarketStocks, validatedBenchmarkBars[validatedBenchmarkBars.length - 1].date, false)
+      ? computeBreadth(
+          broadMarketStocks,
+          validatedBenchmarkBars[validatedBenchmarkBars.length - 1].date,
+          false,
+          validatedBenchmarkBars.map((b) => b.date),
+        )
       : null;
 
   // Industry analysis uses NIFTY 500's constituent list as the universe - it's

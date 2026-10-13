@@ -11,6 +11,7 @@ import { BENCHMARK, SECTOR_UNIVERSE } from "../src/config/sectorUniverse.ts";
 import type { IndexSeries, SectorConstituents, StockSeries } from "../src/types/market.ts";
 import type { Manifest } from "../src/types/dataset.ts";
 import { SCHEMA_VERSION } from "../src/types/dataset.ts";
+import { isStale, splitAtPriceBreaks, type PriceBreakKind } from "../src/lib/calculations/validation.ts";
 
 const DATA_DIR = path.resolve("public/data");
 
@@ -50,6 +51,44 @@ async function main() {
   if (symbolsWithNoData > 0) {
     warnings.push(
       `${symbolsWithNoData} of ${totalSymbols} tracked constituent references have no price history yet (breadth for affected sectors will show reduced eligibility).`,
+    );
+  }
+
+  // Per-symbol data-quality checks, so problems are visible on the homepage
+  // instead of only surfacing as odd numbers in individual rows.
+  const benchmarkDates = indexSeries[BENCHMARK.slug]?.bars.map((b) => b.date) ?? [];
+  const staleSymbols: string[] = [];
+  const byKind: Record<PriceBreakKind, string[]> = { "corporate-action-break": [], "unverified-discontinuity": [], "missing-sessions": [] };
+  for (const [symbol, series] of Object.entries(stocks)) {
+    if (series.bars.length === 0) continue;
+    const last = series.bars[series.bars.length - 1].date;
+    if (isStale(last, latestMarketDate)) staleSymbols.push(`${symbol} (last ${last})`);
+    for (const br of splitAtPriceBreaks(series.bars, benchmarkDates).breaks) {
+      byKind[br.kind].push(
+        br.kind === "missing-sessions"
+          ? `${symbol} ${br.prevDate}..${br.date} (${br.missingSessions})`
+          : `${symbol} ${br.date} x${br.ratio.toFixed(2)}`,
+      );
+    }
+  }
+  if (staleSymbols.length > 0) {
+    warnings.push(
+      `${staleSymbols.length} stock(s) have no price within 7 days of ${latestMarketDate}; they get no metrics or score and are excluded from breadth and industry averages: ${staleSymbols.join(", ")}.`,
+    );
+  }
+  if (byKind["missing-sessions"].length > 0) {
+    warnings.push(
+      `${byKind["missing-sessions"].length} gap(s) of missing trading sessions in stock histories; affected stocks use only prices after their latest gap: ${byKind["missing-sessions"].join(", ")}.`,
+    );
+  }
+  if (byKind["corporate-action-break"].length > 0) {
+    warnings.push(
+      `${byKind["corporate-action-break"].length} suspected unadjusted corporate-action break(s) (NSE prices are not split/bonus-adjusted); affected stocks use only post-break prices: ${byKind["corporate-action-break"].join(", ")}.`,
+    );
+  }
+  if (byKind["unverified-discontinuity"].length > 0) {
+    warnings.push(
+      `${byKind["unverified-discontinuity"].length} unverified price discontinuity(ies) - a 15%+ gap-down that may be an unadjusted bonus/rights issue or a genuine fall (no official adjustment factors available); affected stocks use only later prices: ${byKind["unverified-discontinuity"].join(", ")}. Smaller corporate actions are not detected.`,
     );
   }
 

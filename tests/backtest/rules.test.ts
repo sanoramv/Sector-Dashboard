@@ -25,7 +25,8 @@ describe("BACKTEST_RULES", () => {
 
   it("'above-200dma' rule agrees with the underlying moving-average check at a known point", () => {
     // Flat-then-jump series: above 200dma should fire only once the price is clearly above its trailing average.
-    const closes = [...Array.from({ length: 250 }, () => 100), ...Array.from({ length: 20 }, () => 200)];
+    // +50%, not +100%: a one-day doubling would be treated as a corporate-action price break.
+    const closes = [...Array.from({ length: 250 }, () => 100), ...Array.from({ length: 20 }, () => 150)];
     const universe = [{ symbol: "A", bars: makeBars(closes) }];
     const benchmark = makeBars(closes);
     const rule = BACKTEST_RULES.find((r) => r.id === "above-200dma")!;

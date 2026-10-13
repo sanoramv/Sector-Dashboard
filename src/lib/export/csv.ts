@@ -78,9 +78,12 @@ const STOCK_COLUMNS = [
   "Approaching Resistance",
   "Consolidating",
   "Triangle Type",
+  "Triangle Confidence",
   "Score",
   "Score Completeness %",
   "Data Quality",
+  "Price Integrity",
+  "Metrics Use Prices From",
 ] as const;
 
 function fmtBool(m: { available: true; value: boolean } | { available: false; reason: string }): string {
@@ -108,9 +111,12 @@ export function stocksToCsv(stocks: StockScreenResult[]): string {
       s.resistance.available ? (s.resistance.value.isApproaching ? "Yes" : "No") : "N/A",
       s.consolidation.available ? (s.consolidation.value.isConsolidating ? "Yes" : "No") : "N/A",
       s.triangle.available ? s.triangle.value.type : "N/A",
+      s.triangle.available ? s.triangle.value.confidence : "N/A",
       String(s.score.pointsEarned),
       s.score.completenessPct.toFixed(0),
       s.dataQuality.status,
+      s.priceIntegrity.state,
+      s.priceIntegrity.usableFrom ?? "N/A",
     ]
       .map((v) => escapeCsvField(String(v)))
       .join(","),

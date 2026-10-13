@@ -14,7 +14,7 @@ describe("computeStockScore", () => {
         above200dma: ok(true),
         resistance: ok({ level: 100, levelDate: "2024-01-01", distancePct: -1, isApproaching: true }),
         consolidation: ok({ recentRangePct: 1, baselineRangePct: 3, contractionRatio: 0.3, isConsolidating: true }),
-        triangle: ok({ type: "symmetrical", highSlopePctPerSession: -0.1, lowSlopePctPerSession: 0.1, swingHighCount: 2, swingLowCount: 2, detected: true }),
+        triangle: ok({ type: "symmetrical", highSlopePctPerSession: -0.1, lowSlopePctPerSession: 0.1, swingHighCount: 3, swingLowCount: 3, maxPivotDeviationPct: 0.5, confidence: "confirmed", detected: true, tentativeReason: null }),
       },
       DEFAULT_SETTINGS.scoring,
     );
@@ -53,7 +53,7 @@ describe("computeStockScore", () => {
         above200dma: ok(false),
         resistance: ok({ level: 100, levelDate: "2024-01-01", distancePct: -20, isApproaching: false }),
         consolidation: ok({ recentRangePct: 3, baselineRangePct: 3, contractionRatio: 1, isConsolidating: false }),
-        triangle: ok({ type: "none", highSlopePctPerSession: 0.5, lowSlopePctPerSession: 0.5, swingHighCount: 2, swingLowCount: 2, detected: false }),
+        triangle: ok({ type: "none", highSlopePctPerSession: 0.5, lowSlopePctPerSession: 0.5, swingHighCount: 2, swingLowCount: 2, maxPivotDeviationPct: 0.5, confidence: "none", detected: false, tentativeReason: null }),
       },
       DEFAULT_SETTINGS.scoring,
     );
@@ -70,7 +70,7 @@ describe("computeStockScore", () => {
       above200dma: ok(true),
       resistance: ok({ level: 100, levelDate: "2024-01-01", distancePct: -1, isApproaching: true }),
       consolidation: ok({ recentRangePct: 1, baselineRangePct: 3, contractionRatio: 0.3, isConsolidating: true }),
-      triangle: ok({ type: "symmetrical" as const, highSlopePctPerSession: -0.1, lowSlopePctPerSession: 0.1, swingHighCount: 2, swingLowCount: 2, detected: true }),
+      triangle: ok({ type: "symmetrical" as const, highSlopePctPerSession: -0.1, lowSlopePctPerSession: 0.1, swingHighCount: 3, swingLowCount: 3, maxPivotDeviationPct: 0.5, confidence: "confirmed" as const, detected: true, tentativeReason: null }),
     };
     expect(computeStockScore(input, DEFAULT_SETTINGS.scoring)).toEqual(computeStockScore(input, DEFAULT_SETTINGS.scoring));
   });

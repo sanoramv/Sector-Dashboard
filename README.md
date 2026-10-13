@@ -334,9 +334,10 @@ requires evidence before any rule's language could be read as a claim of effecti
   price bars up to and including `t` (and, for rules needing the benchmark, NIFTY 500 bars independently
   truncated to the same date). This is verified by an explicit structural test
   (`tests/backtest/engine.test.ts`), not just asserted in a comment.
-- **Forward return**: assumes entry at `t`'s own closing price and exit at the closing price exactly N sessions
-  later (N configurable) - a simplifying assumption, not a realistic fill. Net return subtracts a configurable
-  flat round-trip cost (basis points) for transaction costs and slippage.
+- **Forward return**: assumes entry at the open of session `t+1` (a signal is only known after `t`'s close) and
+  exit at the close of session `t+N` (N configurable) - a simplifying assumption, not a realistic fill. Net return
+  subtracts a configurable flat round-trip cost (basis points) for transaction costs and slippage. No holding
+  window crosses a suspected unadjusted corporate-action price break (see AUDIT_REPORT.md).
 - **Baseline comparison**: every rule's conditional forward-return sample is compared against the *unconditional*
   forward-return sample over the same universe and dates - "what if you'd held anything, regardless of the
   signal" - so a rule can be judged against doing nothing special, not against zero.
@@ -376,6 +377,16 @@ requires evidence before any rule's language could be read as a claim of effecti
 
 ## 8. Known limitations
 
+**Start with the Phase 13 audit:** [`AUDIT_REPORT.md`](AUDIT_REPORT.md) (findings ranked by severity, including what
+is still wrong), [`DATA_SOURCES.md`](DATA_SOURCES.md) (every dataset's source, coverage and refresh), and
+[`VALIDATION_CHECKLIST.md`](VALIDATION_CHECKLIST.md) (repeatable manual checks). The most important open issue:
+**NSE's bhavcopy prices are not adjusted for corporate actions, and no adjustment factor is estimated.** Price
+discontinuities are detected instead: open and close both 40%+ away (most splits and bonuses); open and close both
+15%+ lower ("unverified": a smaller bonus/rights issue *or* a genuine fall); or missing sessions. No metric is
+computed across one, and the stock is labelled "Prices from DATE only". Bonuses smaller than about 6:5 and small
+rights issues are not detected. Stale stocks get no metrics or score. Historical constituent membership is not
+available: the current lists are applied to the past.
+
 - Five sectors from the original brief (Capital Goods, Power, Construction, Insurance, Telecommunications) have
   no official NSE index tracked - see section 1. Real constituent-stock data for most of them is still viewable
   under the Industries tab.
@@ -402,7 +413,8 @@ requires evidence before any rule's language could be read as a claim of effecti
   so its 52-week-high distance is currently shown as unavailable rather than computed from a partial year - this
   will resolve automatically as more daily data accumulates, or sooner if NSE backfills the archive.
 - The industry and stock-screener universe is NIFTY 500 constituents; a stock only present in a narrower tracked
-  sector index but not in NIFTY 500 (none currently observed in practice) would not appear there.
+  sector index but not in NIFTY 500 does not appear there (as of 2026-10-09: DBCORP, MPSLTD, NAZARA, NETWORK18,
+  SAREGAMA, TIPSMUSIC in NIFTY Media, and PSB in NIFTY PSU Bank). They still count toward their sector's breadth.
 - Backtest results reflect a short (~1 year), single-regime, survivorship-biased sample - see section 6. Treat
   them as preliminary evidence, not proof of anything.
 - This is a demo/reference implementation of the data pipeline, not a commercial data redistribution service -

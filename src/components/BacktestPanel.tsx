@@ -45,7 +45,7 @@ export function BacktestPanel({ rawDataset, settings }: BacktestPanelProps) {
       </p>
 
       <div className="card" style={{ padding: 12, marginBottom: 14, background: "var(--color-insufficient-bg)", fontSize: 12.5 }}>
-        <strong>Read this before the results:</strong>
+        <strong>Read this before the results. This is NOT evidence that any rule is profitable.</strong>
         <ul style={{ margin: "6px 0 0", paddingLeft: 18 }}>
           <li>
             <strong>Survivorship bias:</strong> this uses today's NIFTY 500 constituent list applied across the
@@ -53,17 +53,29 @@ export function BacktestPanel({ rawDataset, settings }: BacktestPanelProps) {
             are not included - this tends to inflate results relative to a true point-in-time universe.
           </li>
           <li>
-            <strong>Execution assumption:</strong> entry is assumed at the signal date's own closing price, exit at
-            the closing price exactly N sessions later - not a realistic fill.
+            <strong>Execution assumption:</strong> entry is assumed at the next session's opening price (a signal is
+            only known after the close), exit at the closing price N sessions after the signal date - still not a
+            realistic fill.
           </li>
           <li>
-            <strong>Limited history:</strong> the available price history covers roughly the last year. That is a
-            small, single-regime sample - these results describe what happened in THIS period, not a general law.
+            <strong>Short history:</strong> only about 14 months of stock prices are available, in one mostly
+            range-bound market. Rules needing a year of history (near 52-week high) or 200 sessions (200-DMA) can only
+            be evaluated over the last few months of it. There is no separate out-of-sample test period.
           </li>
           <li>
-            <strong>No significance test is computed.</strong> Observations overlap in time and across related
-            stocks, so a naive significance test would be misleading - sample size and win rate are shown as
-            descriptive evidence only, not proof of an edge.
+            <strong>Overlapping trades:</strong> a signal is evaluated on every session, so consecutive signals for
+            the same stock share most of their holding period, and stocks in the same sector move together. The
+            sample size "n" therefore greatly overstates the number of independent observations. No significance
+            test is computed, because a naive one would be misleading.
+          </li>
+          <li>
+            <strong>Unadjusted prices:</strong> NSE prices are not adjusted for corporate actions. Holding periods
+            never cross a detected price discontinuity, but small bonuses and rights issues are not detected and can
+            still distort individual returns.
+          </li>
+          <li>
+            <strong>Changing thresholds in Settings and re-running</strong> tunes the rules to this same period
+            (in-sample). Any improvement found that way is expected to shrink on new data.
           </li>
         </ul>
       </div>
@@ -161,6 +173,17 @@ export function BacktestPanel({ rawDataset, settings }: BacktestPanelProps) {
             hold over the same dates in THIS sample; it is not a significance test and is not a guarantee of future
             performance.
           </p>
+          {results.some((r) => (r.signalStats?.n ?? 0) < 30) && (
+            <ul className="text-muted" style={{ fontSize: 12, margin: "8px 0 0", paddingLeft: 18 }}>
+              {results
+                .filter((r) => (r.signalStats?.n ?? 0) < 30)
+                .map((r) => (
+                  <li key={r.ruleName}>
+                    <strong>{r.ruleName}:</strong> {r.warnings[r.warnings.length - 1]}
+                  </li>
+                ))}
+            </ul>
+          )}
         </div>
       )}
 
