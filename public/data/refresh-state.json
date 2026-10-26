@@ -2,6 +2,12 @@
  "schemaVersion": 1,
  "archives": {
   "index": {
+   "2026-10-26": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T20:02:01.187Z",
+    "attempts": 1,
+    "detail": "19 tracked series"
+   },
    "2026-10-23": {
     "status": "ok",
     "checkedAt": "2026-10-26T06:02:19.474Z",
@@ -22,7 +28,7 @@
    },
    "2026-10-20": {
     "status": "missing",
-    "checkedAt": "2026-10-26T06:16:44.507Z",
+    "checkedAt": "2026-10-26T20:02:01.720Z",
     "attempts": 1
    },
    "2026-10-19": {
@@ -1275,6 +1281,13 @@
    }
   },
   "stocks": {
+   "2026-10-26": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T20:02:02.520Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
    "2026-10-23": {
     "status": "ok",
     "checkedAt": "2026-10-26T06:02:47.656Z",
@@ -1298,7 +1311,7 @@
    },
    "2026-10-20": {
     "status": "earlier-session",
-    "checkedAt": "2026-10-26T06:16:45.319Z",
+    "checkedAt": "2026-10-26T20:02:02.924Z",
     "attempts": 1,
     "detail": "file is for 2026-10-19"
    },

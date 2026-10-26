@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-26T06:16:46.053Z",
-  "latestMarketDate": "2026-10-23",
+  "generatedAt": "2026-10-26T20:02:04.264Z",
+  "latestMarketDate": "2026-10-26",
   "source": {
     "name": "NSE (National Stock Exchange of India) - official archives, fetched by a scheduled pipeline",
     "indexDataUrl": "https://nsearchives.nseindia.com/content/indices/",
@@ -34,9 +34,9 @@
   ],
   "refresh": {
     "outcome": "complete",
-    "evaluatedAt": "2026-10-26T06:16:46.051Z",
-    "lastCompleteRefreshAt": "2026-10-26T06:16:46.051Z",
-    "latestDueDate": "2026-10-23",
+    "evaluatedAt": "2026-10-26T20:02:04.263Z",
+    "lastCompleteRefreshAt": "2026-10-26T20:02:04.263Z",
+    "latestDueDate": "2026-10-26",
     "tradingDaysBehind": 0,
     "reasons": []
   }
