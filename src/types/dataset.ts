@@ -10,9 +10,28 @@
  */
 export const SCHEMA_VERSION = 2;
 
+/**
+ * What the last pipeline run actually achieved (see scripts/lib/refresh-state.mts).
+ * Optional so manifests written before it existed still load.
+ */
+export interface RefreshStatus {
+  /** complete: every due date resolved. partial: recent data complete, older gaps/backfill remain. failed: a recent trading day is missing. */
+  outcome: "complete" | "partial" | "failed";
+  /** When the pipeline run that produced this manifest evaluated its data (ISO datetime). */
+  evaluatedAt: string;
+  /** When a run last ended "complete" - NOT advanced by partial or failed runs (null if never). */
+  lastCompleteRefreshAt: string | null;
+  /** Latest weekday whose NSE archives were due when the run happened (ISO date). */
+  latestDueDate: string;
+  /** Due trading days after latestMarketDate that are missing. */
+  tradingDaysBehind: number;
+  /** Plain-language reasons the outcome is not "complete". */
+  reasons: string[];
+}
+
 export interface Manifest {
   schemaVersion: number;
-  /** When the fetch pipeline last ran successfully (ISO datetime). */
+  /** When this manifest file was written by the pipeline (ISO datetime). Says nothing about whether market data advanced - see `refresh`. */
   generatedAt: string;
   /** The latest trading-day date present across the index series (ISO date). */
   latestMarketDate: string;
@@ -27,6 +46,7 @@ export interface Manifest {
   benchmark: string; // slug
   /** Per-sector note on any fetch issues during the last pipeline run. */
   warnings: string[];
+  refresh?: RefreshStatus;
 }
 
 import type { IndexSeries, SectorConstituents, StockSeries } from "./market";

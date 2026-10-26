@@ -12,6 +12,11 @@ import type { IndexSeries, SectorConstituents, StockSeries } from "../src/types/
 import type { Manifest } from "../src/types/dataset.ts";
 import { SCHEMA_VERSION } from "../src/types/dataset.ts";
 import { isStale, splitAtPriceBreaks, type PriceBreakKind } from "../src/lib/calculations/validation.ts";
+import { evaluateRefresh, loadState, symbolSetHash, targetDates, toRefreshStatus } from "./lib/refresh-state.mts";
+import { TRACKED_SERIES, loadRequiredSymbols } from "./lib/series.mts";
+
+/** Must match the fetch scripts' window. */
+const BACKFILL_DAYS = 420;
 
 const DATA_DIR = path.resolve("public/data");
 
@@ -92,6 +97,27 @@ async function main() {
     );
   }
 
+  // Refresh outcome: judged from what each date's archives actually returned,
+  // not from whether the fetch scripts exited.
+  const state = await loadState(path.join(DATA_DIR, "refresh-state.json"), () => {
+    throw new Error("public/data/refresh-state.json is missing - run fetch-index-history and fetch-stock-bhavcopy first.");
+  });
+  const benchmarkLatest = indexSeries[BENCHMARK.slug]?.bars.at(-1)?.date ?? latestMarketDate;
+  const hash = symbolSetHash(await loadRequiredSymbols(path.join(DATA_DIR, "constituents.json")), TRACKED_SERIES);
+  const now = new Date();
+  const summary = evaluateRefresh(state, targetDates(now, BACKFILL_DAYS), benchmarkLatest, hash, now);
+  let previousComplete: string | null = null;
+  try {
+    previousComplete = (await readJson<Manifest>("manifest.json")).refresh?.lastCompleteRefreshAt ?? null;
+  } catch {
+    // first manifest with refresh status
+  }
+  if (summary.outcome !== "complete") {
+    warnings.unshift(
+      `Data refresh ${summary.outcome.toUpperCase()} (pipeline run ${summary.evaluatedAt}): ${summary.reasons.join(" | ")}`,
+    );
+  }
+
   const manifest: Manifest = {
     schemaVersion: SCHEMA_VERSION,
     generatedAt: new Date().toISOString(),
@@ -105,10 +131,15 @@ async function main() {
     sectors: SECTOR_UNIVERSE.map((s) => s.slug),
     benchmark: BENCHMARK.slug,
     warnings,
+    refresh: toRefreshStatus(summary, previousComplete),
   };
 
   await writeFile(path.join(DATA_DIR, "manifest.json"), JSON.stringify(manifest, null, 2));
-  console.log(`[manifest] latestMarketDate=${latestMarketDate} warnings=${warnings.length}`);
+  console.log(
+    `[manifest] latestMarketDate=${latestMarketDate} latestDueDate=${summary.latestDueDate} refresh=${summary.outcome} ` +
+      `(behind ${summary.tradingDaysBehind}, unresolved recent ${summary.unresolvedRecent.length}, historical ${summary.unresolvedHistorical.length}, ` +
+      `pending ${summary.pendingPublication.length}, non-trading ${summary.nonTradingDates}, backfill remaining ${summary.backfillRemaining}) warnings=${warnings.length}`,
+  );
   warnings.forEach((w) => console.log(`  - ${w}`));
 }
 

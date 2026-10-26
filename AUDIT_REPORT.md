@@ -288,3 +288,24 @@ The pattern labels are descriptive only. Nothing in this audit shows they identi
 3. **Get point-in-time constituents** (NSE index reconstitution circulars) before using the backtest for anything beyond exploration.
 4. **Get at least 3–5 years of history** covering distinct regimes, with a held-out test period fixed in advance.
 5. **Cross-check the 15 unchecked index series** against niftyindices.com historical data, by hand if necessary.
+
+---
+
+## Incident addendum: data stuck at 2026-10-09 (investigated 2026-10-26)
+
+**Confirmed root causes**
+
+1. **NSE dropped the pipeline's requests.** Reproduced directly against `nsearchives.nseindia.com`: the old User-Agent `Mozilla/5.0 (compatible; nse-sector-dashboard-data-fetch/1.0; +https://github.com)` got no HTTP response (Node `fetch` failed in 164 ms locally; on GitHub runners requests hung until the 20/30 s abort). With an otherwise identical request, `Mozilla/5.0 (compatible; nse-sector-dashboard/1.0)` returns HTTP 200 and the valid file. UAs containing a URL or the word "fetch" were rejected. No cookies, Referer or session are needed. When NSE started rejecting the old UA is unknown; earlier downloads with it worked.
+2. **Failures were invisible.** `fetchTextOrNull` forced `retries: 0` (hence "after 1 attempts"), a failed date was only `console.warn`-ed, and the scripts exited 0. Every scheduled run from 12 to 23 Oct went green while adding no market date (each data commit only pruned the oldest bar).
+3. **Every run re-downloaded the whole window.** A date "needed fetching" if any series lacked it; placeholder `DUMMY*` symbols never have rows (stocks: 300 of 300 dates every run) and NIFTY Chemicals launched mid-window (index: 47 extra dates). With every request hanging to its timeout, this made each run take ~43 minutes.
+4. **Data commits could fail:** the commit step pushed without rebasing, and two runs' pushes failed after `main` moved.
+5. **Deploys were blocked by a flaky test:** `snapshotHistory.test.ts › is deterministic` compared two `new Date()` timestamps, failing when the clock ticked between calls (3 failed deploys).
+6. **NSE serves the previous session's bhavcopy on holidays** (e.g. 2026-10-02 returns DATE1 01-Oct-2026), so "HTTP 200" is not proof a date traded. The old code happened to dedupe this harmlessly; the new code uses it as positive non-trading evidence.
+
+**Fix** (see README *Keeping data fresh*): shared retrieval layer with an accepted User-Agent, bounded retries, backoff with jitter, `Retry-After`, pacing and content validation; a per-date refresh state; complete/partial/failed evaluation in the manifest; a workflow gate that fails after committing valid data; rebasing commits; and a frozen clock in the flaky test.
+
+**Recovery (local run through the new layer, 2026-10-26):** the index fetch recovered 12, 13, 14, 15, 16, 19, 21, 22 and 23 Oct (20 Oct: 404 at both archives = Dussehra holiday). A one-time 300-date stock re-extraction under the EQ/RR/BE/BZ set took 2 minutes, with every request answered on the first attempt. It kept 1,319 `BE` rows. Stale stocks went 7 → 0 and gappy stocks 17 → 2. The two remaining gaps (CCAVENUE 13–16 Oct, EMBDL 9 Apr–5 May) were checked in the official files: those symbols appear in no series on those days.
+
+**This closes the H1 "pending" item:** the official 2026-10-23 bhavcopy lists `HFCL, BE`.
+
+**Not verified yet:** that GitHub-hosted runners also get responses with the new User-Agent. That needs one workflow run (see README).

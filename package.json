@@ -14,7 +14,8 @@
     "fetch:index-history": "tsx scripts/fetch-index-history.mts",
     "fetch:stocks": "tsx scripts/fetch-stock-bhavcopy.mts",
     "fetch:all": "npm run fetch:index-history && npm run fetch:stocks && npm run build:manifest",
-    "build:manifest": "tsx scripts/build-manifest.mts"
+    "build:manifest": "tsx scripts/build-manifest.mts",
+    "check:refresh": "tsx scripts/check-refresh.mts"
   },
   "dependencies": {
     "lightweight-charts": "^5.0.9",

@@ -2,10 +2,19 @@ name: Update NSE sector data
 
 on:
   schedule:
-    # 14:30 UTC = 20:00 IST, weekdays. Gives NSE's archive hosts a few hours
-    # after the 15:30 IST close to publish the day's index/bhavcopy files.
+    # GitHub cron is UTC. 14:30 UTC = 20:00 IST, weekdays: a few hours after the
+    # 15:30 IST close, once NSE has published the day's index/bhavcopy files.
+    # GitHub often starts scheduled runs late (observed: up to ~8h).
     - cron: "30 14 * * 1-5"
-  workflow_dispatch: {}
+    # 02:30 UTC = 08:00 IST, Tue-Sat: retries anything the evening run could not
+    # get (late publication, transient network failure) before the next session.
+    - cron: "30 2 * * 2-6"
+  workflow_dispatch:
+    inputs:
+      max_backfill_dates:
+        description: "Maximum OLDER dates to (re)fetch per archive this run (recent dates are always fetched). Use 300 to complete a full re-backfill in one run."
+        required: false
+        default: "40"
 
 permissions:
   contents: write
@@ -17,6 +26,11 @@ concurrency:
 jobs:
   update-data:
     runs-on: ubuntu-latest
+    # A routine run takes a few minutes; a 300-date backfill about 15. The cap
+    # keeps a hung network from holding the concurrency group for hours.
+    timeout-minutes: 60
+    env:
+      MAX_BACKFILL_DATES: ${{ github.event.inputs.max_backfill_dates || '40' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -27,13 +41,19 @@ jobs:
 
       - run: npm ci
 
+      # Each fetch step records every date's outcome in public/data/refresh-state.json
+      # and only exits non-zero on a fatal error (e.g. unreadable data file).
+      # Whether the refresh is complete is decided by build-manifest and enforced
+      # by the final step, AFTER good data has been committed.
       - name: Fetch index history (official NSE archive)
+        timeout-minutes: 20
         run: npm run fetch:index-history
 
       - name: Fetch equity bhavcopy (official NSE archive)
+        timeout-minutes: 30
         run: npm run fetch:stocks
 
-      - name: Build manifest
+      - name: Build manifest (evaluates the refresh outcome)
         run: npm run build:manifest
 
       - name: Validate the pipeline output with the test suite
@@ -46,7 +66,20 @@ jobs:
           git add public/data
           if git diff --cached --quiet; then
             echo "No data changes to commit."
-          else
-            git commit -m "chore: scheduled NSE sector data update"
-            git push
+            exit 0
           fi
+          git commit -m "chore: scheduled NSE sector data update"
+          # main may have moved during the run (e.g. a code push): rebase the
+          # data-only commit onto it instead of failing the push.
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push attempt $attempt failed; retrying in $((attempt * 10))s"
+            sleep $((attempt * 10))
+          done
+          echo "::error::Could not push the data commit after 3 attempts."
+          exit 1
+
+      - name: Fail if a recent trading day is still missing
+        run: npm run -s check:refresh

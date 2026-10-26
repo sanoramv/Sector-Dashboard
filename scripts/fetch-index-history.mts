@@ -7,23 +7,33 @@
  * this script runs server-side (locally or in GitHub Actions) and publishes
  * the result as static JSON for the frontend to read same-origin.
  *
- * Incremental: reads the existing public/data/index-series.json (if present),
- * fetches only the dates missing within the backfill window, merges, sorts,
- * dedupes and prunes anything older than the window. Safe to re-run daily.
+ * Incremental and honest about failures: which dates to request comes from
+ * public/data/refresh-state.json (see scripts/lib/refresh-state.mts), every
+ * request goes through the shared retrying/validating fetchArchive(), and
+ * every date's outcome (ok / 404 / failed / invalid) is recorded there. Only
+ * rows from a validated file for exactly the requested date are merged;
+ * existing data is never replaced by a failed or partial download. Whether
+ * the refresh as a whole is complete is decided later by build-manifest and
+ * enforced by check-refresh.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { BENCHMARK, SECTOR_UNIVERSE } from "../src/config/sectorUniverse.ts";
 import { MARKET_CAP_SEGMENTS } from "../src/config/marketCapSegments.ts";
 import type { IndexSeries } from "../src/types/market.ts";
-import { fetchTextOrNull, mapWithConcurrency } from "./lib/http.mts";
-import { toDdMmYyyy, toIsoDate, nseDateToIso, weekdaysBack } from "./lib/dates.mts";
-import { parseCsvObjects } from "./lib/csv.mts";
+import { createPacer, fetchArchive, mapWithConcurrency } from "./lib/http.mts";
+import { toDdMmYyyy } from "./lib/dates.mts";
+import { validateArchiveText } from "./lib/archives.mts";
+import { finalizeBars, ingestIndexOutcome } from "./lib/ingest.mts";
+import { emptyState, loadState, planFetch, pruneState, saveState, targetDates, type RefreshState } from "./lib/refresh-state.mts";
 
 const BACKFILL_DAYS = 420; // > 365 days so a full 52-week high/return window is always available
 const PRUNE_BEYOND_DAYS = 450;
 const OUT_PATH = path.resolve("public/data/index-series.json");
-const CONCURRENCY = 5;
+const STATE_PATH = path.resolve("public/data/refresh-state.json");
+const CONCURRENCY = 2;
+const MIN_REQUEST_INTERVAL_MS = 400;
+const MAX_BACKFILL_DATES = Number(process.env.MAX_BACKFILL_DATES ?? 40);
 
 // MARKET_CAP_SEGMENTS includes NIFTY 500 again (as the self-benchmark entry) -
 // excluded here since it's already covered by BENCHMARK, same slug/index name.
@@ -31,16 +41,29 @@ const NEW_SEGMENT_DEFS = MARKET_CAP_SEGMENTS.filter((s) => s.slug !== BENCHMARK.
 const ALL_DEFS = [BENCHMARK, ...SECTOR_UNIVERSE, ...NEW_SEGMENT_DEFS];
 
 async function loadExisting(): Promise<Record<string, IndexSeries>> {
+  let text: string;
   try {
-    const text = await readFile(OUT_PATH, "utf-8");
-    return JSON.parse(text);
-  } catch {
-    return {};
+    text = await readFile(OUT_PATH, "utf-8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return {};
+    throw err;
   }
+  return JSON.parse(text); // a corrupt file throws: never silently restart from empty
 }
 
-function buildUrl(date: Date): string {
-  return `https://nsearchives.nseindia.com/content/indices/ind_close_all_${toDdMmYyyy(date)}.csv`;
+function buildUrl(iso: string): string {
+  return `https://nsearchives.nseindia.com/content/indices/ind_close_all_${toDdMmYyyy(new Date(`${iso}T00:00:00Z`))}.csv`;
+}
+
+/** First run with the state file: dates already present in the benchmark series were downloaded OK before. */
+function bootstrapFrom(existing: Record<string, IndexSeries>): () => RefreshState {
+  return () => {
+    const state = emptyState();
+    for (const b of existing[BENCHMARK.slug]?.bars ?? []) {
+      state.archives.index[b.date] = { status: "ok", checkedAt: "bootstrap" };
+    }
+    return state;
+  };
 }
 
 async function main() {
@@ -48,72 +71,41 @@ async function main() {
   for (const def of ALL_DEFS) {
     existing[def.slug] ??= { slug: def.slug, nseIndexName: def.nseIndexName, bars: [] };
   }
+  const state = await loadState(STATE_PATH, bootstrapFrom(existing));
 
-  const targetDates = weekdaysBack(BACKFILL_DAYS);
-  const existingDateSets = new Map(
-    ALL_DEFS.map((def) => [def.slug, new Set(existing[def.slug].bars.map((b) => b.date))]),
+  const targets = targetDates(new Date(), BACKFILL_DAYS);
+  const plan = planFetch("index", targets, state, { maxBackfill: MAX_BACKFILL_DATES });
+  const dates = [...plan.recent, ...plan.backfill];
+  console.log(
+    `[index-history] latest due date ${targets[0]}; fetching ${plan.recent.length} recent + ${plan.backfill.length} backfill date(s)` +
+      (plan.deferred > 0 ? `; ${plan.deferred} older date(s) deferred to later runs` : ""),
   );
 
-  // A date only needs fetching if at least one sector is missing it.
-  const missingDates = targetDates.filter((d) => {
-    const iso = toIsoDate(d);
-    return ALL_DEFS.some((def) => !existingDateSets.get(def.slug)!.has(iso));
+  const pacer = createPacer(MIN_REQUEST_INTERVAL_MS);
+  const tally: Record<string, number> = {};
+  await mapWithConcurrency(dates, CONCURRENCY, async (iso) => {
+    const outcome = await fetchArchive(buildUrl(iso), { label: `index ${iso}`, validate: (t) => validateArchiveText("index", t), pacer });
+    const entry = ingestIndexOutcome(existing, state, iso, outcome, {
+      defs: ALL_DEFS,
+      benchmarkIndexName: BENCHMARK.nseIndexName,
+      checkedAt: new Date().toISOString(),
+    });
+    if (entry.status === "failed" || entry.status === "invalid") {
+      console.warn(`[index-history] UNRESOLVED ${iso}: ${entry.status} (${entry.detail}) after ${entry.attempts} attempt(s)`);
+    }
+    const s = state.archives.index[iso].status;
+    tally[s] = (tally[s] ?? 0) + 1;
   });
 
-  console.log(`[index-history] ${missingDates.length} of ${targetDates.length} target dates need fetching.`);
-
-  let fetched = 0;
-  let notFound = 0;
-  let failed = 0;
-
-  await mapWithConcurrency(missingDates, CONCURRENCY, async (date) => {
-    const url = buildUrl(date);
-    let text: string | null;
-    try {
-      text = await fetchTextOrNull(url);
-    } catch (err) {
-      failed += 1;
-      console.warn(`[index-history] failed ${toIsoDate(date)}: ${String(err)}`);
-      return;
-    }
-    if (text === null) {
-      notFound += 1; // weekend/holiday - no file published, not an error
-      return;
-    }
-    fetched += 1;
-
-    const rows = parseCsvObjects(text);
-    for (const def of ALL_DEFS) {
-      const row = rows.find((r) => r["Index Name"]?.trim() === def.nseIndexName);
-      if (!row) continue;
-      const iso = nseDateToIso(row["Index Date"]);
-      const bar = {
-        date: iso,
-        open: Number(row["Open Index Value"]),
-        high: Number(row["High Index Value"]),
-        low: Number(row["Low Index Value"]),
-        close: Number(row["Closing Index Value"]),
-      };
-      if (![bar.open, bar.high, bar.low, bar.close].every((v) => Number.isFinite(v) && v > 0)) continue;
-      existing[def.slug].bars.push(bar);
-      existingDateSets.get(def.slug)!.add(iso);
-    }
-  });
-
-  const cutoffIso = toIsoDate(weekdaysBack(PRUNE_BEYOND_DAYS)[weekdaysBack(PRUNE_BEYOND_DAYS).length - 1]);
-  for (const def of ALL_DEFS) {
-    const dedup = new Map(existing[def.slug].bars.map((b) => [b.date, b]));
-    existing[def.slug].bars = [...dedup.values()]
-      .filter((b) => b.date >= cutoffIso)
-      .sort((a, b) => a.date.localeCompare(b.date));
-  }
+  const cutoffIso = targetDates(new Date(), PRUNE_BEYOND_DAYS).at(-1)!;
+  for (const def of ALL_DEFS) existing[def.slug].bars = finalizeBars(existing[def.slug].bars, cutoffIso);
+  pruneState(state, cutoffIso);
 
   await mkdir(path.dirname(OUT_PATH), { recursive: true });
   await writeFile(OUT_PATH, JSON.stringify(existing, null, 2));
+  await saveState(STATE_PATH, state);
 
-  console.log(
-    `[index-history] done. fetched=${fetched} notFound(holiday/weekend)=${notFound} failed=${failed}. Wrote ${OUT_PATH}`,
-  );
+  console.log(`[index-history] done. outcomes this run: ${JSON.stringify(tally)}. Latest ${BENCHMARK.slug} bar: ${existing[BENCHMARK.slug].bars.at(-1)?.date ?? "none"}.`);
   for (const def of ALL_DEFS) {
     console.log(`  ${def.slug}: ${existing[def.slug].bars.length} bars`);
   }

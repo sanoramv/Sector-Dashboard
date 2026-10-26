@@ -310,12 +310,44 @@ none are embedded in the client bundle.
 
 ### Keeping data fresh after deployment
 
-`.github/workflows/update-data.yml` runs on a schedule (weekdays, 14:30 UTC / 20:00 IST - a few hours after the
-15:30 IST market close, to give NSE time to publish the day's archive files), fetches the latest index history
-and equity bhavcopy, rebuilds the manifest, runs the test suite as a validation gate, and - only if something
-actually changed - commits `public/data/*` and pushes. GitHub does not fire `push` events for commits made with
-`GITHUB_TOKEN`, so `deploy.yml` instead listens for this workflow (and `update-constituents.yml`) completing
-successfully via `workflow_run`, and redeploys then - the live site picks up the new data without any manual step.
+`.github/workflows/update-data.yml` runs weekdays at 14:30 UTC (20:00 IST, after NSE publishes the day's files)
+and again at 02:30 UTC (08:00 IST, Tue-Sat) to retry anything the evening run missed. GitHub cron is UTC and
+GitHub often starts scheduled runs late.
+
+How a run works (see `scripts/lib/http.mts`, `scripts/lib/refresh-state.mts`):
+
+1. Each fetch step requests only the dates `public/data/refresh-state.json` says are unresolved: the 5 most recent
+   due weekdays until they succeed, plus at most `MAX_BACKFILL_DATES` (default 40) older dates per run.
+2. Every request goes through one shared layer: bounded attempts (4) with a per-attempt timeout (45 s),
+   exponential backoff with jitter, `Retry-After` support, and shared pacing (2 concurrent, >= 400 ms apart).
+   A body is only accepted if it is a well-formed archive for exactly the requested date. A timeout is never
+   treated as a holiday.
+3. Each date's outcome is recorded (`ok`, `missing` = 404, `earlier-session` = NSE served the previous session's
+   bhavcopy, which it does on holidays, `failed`, `invalid`, `incomplete`). Only validated rows are merged;
+   a failed download never removes or replaces existing data.
+4. `build-manifest` judges the run: **complete**, **partial** (recent data current, older gaps or backfill
+   remain), or **failed** (a recent trading day is missing). The verdict and reasons are written to
+   `manifest.json → refresh` and shown in the header ("Pipeline refresh"); `lastCompleteRefreshAt` only advances
+   on a complete run.
+5. Tests run, validated data is committed (rebasing if `main` moved), and **then** `check-refresh` fails the job
+   if the refresh failed - so a red run still publishes whatever good data it got, and a green run means the
+   published data is current.
+
+`deploy.yml` listens for this workflow (and `update-constituents.yml`) completing via `workflow_run`, because GitHub
+does not fire `push` events for commits made with `GITHUB_TOKEN`. It deploys after a `success` **or** `failure`,
+since a failed refresh may still have committed valid data and an honest status.
+
+**Running it manually:** Actions → *Update NSE sector data* → *Run workflow* (branch `main`). Leave
+`max_backfill_dates` at 40 for a normal catch-up; use 300 to re-extract the whole window in one run (needed only
+after the tracked symbol/series set changes - about 2 minutes, ~115 MB). In the log, success looks like
+`[index-history] done. outcomes this run: {"ok":N,...}`, a final `Refresh complete: ... 0 trading day(s) behind`,
+and no `UNRESOLVED` lines.
+
+**NSE's edge drops some User-Agents.** In October 2026 every request with the old UA
+(`...-data-fetch/1.0; +https://github.com`) got no response, which is why the data stopped at 2026-10-09. Testing
+showed UAs containing a URL or the word "fetch" are rejected. The pipeline now sends
+`Mozilla/5.0 (compatible; nse-sector-dashboard/1.0)`; set the `NSE_USER_AGENT` environment variable to override it
+if NSE changes its rules again.
 
 `.github/workflows/update-constituents.yml` is manual-only (`workflow_dispatch`) - run it from the Actions tab
 after NSE announces an index reconstitution.

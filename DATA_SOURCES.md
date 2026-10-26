@@ -14,9 +14,9 @@ The coverage figures describe the dataset audited on 2026-10-13 (latest market d
 | **Produced by** | `scripts/fetch-index-history.mts` |
 | **Fields kept** | Open/High/Low/Close per index, keyed by the file's `Index Date` (the exchange session date, not the fetch time) |
 | **Coverage** | 19 series: NIFTY 500 (benchmark), 15 sectoral indices (`src/config/sectorUniverse.ts`), Midcap 150, Smallcap 250 and Microcap 250 (`src/config/marketCapSegments.ts`). 283 sessions (2025-08-18 → 2026-10-09). NIFTY Chemicals starts 2025-11-10 (227 sessions). |
-| **Window** | Fetches dates missing from the last 420 calendar days; prunes anything older than 450 days |
-| **Refresh** | `update-data.yml`, weekdays 14:30 UTC (20:00 IST). Incremental: only dates missing for at least one series are fetched. |
-| **Missing dates** | A 404 is treated as a holiday/weekend; other failures are logged and retried on the next run. Nothing is interpolated. |
+| **Window** | Weekdays in the last 420 calendar days; prunes anything older than 450 days |
+| **Refresh** | `update-data.yml`, weekdays 14:30 UTC (20:00 IST) plus a 02:30 UTC (08:00 IST) retry. Only dates not yet resolved in `public/data/refresh-state.json` are requested (recent 5 always until OK; at most 40 older per run). |
+| **Missing dates** | Every date's outcome is recorded. HTTP 404 for the index file plus NSE serving the *previous* session's bhavcopy = non-trading day. A timeout, connection error, 429/5xx (after 4 attempts), HTML page or malformed file is recorded as failed/invalid, retried on later runs, and makes the refresh "failed" if it affects one of the 5 most recent due dates. Nothing is interpolated. |
 | **Adjustments** | None needed: index levels are already continuous through corporate actions (NSE maintains the divisor). |
 | **Verified** | NIFTY 500, Bank, IT and Pharma closes matched Yahoo Finance exactly on every common date (2026-10-13 check). |
 | **Limitations** | NIFTY Capital Goods, Power, Construction, Insurance and Telecommunications are not in this file; they are listed as unavailable (`UNAVAILABLE_SECTORS`), never estimated. The other 15 series have not been cross-checked independently. |
@@ -47,12 +47,20 @@ The coverage figures describe the dataset audited on 2026-10-13 (latest market d
 | **Refresh** | **Manual only** (`update-constituents.yml`, `workflow_dispatch`). Run it after each NSE index reconstitution. |
 | **Limitations** | The current lists are applied to all historical dates: in the backtest (survivorship bias) and in the 5-session regime history. No point-in-time history is kept. |
 
-### 4. Manifest — `public/data/manifest.json`
+### 4. Refresh state — `public/data/refresh-state.json`
+
+| | |
+|---|---|
+| **Produced by** | `scripts/fetch-index-history.mts` and `scripts/fetch-stock-bhavcopy.mts` (via `scripts/lib/refresh-state.mts`) |
+| **Contents** | For every due weekday in the window and each archive (index, stocks): `ok`, `missing`, `earlier-session`, `failed`, `invalid` or `incomplete`, with the check time, attempts and detail. Stock entries also record the symbol/series set they were extracted for, so changing it triggers a bounded re-extraction. |
+| **Why** | Decides what the next run fetches (no full re-download on every run) and lets `build-manifest` judge whether the published data is actually current. |
+
+### 5. Manifest — `public/data/manifest.json`
 
 | | |
 |---|---|
 | **Produced by** | `scripts/build-manifest.mts`, the last step of every pipeline run |
-| **Contents** | `latestMarketDate` (newest index bar), `generatedAt` (pipeline run time, UTC), source URLs, and data-quality warnings |
+| **Contents** | `latestMarketDate` (newest index bar), `generatedAt` (when this file was written - not proof data advanced), source URLs, data-quality warnings, and `refresh`: the run's outcome (complete / partial / failed), `latestDueDate`, `tradingDaysBehind`, reasons, and `lastCompleteRefreshAt` (only advanced by complete runs) |
 | **Warnings it raises** | Index series that are behind the latest date; constituents with no history; stale stocks; stocks with missing sessions; suspected corporate-action breaks |
 
 ## Derived figures (computed in the browser, not published by NSE)
@@ -69,6 +77,7 @@ The coverage figures describe the dataset audited on 2026-10-13 (latest market d
 
 - **On page load:** the last successful dataset is read from IndexedDB (database `nse-sector-dashboard`, key `lastSnapshot:v1`) and shown labelled **"cached"**, never "live". One automatic refresh is then attempted.
 - **On refresh:** each fetch adds a `?t=<now>` cache-buster and uses `cache: "no-store"`; there is a 45-second timeout.
+- **Header labels:** *Latest market data* is the newest session in the data; *Pipeline refresh* is the last pipeline run's verdict and when a refresh last fully completed; *Loaded in browser* is when this browser downloaded the published files. "Loaded just now" says nothing about NSE freshness.
 - **Status after a successful fetch:**
   - **"live"**: the fetch succeeded with no warnings.
   - **"partial"**: the manifest has warnings.

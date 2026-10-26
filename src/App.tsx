@@ -72,6 +72,7 @@ export default function App() {
         providerName={market.providerName}
         latestMarketDate={market.dashboardData?.latestMarketDate ?? null}
         lastSuccessfulFetchAt={market.lastSuccessfulFetchAt}
+        refresh={market.rawDataset?.manifest.refresh}
         status={market.status}
         isRefreshing={market.isRefreshing}
         onRefresh={market.refresh}

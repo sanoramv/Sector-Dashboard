@@ -1,0 +1,3451 @@
+{
+ "schemaVersion": 1,
+ "archives": {
+  "index": {
+   "2026-10-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:19.474Z",
+    "attempts": 1,
+    "detail": "19 tracked series"
+   },
+   "2026-10-22": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:19.570Z",
+    "attempts": 1,
+    "detail": "19 tracked series"
+   },
+   "2026-10-21": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:19.859Z",
+    "attempts": 1,
+    "detail": "19 tracked series"
+   },
+   "2026-10-20": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:20.248Z",
+    "attempts": 1
+   },
+   "2026-10-19": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:20.651Z",
+    "attempts": 1,
+    "detail": "19 tracked series"
+   },
+   "2026-10-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:21.056Z",
+    "attempts": 1,
+    "detail": "19 tracked series"
+   },
+   "2026-10-15": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:21.447Z",
+    "attempts": 1,
+    "detail": "19 tracked series"
+   },
+   "2026-10-14": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:21.848Z",
+    "attempts": 1,
+    "detail": "19 tracked series"
+   },
+   "2026-10-13": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:22.423Z",
+    "attempts": 1,
+    "detail": "19 tracked series"
+   },
+   "2026-10-12": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:22.649Z",
+    "attempts": 1,
+    "detail": "19 tracked series"
+   },
+   "2026-10-09": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-10-08": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-10-07": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-10-06": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-10-05": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-10-02": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:23.012Z",
+    "attempts": 1
+   },
+   "2026-10-01": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-30": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-29": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-28": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-25": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-24": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-23": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-22": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-21": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-18": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-17": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-16": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-15": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-14": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:23.413Z",
+    "attempts": 1
+   },
+   "2026-09-11": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-10": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-09": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-08": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-07": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-04": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-03": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-02": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-09-01": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-31": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-28": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-27": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-26": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-25": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-24": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-21": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-20": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-19": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-18": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-17": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-14": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-13": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-12": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-11": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-10": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-07": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-06": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-05": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-04": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-08-03": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-31": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-30": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-29": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-28": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-27": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-24": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-23": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-22": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-21": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-20": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-17": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-16": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-15": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-14": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-13": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-10": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-09": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-08": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-07": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-06": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-03": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-02": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-07-01": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-30": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-29": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-26": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:23.810Z",
+    "attempts": 1
+   },
+   "2026-06-25": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-24": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-23": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-22": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-19": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-18": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-17": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-16": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-15": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-12": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-11": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-10": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-09": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-08": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-05": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-04": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-03": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-02": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-06-01": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-29": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-28": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:24.229Z",
+    "attempts": 1
+   },
+   "2026-05-27": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-26": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-25": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-22": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-21": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-20": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-19": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-18": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-15": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-14": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-13": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-12": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-11": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-08": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-07": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-06": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-05": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-04": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-05-01": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:24.604Z",
+    "attempts": 1
+   },
+   "2026-04-30": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-29": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-28": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-27": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-24": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-23": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-22": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-21": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-20": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-17": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-16": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-15": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-14": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:25.009Z",
+    "attempts": 1
+   },
+   "2026-04-13": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-10": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-09": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-08": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-07": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-06": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-03": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:25.426Z",
+    "attempts": 1
+   },
+   "2026-04-02": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-04-01": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-31": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:25.884Z",
+    "attempts": 1
+   },
+   "2026-03-30": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-27": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-26": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:26.240Z",
+    "attempts": 1
+   },
+   "2026-03-25": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-24": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-23": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-20": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-19": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-18": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-17": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-16": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-13": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-12": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-11": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-10": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-09": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-06": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-05": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-04": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-03-03": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:26.696Z",
+    "attempts": 1
+   },
+   "2026-03-02": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-27": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-26": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-25": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-24": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-23": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-20": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-19": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-18": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-17": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-16": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-13": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-12": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-11": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-10": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-09": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-06": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-05": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-04": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-03": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-02-02": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-30": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-29": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-28": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-27": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-26": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:27.014Z",
+    "attempts": 1
+   },
+   "2026-01-23": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-22": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-21": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-20": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-19": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-16": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-15": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:27.424Z",
+    "attempts": 1
+   },
+   "2026-01-14": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-13": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-12": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-09": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-08": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-07": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-06": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-05": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-02": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2026-01-01": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-31": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-30": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-29": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-26": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-25": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:27.800Z",
+    "attempts": 1
+   },
+   "2025-12-24": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-23": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-22": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-19": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-18": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-17": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-16": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-15": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-12": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-11": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-10": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-09": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-08": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-05": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-04": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-03": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-02": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-12-01": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-28": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-27": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-26": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-25": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-24": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-21": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-20": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-19": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-18": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-17": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-14": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-13": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-12": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-11": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-10": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-07": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-06": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-05": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:28.217Z",
+    "attempts": 1
+   },
+   "2025-11-04": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-11-03": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-31": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-30": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-29": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-28": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-27": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-24": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-23": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-22": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:28.634Z",
+    "attempts": 1
+   },
+   "2025-10-21": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-20": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-17": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-16": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-15": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-14": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-13": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-10": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-09": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-08": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-07": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-06": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-03": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-10-02": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:02:29.012Z",
+    "attempts": 1
+   },
+   "2025-10-01": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-30": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-29": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-26": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-25": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-24": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-23": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-22": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-19": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-18": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-17": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-16": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-15": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-12": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-11": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-10": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-09": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-08": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-05": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-04": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-03": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-02": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-09-01": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-08-29": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-08-28": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-08-26": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-08-25": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-08-22": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-08-21": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-08-20": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-08-19": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   },
+   "2025-08-18": {
+    "status": "ok",
+    "checkedAt": "bootstrap"
+   }
+  },
+  "stocks": {
+   "2026-10-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:47.656Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-10-22": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:48.444Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "754 tracked symbols"
+   },
+   "2026-10-21": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:48.139Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "754 tracked symbols"
+   },
+   "2026-10-20": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:02:49.361Z",
+    "attempts": 1,
+    "detail": "file is for 2026-10-19"
+   },
+   "2026-10-19": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:49.037Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "754 tracked symbols"
+   },
+   "2026-10-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:49.520Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-10-15": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:49.907Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-10-14": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:50.283Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-10-13": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:50.664Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-10-12": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:51.130Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "754 tracked symbols"
+   },
+   "2026-10-09": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:51.491Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-10-08": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:51.930Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-10-07": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:52.287Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-10-06": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:52.702Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-10-05": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:53.350Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-10-02": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:02:53.469Z",
+    "attempts": 1,
+    "detail": "file is for 2026-10-01"
+   },
+   "2026-10-01": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:53.871Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-09-30": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:54.328Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-09-29": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:54.664Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-09-28": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:55.095Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-09-25": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:55.481Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-09-24": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:55.906Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-09-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:56.262Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-09-22": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:56.690Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "753 tracked symbols"
+   },
+   "2026-09-21": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:57.176Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-18": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:57.520Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-17": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:58.024Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:58.365Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-15": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:58.777Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-14": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:02:59.091Z",
+    "attempts": 1,
+    "detail": "file is for 2026-09-11"
+   },
+   "2026-09-11": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:59.486Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-10": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:02:59.970Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-09": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:00.267Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-08": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:00.725Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-07": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:01.091Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-04": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:01.508Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-03": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:02.025Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-02": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:02.595Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-09-01": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:02.715Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-31": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:03.120Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-28": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:03.487Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-27": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:03.918Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-26": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:04.302Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-25": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:04.704Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-24": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:05.090Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-21": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:05.477Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-20": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:05.866Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-19": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:06.342Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-18": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:06.814Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-17": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:07.087Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-14": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:07.469Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-13": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:07.875Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-12": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:08.255Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-11": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:08.693Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-10": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:09.115Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-07": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:09.484Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-06": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:09.877Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-05": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:10.346Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-04": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:10.686Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-08-03": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:11.077Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-31": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:11.505Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-30": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:11.959Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-29": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:12.255Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-28": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:12.703Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-27": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:13.222Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-24": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:13.499Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:13.878Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-22": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:14.311Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-21": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:14.703Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-20": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:15.062Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-17": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:15.477Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:15.951Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-15": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:16.268Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-14": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:16.719Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-13": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:17.110Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-10": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:17.530Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-09": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:17.858Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-08": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:18.287Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-07": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:18.836Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-06": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:19.088Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-03": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:19.466Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-02": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:19.964Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-07-01": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:20.369Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-30": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:20.832Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-29": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:21.188Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-26": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:03:21.524Z",
+    "attempts": 1,
+    "detail": "file is for 2026-06-25"
+   },
+   "2026-06-25": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:21.870Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-24": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:22.470Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:22.740Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-22": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:23.118Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-19": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:23.545Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-18": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:23.893Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-17": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:24.524Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:24.732Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-15": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:25.096Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "752 tracked symbols"
+   },
+   "2026-06-12": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:25.667Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "748 tracked symbols"
+   },
+   "2026-06-11": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:25.882Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "748 tracked symbols"
+   },
+   "2026-06-10": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:26.603Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "748 tracked symbols"
+   },
+   "2026-06-09": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:27.347Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-06-08": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:27.132Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-06-05": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:27.612Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-06-04": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:27.982Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-06-03": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:28.392Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-06-02": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:28.785Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-06-01": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:29.193Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-29": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:29.589Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-28": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:03:30.059Z",
+    "attempts": 1,
+    "detail": "file is for 2026-05-27"
+   },
+   "2026-05-27": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:30.474Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-26": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:30.814Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-25": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:31.210Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-22": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:31.603Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-21": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:31.974Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-20": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:32.572Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-19": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:32.849Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-18": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:33.198Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-15": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:33.829Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-14": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:34.002Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "747 tracked symbols"
+   },
+   "2026-05-13": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:34.423Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "746 tracked symbols"
+   },
+   "2026-05-12": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:35.090Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "746 tracked symbols"
+   },
+   "2026-05-11": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:35.215Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "746 tracked symbols"
+   },
+   "2026-05-08": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:35.612Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "746 tracked symbols"
+   },
+   "2026-05-07": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:36.059Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "745 tracked symbols"
+   },
+   "2026-05-06": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:36.494Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "745 tracked symbols"
+   },
+   "2026-05-05": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:36.794Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-05-04": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:37.326Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "745 tracked symbols"
+   },
+   "2026-05-01": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:03:37.573Z",
+    "attempts": 1,
+    "detail": "file is for 2026-04-30"
+   },
+   "2026-04-30": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:37.993Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-29": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:38.427Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-28": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:38.804Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-27": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:39.165Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "745 tracked symbols"
+   },
+   "2026-04-24": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:39.604Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:39.978Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-22": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:40.416Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-21": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:40.769Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-20": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:41.197Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "745 tracked symbols"
+   },
+   "2026-04-17": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:41.575Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "743 tracked symbols"
+   },
+   "2026-04-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:42.188Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "743 tracked symbols"
+   },
+   "2026-04-15": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:42.388Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "743 tracked symbols"
+   },
+   "2026-04-14": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:03:42.793Z",
+    "attempts": 1,
+    "detail": "file is for 2026-04-13"
+   },
+   "2026-04-13": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:43.216Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-10": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:43.580Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "743 tracked symbols"
+   },
+   "2026-04-09": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:44.000Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-08": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:44.397Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-07": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:44.762Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-06": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:45.197Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-03": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:03:45.587Z",
+    "attempts": 1,
+    "detail": "file is for 2026-04-02"
+   },
+   "2026-04-02": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:45.972Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "744 tracked symbols"
+   },
+   "2026-04-01": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:47.028Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "743 tracked symbols"
+   },
+   "2026-03-31": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:03:47.425Z",
+    "attempts": 1,
+    "detail": "file is for 2026-03-30"
+   },
+   "2026-03-30": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:47.492Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "743 tracked symbols"
+   },
+   "2026-03-27": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:47.908Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-26": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:03:48.337Z",
+    "attempts": 1,
+    "detail": "file is for 2026-03-25"
+   },
+   "2026-03-25": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:48.693Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-24": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:49.168Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:49.482Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-20": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:49.864Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-19": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:50.352Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-18": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:50.691Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-17": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:51.077Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:51.572Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-13": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:51.873Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-12": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:52.313Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-11": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:52.674Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "742 tracked symbols"
+   },
+   "2026-03-10": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:53.112Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "741 tracked symbols"
+   },
+   "2026-03-09": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:53.547Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "741 tracked symbols"
+   },
+   "2026-03-06": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:53.883Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "741 tracked symbols"
+   },
+   "2026-03-05": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:54.324Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "741 tracked symbols"
+   },
+   "2026-03-04": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:54.687Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "740 tracked symbols"
+   },
+   "2026-03-03": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:03:55.125Z",
+    "attempts": 1,
+    "detail": "file is for 2026-03-02"
+   },
+   "2026-03-02": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:55.481Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "740 tracked symbols"
+   },
+   "2026-02-27": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:55.877Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "739 tracked symbols"
+   },
+   "2026-02-26": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:56.264Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "738 tracked symbols"
+   },
+   "2026-02-25": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:56.802Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "738 tracked symbols"
+   },
+   "2026-02-24": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:57.087Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "738 tracked symbols"
+   },
+   "2026-02-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:57.557Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "738 tracked symbols"
+   },
+   "2026-02-20": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:57.880Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "738 tracked symbols"
+   },
+   "2026-02-19": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:58.378Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "738 tracked symbols"
+   },
+   "2026-02-18": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:58.651Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "738 tracked symbols"
+   },
+   "2026-02-17": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:59.103Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "738 tracked symbols"
+   },
+   "2026-02-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:59.502Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "738 tracked symbols"
+   },
+   "2026-02-13": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:03:59.907Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "736 tracked symbols"
+   },
+   "2026-02-12": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:00.257Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "736 tracked symbols"
+   },
+   "2026-02-11": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:01.330Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "736 tracked symbols"
+   },
+   "2026-02-10": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:01.053Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "736 tracked symbols"
+   },
+   "2026-02-09": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:01.473Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "736 tracked symbols"
+   },
+   "2026-02-06": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:02.102Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "735 tracked symbols"
+   },
+   "2026-02-05": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:02.353Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "735 tracked symbols"
+   },
+   "2026-02-04": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:02.810Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "735 tracked symbols"
+   },
+   "2026-02-03": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:03.102Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "735 tracked symbols"
+   },
+   "2026-02-02": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:03.521Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "734 tracked symbols"
+   },
+   "2026-01-30": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:03.885Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "734 tracked symbols"
+   },
+   "2026-01-29": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:04.286Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "734 tracked symbols"
+   },
+   "2026-01-28": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:04.674Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "734 tracked symbols"
+   },
+   "2026-01-27": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:05.129Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "733 tracked symbols"
+   },
+   "2026-01-26": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:04:05.482Z",
+    "attempts": 1,
+    "detail": "file is for 2026-01-23"
+   },
+   "2026-01-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:06.007Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "733 tracked symbols"
+   },
+   "2026-01-22": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:06.310Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "732 tracked symbols"
+   },
+   "2026-01-21": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:06.778Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "732 tracked symbols"
+   },
+   "2026-01-20": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:07.136Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "731 tracked symbols"
+   },
+   "2026-01-19": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:07.618Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "731 tracked symbols"
+   },
+   "2026-01-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:07.931Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2026-01-15": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:04:08.376Z",
+    "attempts": 1,
+    "detail": "file is for 2026-01-14"
+   },
+   "2026-01-14": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:08.704Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2026-01-13": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:09.131Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2026-01-12": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:09.524Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2026-01-09": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:09.919Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2026-01-08": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:10.323Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2026-01-07": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:10.748Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2026-01-06": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:11.125Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2026-01-05": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:11.528Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2026-01-02": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:11.950Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2026-01-01": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:12.358Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2025-12-31": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:12.714Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2025-12-30": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:13.153Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2025-12-29": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:13.504Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2025-12-26": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:13.881Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2025-12-25": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:04:14.241Z",
+    "attempts": 1
+   },
+   "2025-12-24": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:14.832Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2025-12-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:15.218Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2025-12-22": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:15.511Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2025-12-19": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:15.991Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "730 tracked symbols"
+   },
+   "2025-12-18": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:16.379Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "729 tracked symbols"
+   },
+   "2025-12-17": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:16.784Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "729 tracked symbols"
+   },
+   "2025-12-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:17.122Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "727 tracked symbols"
+   },
+   "2025-12-15": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:17.542Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "727 tracked symbols"
+   },
+   "2025-12-12": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:17.901Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "726 tracked symbols"
+   },
+   "2025-12-11": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:18.445Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "726 tracked symbols"
+   },
+   "2025-12-10": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:18.825Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "726 tracked symbols"
+   },
+   "2025-12-09": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:19.155Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "724 tracked symbols"
+   },
+   "2025-12-08": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:19.562Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "724 tracked symbols"
+   },
+   "2025-12-05": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:20.043Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "724 tracked symbols"
+   },
+   "2025-12-04": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:20.268Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "724 tracked symbols"
+   },
+   "2025-12-03": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:20.657Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "724 tracked symbols"
+   },
+   "2025-12-02": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:21.177Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "724 tracked symbols"
+   },
+   "2025-12-01": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:21.510Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "724 tracked symbols"
+   },
+   "2025-11-28": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:21.899Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "724 tracked symbols"
+   },
+   "2025-11-27": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:22.373Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "723 tracked symbols"
+   },
+   "2025-11-26": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:22.691Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "723 tracked symbols"
+   },
+   "2025-11-25": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:23.091Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "723 tracked symbols"
+   },
+   "2025-11-24": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:23.511Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "723 tracked symbols"
+   },
+   "2025-11-21": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:23.914Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "722 tracked symbols"
+   },
+   "2025-11-20": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:24.298Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "721 tracked symbols"
+   },
+   "2025-11-19": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:24.697Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "720 tracked symbols"
+   },
+   "2025-11-18": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:25.067Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "719 tracked symbols"
+   },
+   "2025-11-17": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:25.548Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "717 tracked symbols"
+   },
+   "2025-11-14": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:25.868Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "717 tracked symbols"
+   },
+   "2025-11-13": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:26.283Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "716 tracked symbols"
+   },
+   "2025-11-12": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:26.706Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "716 tracked symbols"
+   },
+   "2025-11-11": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:27.067Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "714 tracked symbols"
+   },
+   "2025-11-10": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:27.467Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "714 tracked symbols"
+   },
+   "2025-11-07": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:27.868Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "712 tracked symbols"
+   },
+   "2025-11-06": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:28.456Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "711 tracked symbols"
+   },
+   "2025-11-05": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:04:28.670Z",
+    "attempts": 1,
+    "detail": "file is for 2025-11-04"
+   },
+   "2025-11-04": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:29.087Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "711 tracked symbols"
+   },
+   "2025-11-03": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:29.485Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "711 tracked symbols"
+   },
+   "2025-10-31": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:29.848Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "711 tracked symbols"
+   },
+   "2025-10-30": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:30.297Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "711 tracked symbols"
+   },
+   "2025-10-29": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:30.664Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "711 tracked symbols"
+   },
+   "2025-10-28": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:31.108Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "711 tracked symbols"
+   },
+   "2025-10-27": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:31.459Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "711 tracked symbols"
+   },
+   "2025-10-24": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:31.867Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "711 tracked symbols"
+   },
+   "2025-10-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:32.328Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "710 tracked symbols"
+   },
+   "2025-10-22": {
+    "status": "earlier-session",
+    "checkedAt": "2026-10-26T06:04:32.691Z",
+    "attempts": 1,
+    "detail": "file is for 2025-10-21"
+   },
+   "2025-10-21": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:33.093Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "710 tracked symbols"
+   },
+   "2025-10-20": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:33.617Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "710 tracked symbols"
+   },
+   "2025-10-17": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:33.854Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "710 tracked symbols"
+   },
+   "2025-10-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:34.604Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "709 tracked symbols"
+   },
+   "2025-10-15": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:34.757Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "707 tracked symbols"
+   },
+   "2025-10-14": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:35.070Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "707 tracked symbols"
+   },
+   "2025-10-13": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:35.598Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "706 tracked symbols"
+   },
+   "2025-10-10": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:35.872Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "705 tracked symbols"
+   },
+   "2025-10-09": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:36.259Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "704 tracked symbols"
+   },
+   "2025-10-08": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:36.690Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "704 tracked symbols"
+   },
+   "2025-10-07": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:37.119Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "704 tracked symbols"
+   },
+   "2025-10-06": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:37.461Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "704 tracked symbols"
+   },
+   "2025-10-03": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:37.860Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "704 tracked symbols"
+   },
+   "2025-10-02": {
+    "status": "missing",
+    "checkedAt": "2026-10-26T06:04:38.173Z",
+    "attempts": 1
+   },
+   "2025-10-01": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:38.668Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "704 tracked symbols"
+   },
+   "2025-09-30": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:39.067Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "703 tracked symbols"
+   },
+   "2025-09-29": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:39.477Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "703 tracked symbols"
+   },
+   "2025-09-26": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:39.905Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "702 tracked symbols"
+   },
+   "2025-09-25": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:40.270Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "702 tracked symbols"
+   },
+   "2025-09-24": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:40.733Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "702 tracked symbols"
+   },
+   "2025-09-23": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:41.056Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "702 tracked symbols"
+   },
+   "2025-09-22": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:41.470Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "702 tracked symbols"
+   },
+   "2025-09-19": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:41.916Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "702 tracked symbols"
+   },
+   "2025-09-18": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:42.279Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "702 tracked symbols"
+   },
+   "2025-09-17": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:42.779Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "702 tracked symbols"
+   },
+   "2025-09-16": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:43.063Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "700 tracked symbols"
+   },
+   "2025-09-15": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:43.534Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "700 tracked symbols"
+   },
+   "2025-09-12": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:43.933Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "700 tracked symbols"
+   },
+   "2025-09-11": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:44.282Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "699 tracked symbols"
+   },
+   "2025-09-10": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:44.708Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "699 tracked symbols"
+   },
+   "2025-09-09": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:45.096Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "699 tracked symbols"
+   },
+   "2025-09-08": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:45.486Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "699 tracked symbols"
+   },
+   "2025-09-05": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:45.906Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "699 tracked symbols"
+   },
+   "2025-09-04": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:46.297Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "699 tracked symbols"
+   },
+   "2025-09-03": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:46.751Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "698 tracked symbols"
+   },
+   "2025-09-02": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:47.063Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "698 tracked symbols"
+   },
+   "2025-09-01": {
+    "status": "ok",
+    "checkedAt": "2026-10-26T06:04:47.490Z",
+    "attempts": 1,
+    "symbolSetHash": "98ce0524a39d636f",
+    "detail": "698 tracked symbols"
+   },
+   "2025-08-29": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-28": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-26": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-25": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-22": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-21": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-20": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-19": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-18": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-14": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-13": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-12": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-11": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-08": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-07": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-06": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-05": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   },
+   "2025-08-04": {
+    "status": "ok",
+    "checkedAt": "bootstrap",
+    "symbolSetHash": "bootstrap-pre-refresh-state"
+   }
+  }
+ }
+}

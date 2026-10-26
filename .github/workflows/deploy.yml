@@ -22,8 +22,14 @@ concurrency:
 
 jobs:
   build:
-    # Skip redeploying after a data workflow that failed (and so pushed nothing).
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    # A data run that ends "failure" may still have committed valid data plus an
+    # honest "refresh failed" status (check-refresh fails the job AFTER the
+    # commit), so deploy after success or failure. Redeploying unchanged main
+    # is harmless; cancelled/skipped runs are ignored.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success' ||
+      github.event.workflow_run.conclusion == 'failure'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

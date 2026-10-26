@@ -1,4 +1,5 @@
 import type { DataStatus } from "../lib/providers/types";
+import type { RefreshStatus } from "../types/dataset";
 import { formatDateHuman, formatDateTimeHuman, formatRelativeToNow } from "../lib/format";
 import { StatusBadge } from "./StatusBadge";
 
@@ -6,6 +7,8 @@ export interface HeaderProps {
   providerName: string;
   latestMarketDate: string | null;
   lastSuccessfulFetchAt: string | null;
+  /** The pipeline's own verdict on its last run (from manifest.json); undefined for older manifests. */
+  refresh?: RefreshStatus;
   status: DataStatus | "unavailable";
   isRefreshing: boolean;
   onRefresh: () => void;
@@ -17,6 +20,7 @@ export function Header({
   providerName,
   latestMarketDate,
   lastSuccessfulFetchAt,
+  refresh,
   status,
   isRefreshing,
   onRefresh,
@@ -55,9 +59,29 @@ export function Header({
             <div className="text-faint">Latest market data</div>
             <div className="num">{formatDateHuman(latestMarketDate)}</div>
           </div>
+          {refresh && (
+            <div>
+              <div className="text-faint">Pipeline refresh</div>
+              <div
+                className={refresh.outcome === "complete" ? "" : refresh.outcome === "partial" ? "text-muted" : "text-neg"}
+                title={
+                  `Last pipeline run: ${formatDateTimeHuman(refresh.evaluatedAt)} (${refresh.outcome}).` +
+                  `\nLast complete refresh: ${refresh.lastCompleteRefreshAt ? formatDateTimeHuman(refresh.lastCompleteRefreshAt) : "never"}.` +
+                  (refresh.reasons.length > 0 ? `\n${refresh.reasons.join("\n")}` : "")
+                }
+              >
+                {refresh.outcome === "complete"
+                  ? `Complete · ${formatRelativeToNow(refresh.evaluatedAt)}`
+                  : `${refresh.outcome === "failed" ? "Failed" : "Partial"} · last complete ${formatRelativeToNow(refresh.lastCompleteRefreshAt)}`}
+              </div>
+            </div>
+          )}
           <div>
-            <div className="text-faint">Last fetched</div>
-            <div className="num" title={formatDateTimeHuman(lastSuccessfulFetchAt)}>
+            <div className="text-faint">Loaded in browser</div>
+            <div
+              className="num"
+              title={`When this browser last downloaded the published data files: ${formatDateTimeHuman(lastSuccessfulFetchAt)}. This is not when NSE data was last retrieved - see Pipeline refresh.`}
+            >
               {formatRelativeToNow(lastSuccessfulFetchAt)}
             </div>
           </div>

@@ -26,142 +26,138 @@
  * non-trading cases (dummy corporate-action placeholder symbols, and
  * constituent-list entries ahead of their actual trading start).
  *
- * Incremental like fetch-index-history.mts: fetches only missing dates,
- * merges with the existing public/data/stocks.json, prunes anything older
- * than the backfill window.
+ * Which dates to request, and what happened to each, is tracked in
+ * public/data/refresh-state.json (see scripts/lib/refresh-state.mts). A date
+ * is re-extracted when it was never resolved, previously failed, or was
+ * ingested for a different symbol/series set (so adding a series or symbols
+ * backfills them, in bounded batches) - not, as before, whenever any one
+ * symbol lacks it, which re-downloaded every date on every run because
+ * placeholder symbols never have rows.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { SectorConstituents, StockSeries } from "../src/types/market.ts";
-import { fetchTextOrNull, mapWithConcurrency } from "./lib/http.mts";
-import { toDdMmYyyy, toIsoDate, nseMonthNameDateToIso, weekdaysBack } from "./lib/dates.mts";
-import { parseCsvObjects } from "./lib/csv.mts";
+import type { StockSeries } from "../src/types/market.ts";
+import { createPacer, fetchArchive, mapWithConcurrency } from "./lib/http.mts";
+import { toDdMmYyyy } from "./lib/dates.mts";
+import { validateArchiveText } from "./lib/archives.mts";
+import { finalizeBars, ingestStockOutcome } from "./lib/ingest.mts";
+import { TRACKED_SERIES, loadRequiredSymbols } from "./lib/series.mts";
+import {
+  BOOTSTRAP_HASH,
+  emptyState,
+  loadState,
+  planFetch,
+  pruneState,
+  saveState,
+  symbolSetHash,
+  targetDates,
+  type RefreshState,
+} from "./lib/refresh-state.mts";
 
 // 52-week-high distance needs ~365 calendar days of history (see
 // distanceFromHigh.ts); 420 days of backfill matches the index-history
 // window and gives headroom for holidays while keeping the daily download
-// volume (one ~340KB file per date) manageable.
+// volume (one ~400KB file per date) manageable.
 const BACKFILL_DAYS = 420;
 const PRUNE_BEYOND_DAYS = 450;
-const CONSTITUENTS_PATH = path.resolve("public/data/constituents.json");
 const OUT_PATH = path.resolve("public/data/stocks.json");
-const CONCURRENCY = 4;
-// "EQ" covers ordinary equity shares; "RR" covers REITs/InvITs (e.g. BAGMANE,
-// BIRET, EMBASSY), which are legitimate index constituents but trade under a
-// different NSE series code, not "EQ". "BE"/"BZ" are NSE's trade-for-trade
-// series: a stock placed under surveillance moves from EQ to BE/BZ and keeps
-// trading there. The 2026-10 audit found NIFTY 500 constituents (HFCL,
-// MTARTECH, STLTECH, SCHNEIDER) trading normally - verified against an
-// independent source - while their EQ rows stopped, which an EQ/RR-only
-// filter silently turned into stale or gappy series. A stock is only ever in
-// one of these series on a given day, so no date gets two rows.
-const TRACKED_SERIES = new Set(["EQ", "RR", "BE", "BZ"]);
-
-async function loadRequiredSymbols(): Promise<Set<string>> {
-  const text = await readFile(CONSTITUENTS_PATH, "utf-8");
-  const constituents: Record<string, SectorConstituents> = JSON.parse(text);
-  const symbols = new Set<string>();
-  for (const sector of Object.values(constituents)) {
-    for (const c of sector.constituents) symbols.add(c.symbol);
-  }
-  return symbols;
-}
+const STATE_PATH = path.resolve("public/data/refresh-state.json");
+const CONCURRENCY = 2;
+const MIN_REQUEST_INTERVAL_MS = 400;
+const MAX_BACKFILL_DATES = Number(process.env.MAX_BACKFILL_DATES ?? 40);
+// Which NSE series are kept (EQ, RR, BE, BZ) is defined in scripts/lib/series.mts.
+/** A validated file must contain at least this share of the symbols expected to trade that day, or it is not merged. */
+const MIN_SYMBOL_COVERAGE = 0.8;
 
 async function loadExisting(): Promise<Record<string, StockSeries>> {
+  let text: string;
   try {
-    return JSON.parse(await readFile(OUT_PATH, "utf-8"));
-  } catch {
-    return {};
+    text = await readFile(OUT_PATH, "utf-8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return {};
+    throw err;
   }
+  return JSON.parse(text); // a corrupt file throws: never silently restart from empty
 }
 
-function buildUrl(date: Date): string {
-  return `https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_${toDdMmYyyy(date)}.csv`;
+function buildUrl(iso: string): string {
+  return `https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_${toDdMmYyyy(new Date(`${iso}T00:00:00Z`))}.csv`;
+}
+
+/** First run with the state file: any date some stock has a bar for was ingested before, under the pre-BE/BZ rules. */
+function bootstrapFrom(existing: Record<string, StockSeries>, base: () => RefreshState): () => RefreshState {
+  return () => {
+    const state = base();
+    for (const series of Object.values(existing)) {
+      for (const b of series.bars) state.archives.stocks[b.date] ??= { status: "ok", checkedAt: "bootstrap", symbolSetHash: BOOTSTRAP_HASH };
+    }
+    return state;
+  };
 }
 
 async function main() {
-  const requiredSymbols = await loadRequiredSymbols();
-  console.log(`[stocks] tracking ${requiredSymbols.size} unique symbols across the sector universe.`);
+  const requiredSymbols = await loadRequiredSymbols(path.resolve("public/data/constituents.json"));
+  const hash = symbolSetHash(requiredSymbols, TRACKED_SERIES);
+  console.log(`[stocks] tracking ${requiredSymbols.size} unique symbols in series ${[...TRACKED_SERIES].join("/")} (set ${hash}).`);
 
   const existing = await loadExisting();
   for (const symbol of requiredSymbols) {
     existing[symbol] ??= { symbol, bars: [] };
   }
+  // The index step normally creates the state file first; bootstrap covers running this script alone.
+  const state = await loadState(STATE_PATH, bootstrapFrom(existing, emptyState));
+  if (Object.keys(state.archives.stocks).length === 0) bootstrapFrom(existing, () => state)();
 
-  const targetDates = weekdaysBack(BACKFILL_DAYS);
-  // A date needs fetching if ANY tracked symbol is missing it - checked
-  // per-symbol, not via a single sample symbol. This matters whenever the
-  // required-symbol set grows (e.g. a newly-added market-cap segment like
-  // Microcap 250 adds ~250 symbols that have never been fetched before): a
-  // single-sample check would see "today" already covered for long-tracked
-  // symbols and wrongly skip the full historical backfill the new symbols
-  // still need, leaving them with near-empty price history.
-  const targetIsoDates = targetDates.map(toIsoDate);
-  const missingIsoDates = new Set<string>();
-  for (const symbol of requiredSymbols) {
-    const haveForSymbol = new Set(existing[symbol]?.bars.map((b) => b.date) ?? []);
-    for (const iso of targetIsoDates) {
-      if (!haveForSymbol.has(iso)) missingIsoDates.add(iso);
-    }
-  }
-  const missingDates = targetDates.filter((d) => missingIsoDates.has(toIsoDate(d)));
+  const targets = targetDates(new Date(), BACKFILL_DAYS);
+  const plan = planFetch("stocks", targets, state, { maxBackfill: MAX_BACKFILL_DATES, currentSymbolSetHash: hash });
+  const dates = [...plan.recent, ...plan.backfill];
+  console.log(
+    `[stocks] latest due date ${targets[0]}; fetching ${plan.recent.length} recent + ${plan.backfill.length} backfill date(s)` +
+      (plan.deferred > 0 ? `; ${plan.deferred} older date(s) deferred to later runs (raise MAX_BACKFILL_DATES to catch up faster)` : ""),
+  );
 
-  console.log(`[stocks] ${missingDates.length} of ${targetDates.length} target dates need fetching.`);
+  // Symbols expected to trade on a date: those whose existing history spans it
+  // (or is current, for dates newer than our data). Used to reject a file that
+  // validates structurally but lacks most of our universe.
+  const spans = Object.values(existing)
+    .filter((s) => s.bars.length > 0)
+    .map((s) => ({ first: s.bars[0].date, last: s.bars[s.bars.length - 1].date }));
+  const latestStockDate = spans.reduce((m, s) => (s.last > m ? s.last : m), "");
+  const expectedOn = (iso: string) => spans.filter((s) => s.first <= iso && s.last >= (iso < latestStockDate ? iso : latestStockDate)).length;
 
-  let fetched = 0;
-  let notFound = 0;
-  let failed = 0;
+  const pacer = createPacer(MIN_REQUEST_INTERVAL_MS);
+  const tally: Record<string, number> = {};
   const rowsPerSeries = new Map<string, number>();
-
-  await mapWithConcurrency(missingDates, CONCURRENCY, async (date) => {
-    const url = buildUrl(date);
-    let text: string | null;
-    try {
-      text = await fetchTextOrNull(url, { timeoutMs: 30_000 });
-    } catch (err) {
-      failed += 1;
-      console.warn(`[stocks] failed ${toIsoDate(date)}: ${String(err)}`);
-      return;
+  await mapWithConcurrency(dates, CONCURRENCY, async (iso) => {
+    const outcome = await fetchArchive(buildUrl(iso), { label: `stocks ${iso}`, validate: (t) => validateArchiveText("stocks", t), pacer });
+    const entry = ingestStockOutcome(existing, state, iso, outcome, {
+      requiredSymbols,
+      trackedSeries: TRACKED_SERIES,
+      symbolSetHash: hash,
+      expectedSymbols: expectedOn(iso),
+      minCoverage: MIN_SYMBOL_COVERAGE,
+      checkedAt: new Date().toISOString(),
+      rowsPerSeries,
+    });
+    if (entry.status === "failed" || entry.status === "invalid" || entry.status === "incomplete") {
+      console.warn(`[stocks] UNRESOLVED ${iso}: ${entry.status} (${entry.detail}) after ${entry.attempts} attempt(s) - existing data kept`);
     }
-    if (text === null) {
-      notFound += 1;
-      return;
-    }
-    fetched += 1;
-
-    const rows = parseCsvObjects(text);
-    for (const row of rows) {
-      if (!TRACKED_SERIES.has(row["SERIES"])) continue;
-      const symbol = row["SYMBOL"];
-      if (!requiredSymbols.has(symbol)) continue;
-      const bar = {
-        date: nseMonthNameDateToIso(row["DATE1"]),
-        open: Number(row["OPEN_PRICE"]),
-        high: Number(row["HIGH_PRICE"]),
-        low: Number(row["LOW_PRICE"]),
-        close: Number(row["CLOSE_PRICE"]),
-      };
-      if (![bar.open, bar.high, bar.low, bar.close].every((v) => Number.isFinite(v) && v > 0)) continue;
-      existing[symbol].bars.push(bar);
-      rowsPerSeries.set(row["SERIES"], (rowsPerSeries.get(row["SERIES"]) ?? 0) + 1);
-    }
+    const s = state.archives.stocks[iso].status;
+    tally[s] = (tally[s] ?? 0) + 1;
   });
 
-  const cutoffIso = toIsoDate(weekdaysBack(PRUNE_BEYOND_DAYS)[weekdaysBack(PRUNE_BEYOND_DAYS).length - 1]);
-  for (const symbol of Object.keys(existing)) {
-    const dedup = new Map(existing[symbol].bars.map((b) => [b.date, b]));
-    existing[symbol].bars = [...dedup.values()]
-      .filter((b) => b.date >= cutoffIso)
-      .sort((a, b) => a.date.localeCompare(b.date));
-  }
+  const cutoffIso = targetDates(new Date(), PRUNE_BEYOND_DAYS).at(-1)!;
+  // Later bars for the same date win: a re-extracted date replaces the old row.
+  for (const symbol of Object.keys(existing)) existing[symbol].bars = finalizeBars(existing[symbol].bars, cutoffIso);
+  pruneState(state, cutoffIso);
 
   await mkdir(path.dirname(OUT_PATH), { recursive: true });
   await writeFile(OUT_PATH, JSON.stringify(existing));
+  await saveState(STATE_PATH, state);
 
   const withData = Object.values(existing).filter((s) => s.bars.length > 0).length;
-  console.log(
-    `[stocks] done. fetched=${fetched} notFound(holiday/weekend)=${notFound} failed=${failed}. ${withData}/${requiredSymbols.size} symbols have data. Wrote ${OUT_PATH}`,
-  );
+  const newest = Object.values(existing).reduce((m, s) => (s.bars.length && s.bars[s.bars.length - 1].date > m ? s.bars[s.bars.length - 1].date : m), "");
+  console.log(`[stocks] done. outcomes this run: ${JSON.stringify(tally)}. ${withData}/${requiredSymbols.size} symbols have data; newest bar ${newest || "none"}.`);
   console.log(`[stocks] rows kept this run by series: ${JSON.stringify(Object.fromEntries(rowsPerSeries))}`);
 }
 

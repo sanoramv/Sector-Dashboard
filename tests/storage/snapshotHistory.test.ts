@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { summarizeDashboardData } from "../../src/lib/storage/snapshotHistory";
 import { buildDashboardData } from "../../src/lib/dashboard";
 import { DEFAULT_SETTINGS } from "../../src/types/config";
@@ -54,8 +54,16 @@ describe("summarizeDashboardData", () => {
   });
 
   it("is deterministic for identical inputs", () => {
-    const dataset = buildMinimalDataset();
-    const dashboardData = buildDashboardData(dataset, DEFAULT_SETTINGS);
-    expect(summarizeDashboardData(dashboardData)).toEqual(summarizeDashboardData(dashboardData));
+    // recordedAt comes from the clock; freeze it so two calls a millisecond
+    // apart can't differ (this flaked in CI and blocked deploys in Oct 2026).
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-10-26T10:00:00Z"));
+    try {
+      const dataset = buildMinimalDataset();
+      const dashboardData = buildDashboardData(dataset, DEFAULT_SETTINGS);
+      expect(summarizeDashboardData(dashboardData)).toEqual(summarizeDashboardData(dashboardData));
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

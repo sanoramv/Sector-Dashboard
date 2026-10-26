@@ -20,9 +20,10 @@ Any failure here means stop; the manual checks below don't matter until it's fix
 | # | Check | How | Expected |
 |---|---|---|---|
 | 1.1 | The latest market date is the last NSE session | Compare `manifest.json → latestMarketDate` with NSE's trading calendar | Equals the last completed session before the pipeline ran (20:00 IST weekdays) |
-| 1.2 | The pipeline ran | GitHub → Actions → *Update NSE sector data* | Last run succeeded within one weekday |
+| 1.2 | The pipeline ran and was complete | GitHub → Actions → *Update NSE sector data*; header *Pipeline refresh* | Last run green within one weekday; log ends `Refresh complete: ... 0 trading day(s) behind`; no `UNRESOLVED` lines. A red run lists the unresolved dates and reasons. |
 | 1.3 | The deploy followed it | Actions → *Build and deploy to GitHub Pages* (trigger `workflow_run`) | Ran after 1.2 and succeeded |
-| 1.4 | Trade-for-trade series are captured | Log line `[stocks] rows kept this run by series` in the 1.2 run | Non-zero `BE` and/or `BZ` counts, whenever a backfill happened that run |
+| 1.4 | Trade-for-trade series are captured | Log line `[stocks] rows kept this run by series` in the 1.2 run | Non-zero `BE` (and usually `BZ`) counts on any run that fetched a trading day (2026-10-23: HFCL is in `BE`) |
+| 1.4b | Requests are not being dropped | `[http] ... attempt` lines in the 1.2 run | First-attempt `HTTP 200 ... valid` or `HTTP 404`. Repeated `timeout`/`connection` lines mean NSE is dropping requests again - check the User-Agent (`NSE_USER_AGENT`). |
 | 1.5 | Homepage warnings are understood | Homepage → *Data quality warnings* | Every listed symbol has a known reason (placeholder, not yet trading, stale, gap, or corporate-action break). New stale or gap symbols → investigate. |
 | 1.6 | The live site is built, not raw source | Open the site; *View source* | `<script src="/Sector-Dashboard/assets/index-*.js">`, not `/src/main.tsx` |
 
