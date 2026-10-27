@@ -37,11 +37,13 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { StockSeries } from "../src/types/market.ts";
+import type { ActivityRow, StockActivityFile } from "../src/types/activity.ts";
+import { decodeAllActivity, encodeActivity } from "../src/lib/activity.ts";
 import { createPacer, fetchArchive, mapWithConcurrency } from "./lib/http.mts";
 import { toDdMmYyyy } from "./lib/dates.mts";
 import { validateArchiveText } from "./lib/archives.mts";
 import { finalizeBars, ingestStockOutcome } from "./lib/ingest.mts";
-import { TRACKED_SERIES, loadRequiredSymbols } from "./lib/series.mts";
+import { STOCK_EXTRACT_FIELDS, TRACKED_SERIES, loadRequiredSymbols } from "./lib/series.mts";
 import {
   BOOTSTRAP_HASH,
   emptyState,
@@ -61,6 +63,7 @@ import {
 const BACKFILL_DAYS = 420;
 const PRUNE_BEYOND_DAYS = 450;
 const OUT_PATH = path.resolve("public/data/stocks.json");
+const ACTIVITY_PATH = path.resolve("public/data/stock-activity.json");
 const STATE_PATH = path.resolve("public/data/refresh-state.json");
 const CONCURRENCY = 2;
 const MIN_REQUEST_INTERVAL_MS = 400;
@@ -80,6 +83,22 @@ async function loadExisting(): Promise<Record<string, StockSeries>> {
   return JSON.parse(text); // a corrupt file throws: never silently restart from empty
 }
 
+/** Volume/turnover/delivery rows already published (see src/types/activity.ts). A corrupt file throws - it is never silently reset. */
+async function loadExistingActivity(): Promise<Record<string, ActivityRow[]>> {
+  let text: string;
+  try {
+    text = await readFile(ACTIVITY_PATH, "utf-8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return {};
+    throw err;
+  }
+  const file = JSON.parse(text) as StockActivityFile;
+  if (file.schemaVersion !== 1 || !Array.isArray(file.dates) || typeof file.symbols !== "object") {
+    throw new Error(`${ACTIVITY_PATH} has an unexpected shape - refusing to overwrite it`);
+  }
+  return decodeAllActivity(file);
+}
+
 function buildUrl(iso: string): string {
   return `https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_${toDdMmYyyy(new Date(`${iso}T00:00:00Z`))}.csv`;
 }
@@ -97,10 +116,12 @@ function bootstrapFrom(existing: Record<string, StockSeries>, base: () => Refres
 
 async function main() {
   const requiredSymbols = await loadRequiredSymbols(path.resolve("public/data/constituents.json"));
-  const hash = symbolSetHash(requiredSymbols, TRACKED_SERIES);
+  const hash = symbolSetHash(requiredSymbols, TRACKED_SERIES, STOCK_EXTRACT_FIELDS);
   console.log(`[stocks] tracking ${requiredSymbols.size} unique symbols in series ${[...TRACKED_SERIES].join("/")} (set ${hash}).`);
 
   const existing = await loadExisting();
+  const activity = await loadExistingActivity();
+  const activitySkipped = { count: 0 };
   for (const symbol of requiredSymbols) {
     existing[symbol] ??= { symbol, bars: [] };
   }
@@ -138,6 +159,8 @@ async function main() {
       minCoverage: MIN_SYMBOL_COVERAGE,
       checkedAt: new Date().toISOString(),
       rowsPerSeries,
+      activity,
+      activitySkipped,
     });
     if (entry.status === "failed" || entry.status === "invalid" || entry.status === "incomplete") {
       console.warn(`[stocks] UNRESOLVED ${iso}: ${entry.status} (${entry.detail}) after ${entry.attempts} attempt(s) - existing data kept`);
@@ -149,16 +172,23 @@ async function main() {
   const cutoffIso = targetDates(new Date(), PRUNE_BEYOND_DAYS).at(-1)!;
   // Later bars for the same date win: a re-extracted date replaces the old row.
   for (const symbol of Object.keys(existing)) existing[symbol].bars = finalizeBars(existing[symbol].bars, cutoffIso);
+  for (const symbol of Object.keys(activity)) activity[symbol] = finalizeBars(activity[symbol], cutoffIso);
   pruneState(state, cutoffIso);
 
   await mkdir(path.dirname(OUT_PATH), { recursive: true });
   await writeFile(OUT_PATH, JSON.stringify(existing));
+  await writeFile(ACTIVITY_PATH, JSON.stringify(encodeActivity(activity)));
   await saveState(STATE_PATH, state);
 
   const withData = Object.values(existing).filter((s) => s.bars.length > 0).length;
   const newest = Object.values(existing).reduce((m, s) => (s.bars.length && s.bars[s.bars.length - 1].date > m ? s.bars[s.bars.length - 1].date : m), "");
   console.log(`[stocks] done. outcomes this run: ${JSON.stringify(tally)}. ${withData}/${requiredSymbols.size} symbols have data; newest bar ${newest || "none"}.`);
   console.log(`[stocks] rows kept this run by series: ${JSON.stringify(Object.fromEntries(rowsPerSeries))}`);
+  const activityDates = new Set(Object.values(activity).flatMap((rows) => rows.map((r) => r.date)));
+  console.log(
+    `[stocks] activity (volume/turnover/delivery): ${activityDates.size} date(s) across ${Object.keys(activity).length} symbols` +
+      (activitySkipped.count > 0 ? `; ${activitySkipped.count} row(s) this run had unparseable activity columns (bar kept, no activity recorded)` : ""),
+  );
 }
 
 main().catch((err) => {

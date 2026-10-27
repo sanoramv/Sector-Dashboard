@@ -13,6 +13,7 @@
     "fetch:constituents": "tsx scripts/fetch-constituents.mts",
     "fetch:index-history": "tsx scripts/fetch-index-history.mts",
     "fetch:stocks": "tsx scripts/fetch-stock-bhavcopy.mts",
+    "fetch:announcements": "tsx scripts/fetch-announcements.mts",
     "fetch:all": "npm run fetch:index-history && npm run fetch:stocks && npm run build:manifest",
     "build:manifest": "tsx scripts/build-manifest.mts",
     "check:refresh": "tsx scripts/check-refresh.mts"

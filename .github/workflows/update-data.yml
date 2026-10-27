@@ -53,6 +53,14 @@ jobs:
         timeout-minutes: 30
         run: npm run fetch:stocks
 
+      # Supplementary (Next-Day Momentum catalysts): records a failed read as a
+      # coverage gap inside announcements.json and never blocks the market-data
+      # commit below. NSE's feed only holds the current day's filings.
+      - name: Collect exchange filings (official NSE announcements feed)
+        timeout-minutes: 5
+        continue-on-error: true
+        run: npm run fetch:announcements
+
       - name: Build manifest (evaluates the refresh outcome)
         run: npm run build:manifest
 

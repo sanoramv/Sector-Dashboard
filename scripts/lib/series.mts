@@ -12,6 +12,13 @@ import type { SectorConstituents } from "../../src/types/market.ts";
 // one of these series on a given day, so no date gets two rows.
 export const TRACKED_SERIES = new Set(["EQ", "RR", "BE", "BZ"]);
 
+/**
+ * Columns extracted from each bhavcopy row, part of the refresh-state hash:
+ * adding trading activity (volume, turnover, delivery %) for the Next-Day
+ * Momentum page re-extracts older dates once, from the same official files.
+ */
+export const STOCK_EXTRACT_FIELDS = "ohlc+activity-v1";
+
 /** Every symbol in any tracked constituent list (sectors, NIFTY 500, market-cap segments). */
 export async function loadRequiredSymbols(constituentsPath: string): Promise<Set<string>> {
   const constituents: Record<string, SectorConstituents> = JSON.parse(await readFile(constituentsPath, "utf-8"));

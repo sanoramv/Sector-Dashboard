@@ -1289,37 +1289,37 @@
   "stocks": {
    "2026-10-27": {
     "status": "ok",
-    "checkedAt": "2026-10-27T18:01:03.466Z",
+    "checkedAt": "2026-10-27T18:37:42.664Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-26": {
     "status": "ok",
-    "checkedAt": "2026-10-26T20:02:02.520Z",
+    "checkedAt": "2026-10-27T18:37:42.937Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:47.656Z",
+    "checkedAt": "2026-10-27T18:37:43.336Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-22": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:48.444Z",
+    "checkedAt": "2026-10-27T18:37:43.752Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "754 tracked symbols"
    },
    "2026-10-21": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:48.139Z",
+    "checkedAt": "2026-10-27T18:37:44.145Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "754 tracked symbols"
    },
    "2026-10-20": {
@@ -1330,79 +1330,79 @@
    },
    "2026-10-19": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:49.037Z",
+    "checkedAt": "2026-10-27T18:37:44.545Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "754 tracked symbols"
    },
    "2026-10-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:49.520Z",
+    "checkedAt": "2026-10-27T18:37:44.939Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-15": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:49.907Z",
+    "checkedAt": "2026-10-27T18:37:45.344Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-14": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:50.283Z",
+    "checkedAt": "2026-10-27T18:37:45.747Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-13": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:50.664Z",
+    "checkedAt": "2026-10-27T18:37:46.140Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-12": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:51.130Z",
+    "checkedAt": "2026-10-27T18:37:46.543Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "754 tracked symbols"
    },
    "2026-10-09": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:51.491Z",
+    "checkedAt": "2026-10-27T18:37:46.947Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-08": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:51.930Z",
+    "checkedAt": "2026-10-27T18:37:47.340Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-07": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:52.287Z",
+    "checkedAt": "2026-10-27T18:37:47.746Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-06": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:52.702Z",
+    "checkedAt": "2026-10-27T18:37:48.150Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-05": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:53.350Z",
+    "checkedAt": "2026-10-27T18:37:48.545Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-10-02": {
@@ -1413,93 +1413,93 @@
    },
    "2026-10-01": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:53.871Z",
+    "checkedAt": "2026-10-27T18:37:48.950Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-09-30": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:54.328Z",
+    "checkedAt": "2026-10-27T18:37:49.348Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-09-29": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:54.664Z",
+    "checkedAt": "2026-10-27T18:37:49.744Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-09-28": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:55.095Z",
+    "checkedAt": "2026-10-27T18:37:50.160Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-09-25": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:55.481Z",
+    "checkedAt": "2026-10-27T18:37:50.533Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-09-24": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:55.906Z",
+    "checkedAt": "2026-10-27T18:37:50.947Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-09-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:56.262Z",
+    "checkedAt": "2026-10-27T18:37:51.345Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-09-22": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:56.690Z",
+    "checkedAt": "2026-10-27T18:37:51.750Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "753 tracked symbols"
    },
    "2026-09-21": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:57.176Z",
+    "checkedAt": "2026-10-27T18:37:52.138Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-18": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:57.520Z",
+    "checkedAt": "2026-10-27T18:37:52.544Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-17": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:58.024Z",
+    "checkedAt": "2026-10-27T18:37:52.949Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:58.365Z",
+    "checkedAt": "2026-10-27T18:37:53.348Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-15": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:58.777Z",
+    "checkedAt": "2026-10-27T18:37:53.746Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-14": {
@@ -1510,387 +1510,387 @@
    },
    "2026-09-11": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:59.486Z",
+    "checkedAt": "2026-10-27T18:37:54.145Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-10": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:59.970Z",
+    "checkedAt": "2026-10-27T18:37:54.547Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-09": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:00.267Z",
+    "checkedAt": "2026-10-27T18:37:54.956Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-08": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:00.725Z",
+    "checkedAt": "2026-10-27T18:37:55.345Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-07": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:01.091Z",
+    "checkedAt": "2026-10-27T18:37:55.748Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-04": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:01.508Z",
+    "checkedAt": "2026-10-27T18:37:56.147Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-03": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:02.025Z",
+    "checkedAt": "2026-10-27T18:37:56.550Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-02": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:02.595Z",
+    "checkedAt": "2026-10-27T18:37:56.933Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-09-01": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:02.715Z",
+    "checkedAt": "2026-10-27T18:37:57.336Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-31": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:03.120Z",
+    "checkedAt": "2026-10-27T18:37:57.749Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-28": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:03.487Z",
+    "checkedAt": "2026-10-27T18:37:58.147Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-27": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:03.918Z",
+    "checkedAt": "2026-10-27T18:37:58.537Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-26": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:04.302Z",
+    "checkedAt": "2026-10-27T18:37:58.932Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-25": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:04.704Z",
+    "checkedAt": "2026-10-27T18:37:59.352Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-24": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:05.090Z",
+    "checkedAt": "2026-10-27T18:37:59.755Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-21": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:05.477Z",
+    "checkedAt": "2026-10-27T18:38:00.149Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-20": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:05.866Z",
+    "checkedAt": "2026-10-27T18:38:00.535Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-19": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:06.342Z",
+    "checkedAt": "2026-10-27T18:38:00.945Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-18": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:06.814Z",
+    "checkedAt": "2026-10-27T18:38:01.349Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-17": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:07.087Z",
+    "checkedAt": "2026-10-27T18:38:01.752Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-14": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:07.469Z",
+    "checkedAt": "2026-10-27T18:38:02.146Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-13": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:07.875Z",
+    "checkedAt": "2026-10-27T18:38:02.549Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-12": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:08.255Z",
+    "checkedAt": "2026-10-27T18:38:02.948Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-11": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:08.693Z",
+    "checkedAt": "2026-10-27T18:38:03.349Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-10": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:09.115Z",
+    "checkedAt": "2026-10-27T18:38:03.746Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-07": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:09.484Z",
+    "checkedAt": "2026-10-27T18:38:04.159Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-06": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:09.877Z",
+    "checkedAt": "2026-10-27T18:38:04.547Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-05": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:10.346Z",
+    "checkedAt": "2026-10-27T18:38:04.942Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-04": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:10.686Z",
+    "checkedAt": "2026-10-27T18:38:05.348Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-08-03": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:11.077Z",
+    "checkedAt": "2026-10-27T18:38:05.744Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-31": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:11.505Z",
+    "checkedAt": "2026-10-27T18:38:06.148Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-30": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:11.959Z",
+    "checkedAt": "2026-10-27T18:38:06.540Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-29": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:12.255Z",
+    "checkedAt": "2026-10-27T18:38:06.947Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-28": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:12.703Z",
+    "checkedAt": "2026-10-27T18:38:07.338Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-27": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:13.222Z",
+    "checkedAt": "2026-10-27T18:38:07.748Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-24": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:13.499Z",
+    "checkedAt": "2026-10-27T18:38:08.145Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:13.878Z",
+    "checkedAt": "2026-10-27T18:38:08.551Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-22": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:14.311Z",
+    "checkedAt": "2026-10-27T18:38:08.943Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-21": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:14.703Z",
+    "checkedAt": "2026-10-27T18:38:09.340Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-20": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:15.062Z",
+    "checkedAt": "2026-10-27T18:38:09.745Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-17": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:15.477Z",
+    "checkedAt": "2026-10-27T18:38:10.145Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:15.951Z",
+    "checkedAt": "2026-10-27T18:38:10.532Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-15": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:16.268Z",
+    "checkedAt": "2026-10-27T18:38:10.944Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-14": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:16.719Z",
+    "checkedAt": "2026-10-27T18:38:11.340Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-13": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:17.110Z",
+    "checkedAt": "2026-10-27T18:38:11.734Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-10": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:17.530Z",
+    "checkedAt": "2026-10-27T18:38:12.153Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-09": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:17.858Z",
+    "checkedAt": "2026-10-27T18:38:12.552Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-08": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:18.287Z",
+    "checkedAt": "2026-10-27T18:38:12.941Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-07": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:18.836Z",
+    "checkedAt": "2026-10-27T18:38:13.341Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-06": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:19.088Z",
+    "checkedAt": "2026-10-27T18:38:13.750Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-03": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:19.466Z",
+    "checkedAt": "2026-10-27T18:38:14.147Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-02": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:19.964Z",
+    "checkedAt": "2026-10-27T18:38:14.544Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-07-01": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:20.369Z",
+    "checkedAt": "2026-10-27T18:38:14.938Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-30": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:20.832Z",
+    "checkedAt": "2026-10-27T18:38:15.346Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-29": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:21.188Z",
+    "checkedAt": "2026-10-27T18:38:15.746Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-26": {
@@ -1901,142 +1901,142 @@
    },
    "2026-06-25": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:21.870Z",
+    "checkedAt": "2026-10-27T18:38:16.161Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-24": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:22.470Z",
+    "checkedAt": "2026-10-27T18:38:16.539Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:22.740Z",
+    "checkedAt": "2026-10-27T18:38:16.947Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-22": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:23.118Z",
+    "checkedAt": "2026-10-27T18:38:17.345Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-19": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:23.545Z",
+    "checkedAt": "2026-10-27T18:38:17.741Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-18": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:23.893Z",
+    "checkedAt": "2026-10-27T18:38:18.146Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-17": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:24.524Z",
+    "checkedAt": "2026-10-27T18:38:18.549Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:24.732Z",
+    "checkedAt": "2026-10-27T18:38:18.943Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-15": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:25.096Z",
+    "checkedAt": "2026-10-27T18:38:19.344Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "752 tracked symbols"
    },
    "2026-06-12": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:25.667Z",
+    "checkedAt": "2026-10-27T18:38:19.753Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "748 tracked symbols"
    },
    "2026-06-11": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:25.882Z",
+    "checkedAt": "2026-10-27T18:38:20.155Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "748 tracked symbols"
    },
    "2026-06-10": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:26.603Z",
+    "checkedAt": "2026-10-27T18:38:20.532Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "748 tracked symbols"
    },
    "2026-06-09": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:27.347Z",
+    "checkedAt": "2026-10-27T18:38:20.934Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-06-08": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:27.132Z",
+    "checkedAt": "2026-10-27T18:38:21.342Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-06-05": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:27.612Z",
+    "checkedAt": "2026-10-27T18:38:21.743Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-06-04": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:27.982Z",
+    "checkedAt": "2026-10-27T18:38:22.145Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-06-03": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:28.392Z",
+    "checkedAt": "2026-10-27T18:38:22.545Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-06-02": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:28.785Z",
+    "checkedAt": "2026-10-27T18:38:22.950Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-06-01": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:29.193Z",
+    "checkedAt": "2026-10-27T18:38:23.346Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-29": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:29.589Z",
+    "checkedAt": "2026-10-27T18:38:23.745Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-28": {
@@ -2047,128 +2047,128 @@
    },
    "2026-05-27": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:30.474Z",
+    "checkedAt": "2026-10-27T18:38:24.150Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-26": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:30.814Z",
+    "checkedAt": "2026-10-27T18:38:24.540Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-25": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:31.210Z",
+    "checkedAt": "2026-10-27T18:38:24.944Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-22": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:31.603Z",
+    "checkedAt": "2026-10-27T18:38:25.346Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-21": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:31.974Z",
+    "checkedAt": "2026-10-27T18:38:25.738Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-20": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:32.572Z",
+    "checkedAt": "2026-10-27T18:38:26.150Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-19": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:32.849Z",
+    "checkedAt": "2026-10-27T18:38:26.545Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-18": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:33.198Z",
+    "checkedAt": "2026-10-27T18:38:26.943Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-15": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:33.829Z",
+    "checkedAt": "2026-10-27T18:38:27.344Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-14": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:34.002Z",
+    "checkedAt": "2026-10-27T18:38:27.747Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "747 tracked symbols"
    },
    "2026-05-13": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:34.423Z",
+    "checkedAt": "2026-10-27T18:38:28.150Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "746 tracked symbols"
    },
    "2026-05-12": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:35.090Z",
+    "checkedAt": "2026-10-27T18:38:28.551Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "746 tracked symbols"
    },
    "2026-05-11": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:35.215Z",
+    "checkedAt": "2026-10-27T18:38:28.943Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "746 tracked symbols"
    },
    "2026-05-08": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:35.612Z",
+    "checkedAt": "2026-10-27T18:38:29.344Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "746 tracked symbols"
    },
    "2026-05-07": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:36.059Z",
+    "checkedAt": "2026-10-27T18:38:29.746Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "745 tracked symbols"
    },
    "2026-05-06": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:36.494Z",
+    "checkedAt": "2026-10-27T18:38:30.144Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "745 tracked symbols"
    },
    "2026-05-05": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:36.794Z",
+    "checkedAt": "2026-10-27T18:38:30.533Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-05-04": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:37.326Z",
+    "checkedAt": "2026-10-27T18:38:30.946Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "745 tracked symbols"
    },
    "2026-05-01": {
@@ -2179,86 +2179,86 @@
    },
    "2026-04-30": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:37.993Z",
+    "checkedAt": "2026-10-27T18:38:31.345Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-29": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:38.427Z",
+    "checkedAt": "2026-10-27T18:38:31.745Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-28": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:38.804Z",
+    "checkedAt": "2026-10-27T18:38:32.145Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-27": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:39.165Z",
+    "checkedAt": "2026-10-27T18:38:32.546Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "745 tracked symbols"
    },
    "2026-04-24": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:39.604Z",
+    "checkedAt": "2026-10-27T18:38:32.943Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:39.978Z",
+    "checkedAt": "2026-10-27T18:38:33.340Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-22": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:40.416Z",
+    "checkedAt": "2026-10-27T18:38:33.755Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-21": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:40.769Z",
+    "checkedAt": "2026-10-27T18:38:34.138Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-20": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:41.197Z",
+    "checkedAt": "2026-10-27T18:38:34.543Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "745 tracked symbols"
    },
    "2026-04-17": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:41.575Z",
+    "checkedAt": "2026-10-27T18:38:34.943Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "743 tracked symbols"
    },
    "2026-04-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:42.188Z",
+    "checkedAt": "2026-10-27T18:38:35.338Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "743 tracked symbols"
    },
    "2026-04-15": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:42.388Z",
+    "checkedAt": "2026-10-27T18:38:35.743Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "743 tracked symbols"
    },
    "2026-04-14": {
@@ -2269,44 +2269,44 @@
    },
    "2026-04-13": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:43.216Z",
+    "checkedAt": "2026-10-27T18:38:36.139Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-10": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:43.580Z",
+    "checkedAt": "2026-10-27T18:38:36.551Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "743 tracked symbols"
    },
    "2026-04-09": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:44.000Z",
+    "checkedAt": "2026-10-27T18:38:36.948Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-08": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:44.397Z",
+    "checkedAt": "2026-10-27T18:38:37.350Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-07": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:44.762Z",
+    "checkedAt": "2026-10-27T18:38:37.747Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-06": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:45.197Z",
+    "checkedAt": "2026-10-27T18:38:38.143Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-03": {
@@ -2317,16 +2317,16 @@
    },
    "2026-04-02": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:45.972Z",
+    "checkedAt": "2026-10-27T18:38:38.545Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "744 tracked symbols"
    },
    "2026-04-01": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:47.028Z",
+    "checkedAt": "2026-10-27T18:38:38.935Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "743 tracked symbols"
    },
    "2026-03-31": {
@@ -2337,16 +2337,16 @@
    },
    "2026-03-30": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:47.492Z",
+    "checkedAt": "2026-10-27T18:38:39.344Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "743 tracked symbols"
    },
    "2026-03-27": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:47.908Z",
+    "checkedAt": "2026-10-27T18:38:39.744Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-26": {
@@ -2357,114 +2357,114 @@
    },
    "2026-03-25": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:48.693Z",
+    "checkedAt": "2026-10-27T18:38:40.133Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-24": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:49.168Z",
+    "checkedAt": "2026-10-27T18:38:40.532Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:49.482Z",
+    "checkedAt": "2026-10-27T18:38:40.932Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-20": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:49.864Z",
+    "checkedAt": "2026-10-27T18:38:41.345Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-19": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:50.352Z",
+    "checkedAt": "2026-10-27T18:38:41.748Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-18": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:50.691Z",
+    "checkedAt": "2026-10-27T18:38:42.144Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-17": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:51.077Z",
+    "checkedAt": "2026-10-27T18:38:42.543Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:51.572Z",
+    "checkedAt": "2026-10-27T18:38:42.942Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-13": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:51.873Z",
+    "checkedAt": "2026-10-27T18:38:43.348Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-12": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:52.313Z",
+    "checkedAt": "2026-10-27T18:38:43.744Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-11": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:52.674Z",
+    "checkedAt": "2026-10-27T18:38:44.148Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "742 tracked symbols"
    },
    "2026-03-10": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:53.112Z",
+    "checkedAt": "2026-10-27T18:38:44.543Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "741 tracked symbols"
    },
    "2026-03-09": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:53.547Z",
+    "checkedAt": "2026-10-27T18:38:44.942Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "741 tracked symbols"
    },
    "2026-03-06": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:53.883Z",
+    "checkedAt": "2026-10-27T18:38:45.345Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "741 tracked symbols"
    },
    "2026-03-05": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:54.324Z",
+    "checkedAt": "2026-10-27T18:38:45.733Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "741 tracked symbols"
    },
    "2026-03-04": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:54.687Z",
+    "checkedAt": "2026-10-27T18:38:46.141Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "740 tracked symbols"
    },
    "2026-03-03": {
@@ -2475,177 +2475,177 @@
    },
    "2026-03-02": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:55.481Z",
+    "checkedAt": "2026-10-27T18:38:46.545Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "740 tracked symbols"
    },
    "2026-02-27": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:55.877Z",
+    "checkedAt": "2026-10-27T18:38:46.945Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "739 tracked symbols"
    },
    "2026-02-26": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:56.264Z",
+    "checkedAt": "2026-10-27T18:38:47.348Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "738 tracked symbols"
    },
    "2026-02-25": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:56.802Z",
+    "checkedAt": "2026-10-27T18:38:47.746Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "738 tracked symbols"
    },
    "2026-02-24": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:57.087Z",
+    "checkedAt": "2026-10-27T18:38:48.135Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "738 tracked symbols"
    },
    "2026-02-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:57.557Z",
+    "checkedAt": "2026-10-27T18:38:48.550Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "738 tracked symbols"
    },
    "2026-02-20": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:57.880Z",
+    "checkedAt": "2026-10-27T18:38:48.944Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "738 tracked symbols"
    },
    "2026-02-19": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:58.378Z",
+    "checkedAt": "2026-10-27T18:38:49.341Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "738 tracked symbols"
    },
    "2026-02-18": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:58.651Z",
+    "checkedAt": "2026-10-27T18:38:49.736Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "738 tracked symbols"
    },
    "2026-02-17": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:59.103Z",
+    "checkedAt": "2026-10-27T18:38:50.153Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "738 tracked symbols"
    },
    "2026-02-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:59.502Z",
+    "checkedAt": "2026-10-27T18:38:50.538Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "738 tracked symbols"
    },
    "2026-02-13": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:03:59.907Z",
+    "checkedAt": "2026-10-27T18:38:50.935Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "736 tracked symbols"
    },
    "2026-02-12": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:00.257Z",
+    "checkedAt": "2026-10-27T18:38:51.353Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "736 tracked symbols"
    },
    "2026-02-11": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:01.330Z",
+    "checkedAt": "2026-10-27T18:38:51.744Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "736 tracked symbols"
    },
    "2026-02-10": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:01.053Z",
+    "checkedAt": "2026-10-27T18:38:52.147Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "736 tracked symbols"
    },
    "2026-02-09": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:01.473Z",
+    "checkedAt": "2026-10-27T18:38:52.547Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "736 tracked symbols"
    },
    "2026-02-06": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:02.102Z",
+    "checkedAt": "2026-10-27T18:38:52.940Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "735 tracked symbols"
    },
    "2026-02-05": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:02.353Z",
+    "checkedAt": "2026-10-27T18:38:53.346Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "735 tracked symbols"
    },
    "2026-02-04": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:02.810Z",
+    "checkedAt": "2026-10-27T18:38:53.751Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "735 tracked symbols"
    },
    "2026-02-03": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:03.102Z",
+    "checkedAt": "2026-10-27T18:38:54.142Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "735 tracked symbols"
    },
    "2026-02-02": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:03.521Z",
+    "checkedAt": "2026-10-27T18:38:54.538Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "734 tracked symbols"
    },
    "2026-01-30": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:03.885Z",
+    "checkedAt": "2026-10-27T18:38:54.943Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "734 tracked symbols"
    },
    "2026-01-29": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:04.286Z",
+    "checkedAt": "2026-10-27T18:38:55.339Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "734 tracked symbols"
    },
    "2026-01-28": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:04.674Z",
+    "checkedAt": "2026-10-27T18:38:55.741Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "734 tracked symbols"
    },
    "2026-01-27": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:05.129Z",
+    "checkedAt": "2026-10-27T18:38:56.141Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "733 tracked symbols"
    },
    "2026-01-26": {
@@ -2656,44 +2656,44 @@
    },
    "2026-01-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:06.007Z",
+    "checkedAt": "2026-10-27T18:38:56.534Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "733 tracked symbols"
    },
    "2026-01-22": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:06.310Z",
+    "checkedAt": "2026-10-27T18:38:56.945Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "732 tracked symbols"
    },
    "2026-01-21": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:06.778Z",
+    "checkedAt": "2026-10-27T18:38:57.345Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "732 tracked symbols"
    },
    "2026-01-20": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:07.136Z",
+    "checkedAt": "2026-10-27T18:38:57.736Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "731 tracked symbols"
    },
    "2026-01-19": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:07.618Z",
+    "checkedAt": "2026-10-27T18:38:58.142Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "731 tracked symbols"
    },
    "2026-01-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:07.931Z",
+    "checkedAt": "2026-10-27T18:38:58.537Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2026-01-15": {
@@ -2704,100 +2704,100 @@
    },
    "2026-01-14": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:08.704Z",
+    "checkedAt": "2026-10-27T18:38:58.938Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2026-01-13": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:09.131Z",
+    "checkedAt": "2026-10-27T18:38:59.343Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2026-01-12": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:09.524Z",
+    "checkedAt": "2026-10-27T18:38:59.743Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2026-01-09": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:09.919Z",
+    "checkedAt": "2026-10-27T18:39:00.147Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2026-01-08": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:10.323Z",
+    "checkedAt": "2026-10-27T18:39:00.540Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2026-01-07": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:10.748Z",
+    "checkedAt": "2026-10-27T18:39:00.938Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2026-01-06": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:11.125Z",
+    "checkedAt": "2026-10-27T18:39:01.343Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2026-01-05": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:11.528Z",
+    "checkedAt": "2026-10-27T18:39:01.742Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2026-01-02": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:11.950Z",
+    "checkedAt": "2026-10-27T18:39:02.143Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2026-01-01": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:12.358Z",
+    "checkedAt": "2026-10-27T18:39:02.533Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2025-12-31": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:12.714Z",
+    "checkedAt": "2026-10-27T18:39:02.946Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2025-12-30": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:13.153Z",
+    "checkedAt": "2026-10-27T18:39:03.349Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2025-12-29": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:13.504Z",
+    "checkedAt": "2026-10-27T18:39:03.742Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2025-12-26": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:13.881Z",
+    "checkedAt": "2026-10-27T18:39:04.139Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2025-12-25": {
@@ -2807,247 +2807,247 @@
    },
    "2025-12-24": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:14.832Z",
+    "checkedAt": "2026-10-27T18:39:04.539Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2025-12-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:15.218Z",
+    "checkedAt": "2026-10-27T18:39:04.943Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2025-12-22": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:15.511Z",
+    "checkedAt": "2026-10-27T18:39:05.345Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2025-12-19": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:15.991Z",
+    "checkedAt": "2026-10-27T18:39:05.743Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "730 tracked symbols"
    },
    "2025-12-18": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:16.379Z",
+    "checkedAt": "2026-10-27T18:39:06.146Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "729 tracked symbols"
    },
    "2025-12-17": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:16.784Z",
+    "checkedAt": "2026-10-27T18:39:06.545Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "729 tracked symbols"
    },
    "2025-12-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:17.122Z",
+    "checkedAt": "2026-10-27T18:39:06.945Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "727 tracked symbols"
    },
    "2025-12-15": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:17.542Z",
+    "checkedAt": "2026-10-27T18:39:07.338Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "727 tracked symbols"
    },
    "2025-12-12": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:17.901Z",
+    "checkedAt": "2026-10-27T18:39:07.746Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "726 tracked symbols"
    },
    "2025-12-11": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:18.445Z",
+    "checkedAt": "2026-10-27T18:39:08.143Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "726 tracked symbols"
    },
    "2025-12-10": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:18.825Z",
+    "checkedAt": "2026-10-27T18:39:08.544Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "726 tracked symbols"
    },
    "2025-12-09": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:19.155Z",
+    "checkedAt": "2026-10-27T18:39:08.944Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "724 tracked symbols"
    },
    "2025-12-08": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:19.562Z",
+    "checkedAt": "2026-10-27T18:39:09.346Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "724 tracked symbols"
    },
    "2025-12-05": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:20.043Z",
+    "checkedAt": "2026-10-27T18:39:09.743Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "724 tracked symbols"
    },
    "2025-12-04": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:20.268Z",
+    "checkedAt": "2026-10-27T18:39:10.154Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "724 tracked symbols"
    },
    "2025-12-03": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:20.657Z",
+    "checkedAt": "2026-10-27T18:39:10.532Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "724 tracked symbols"
    },
    "2025-12-02": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:21.177Z",
+    "checkedAt": "2026-10-27T18:39:10.937Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "724 tracked symbols"
    },
    "2025-12-01": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:21.510Z",
+    "checkedAt": "2026-10-27T18:39:11.347Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "724 tracked symbols"
    },
    "2025-11-28": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:21.899Z",
+    "checkedAt": "2026-10-27T18:39:11.735Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "724 tracked symbols"
    },
    "2025-11-27": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:22.373Z",
+    "checkedAt": "2026-10-27T18:39:12.143Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "723 tracked symbols"
    },
    "2025-11-26": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:22.691Z",
+    "checkedAt": "2026-10-27T18:39:12.550Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "723 tracked symbols"
    },
    "2025-11-25": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:23.091Z",
+    "checkedAt": "2026-10-27T18:39:12.948Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "723 tracked symbols"
    },
    "2025-11-24": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:23.511Z",
+    "checkedAt": "2026-10-27T18:39:13.341Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "723 tracked symbols"
    },
    "2025-11-21": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:23.914Z",
+    "checkedAt": "2026-10-27T18:39:13.740Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "722 tracked symbols"
    },
    "2025-11-20": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:24.298Z",
+    "checkedAt": "2026-10-27T18:39:14.148Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "721 tracked symbols"
    },
    "2025-11-19": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:24.697Z",
+    "checkedAt": "2026-10-27T18:39:14.533Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "720 tracked symbols"
    },
    "2025-11-18": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:25.067Z",
+    "checkedAt": "2026-10-27T18:39:14.945Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "719 tracked symbols"
    },
    "2025-11-17": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:25.548Z",
+    "checkedAt": "2026-10-27T18:39:15.344Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "717 tracked symbols"
    },
    "2025-11-14": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:25.868Z",
+    "checkedAt": "2026-10-27T18:39:15.736Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "717 tracked symbols"
    },
    "2025-11-13": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:26.283Z",
+    "checkedAt": "2026-10-27T18:39:16.138Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "716 tracked symbols"
    },
    "2025-11-12": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:26.706Z",
+    "checkedAt": "2026-10-27T18:39:16.541Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "716 tracked symbols"
    },
    "2025-11-11": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:27.067Z",
+    "checkedAt": "2026-10-27T18:39:16.947Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "714 tracked symbols"
    },
    "2025-11-10": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:27.467Z",
+    "checkedAt": "2026-10-27T18:39:17.337Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "714 tracked symbols"
    },
    "2025-11-07": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:27.868Z",
+    "checkedAt": "2026-10-27T18:39:17.745Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "712 tracked symbols"
    },
    "2025-11-06": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:28.456Z",
+    "checkedAt": "2026-10-27T18:39:18.144Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "711 tracked symbols"
    },
    "2025-11-05": {
@@ -3058,65 +3058,65 @@
    },
    "2025-11-04": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:29.087Z",
+    "checkedAt": "2026-10-27T18:39:18.539Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "711 tracked symbols"
    },
    "2025-11-03": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:29.485Z",
+    "checkedAt": "2026-10-27T18:39:18.943Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "711 tracked symbols"
    },
    "2025-10-31": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:29.848Z",
+    "checkedAt": "2026-10-27T18:39:19.344Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "711 tracked symbols"
    },
    "2025-10-30": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:30.297Z",
+    "checkedAt": "2026-10-27T18:39:19.740Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "711 tracked symbols"
    },
    "2025-10-29": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:30.664Z",
+    "checkedAt": "2026-10-27T18:39:20.144Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "711 tracked symbols"
    },
    "2025-10-28": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:31.108Z",
+    "checkedAt": "2026-10-27T18:39:20.534Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "711 tracked symbols"
    },
    "2025-10-27": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:31.459Z",
+    "checkedAt": "2026-10-27T18:39:20.939Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "711 tracked symbols"
    },
    "2025-10-24": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:31.867Z",
+    "checkedAt": "2026-10-27T18:39:21.350Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "711 tracked symbols"
    },
    "2025-10-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:32.328Z",
+    "checkedAt": "2026-10-27T18:39:21.741Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "710 tracked symbols"
    },
    "2025-10-22": {
@@ -3127,93 +3127,93 @@
    },
    "2025-10-21": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:33.093Z",
+    "checkedAt": "2026-10-27T18:39:22.146Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "710 tracked symbols"
    },
    "2025-10-20": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:33.617Z",
+    "checkedAt": "2026-10-27T18:39:22.546Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "710 tracked symbols"
    },
    "2025-10-17": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:33.854Z",
+    "checkedAt": "2026-10-27T18:39:22.942Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "710 tracked symbols"
    },
    "2025-10-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:34.604Z",
+    "checkedAt": "2026-10-27T18:39:23.347Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "709 tracked symbols"
    },
    "2025-10-15": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:34.757Z",
+    "checkedAt": "2026-10-27T18:39:23.745Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "707 tracked symbols"
    },
    "2025-10-14": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:35.070Z",
+    "checkedAt": "2026-10-27T18:39:24.145Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "707 tracked symbols"
    },
    "2025-10-13": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:35.598Z",
+    "checkedAt": "2026-10-27T18:39:24.544Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "706 tracked symbols"
    },
    "2025-10-10": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:35.872Z",
+    "checkedAt": "2026-10-27T18:39:24.941Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "705 tracked symbols"
    },
    "2025-10-09": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:36.259Z",
+    "checkedAt": "2026-10-27T18:39:25.342Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "704 tracked symbols"
    },
    "2025-10-08": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:36.690Z",
+    "checkedAt": "2026-10-27T18:39:25.742Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "704 tracked symbols"
    },
    "2025-10-07": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:37.119Z",
+    "checkedAt": "2026-10-27T18:39:26.144Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "704 tracked symbols"
    },
    "2025-10-06": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:37.461Z",
+    "checkedAt": "2026-10-27T18:39:26.545Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "704 tracked symbols"
    },
    "2025-10-03": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:37.860Z",
+    "checkedAt": "2026-10-27T18:39:26.937Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "704 tracked symbols"
    },
    "2025-10-02": {
@@ -3223,149 +3223,149 @@
    },
    "2025-10-01": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:38.668Z",
+    "checkedAt": "2026-10-27T18:39:27.346Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "704 tracked symbols"
    },
    "2025-09-30": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:39.067Z",
+    "checkedAt": "2026-10-27T18:39:27.747Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "703 tracked symbols"
    },
    "2025-09-29": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:39.477Z",
+    "checkedAt": "2026-10-27T18:39:28.156Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "703 tracked symbols"
    },
    "2025-09-26": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:39.905Z",
+    "checkedAt": "2026-10-27T18:39:28.551Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "702 tracked symbols"
    },
    "2025-09-25": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:40.270Z",
+    "checkedAt": "2026-10-27T18:39:28.944Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "702 tracked symbols"
    },
    "2025-09-24": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:40.733Z",
+    "checkedAt": "2026-10-27T18:39:29.353Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "702 tracked symbols"
    },
    "2025-09-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:41.056Z",
+    "checkedAt": "2026-10-27T18:39:29.744Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "702 tracked symbols"
    },
    "2025-09-22": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:41.470Z",
+    "checkedAt": "2026-10-27T18:39:30.145Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "702 tracked symbols"
    },
    "2025-09-19": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:41.916Z",
+    "checkedAt": "2026-10-27T18:39:30.533Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "702 tracked symbols"
    },
    "2025-09-18": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:42.279Z",
+    "checkedAt": "2026-10-27T18:39:30.946Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "702 tracked symbols"
    },
    "2025-09-17": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:42.779Z",
+    "checkedAt": "2026-10-27T18:39:31.340Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "702 tracked symbols"
    },
    "2025-09-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:43.063Z",
+    "checkedAt": "2026-10-27T18:39:31.745Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "700 tracked symbols"
    },
    "2025-09-15": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:43.534Z",
+    "checkedAt": "2026-10-27T18:39:32.149Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "700 tracked symbols"
    },
    "2025-09-12": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:43.933Z",
+    "checkedAt": "2026-10-27T18:39:32.537Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "700 tracked symbols"
    },
    "2025-09-11": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:44.282Z",
+    "checkedAt": "2026-10-27T18:39:32.943Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "699 tracked symbols"
    },
    "2025-09-10": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:44.708Z",
+    "checkedAt": "2026-10-27T18:39:33.343Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "699 tracked symbols"
    },
    "2025-09-09": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:45.096Z",
+    "checkedAt": "2026-10-27T18:39:33.739Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "699 tracked symbols"
    },
    "2025-09-08": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:45.486Z",
+    "checkedAt": "2026-10-27T18:39:34.143Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "699 tracked symbols"
    },
    "2025-09-05": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:45.906Z",
+    "checkedAt": "2026-10-27T18:39:34.544Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "699 tracked symbols"
    },
    "2025-09-04": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:46.297Z",
+    "checkedAt": "2026-10-27T18:39:34.940Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "699 tracked symbols"
    },
    "2025-09-03": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:04:46.751Z",
+    "checkedAt": "2026-10-27T18:39:35.348Z",
     "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
+    "symbolSetHash": "b2128cbc3b6b045d",
     "detail": "698 tracked symbols"
    },
    "2025-09-02": {

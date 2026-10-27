@@ -13,7 +13,7 @@ import type { Manifest } from "../src/types/dataset.ts";
 import { SCHEMA_VERSION } from "../src/types/dataset.ts";
 import { isStale, splitAtPriceBreaks, type PriceBreakKind } from "../src/lib/calculations/validation.ts";
 import { evaluateRefresh, loadState, symbolSetHash, targetDates, toRefreshStatus } from "./lib/refresh-state.mts";
-import { TRACKED_SERIES, loadRequiredSymbols } from "./lib/series.mts";
+import { STOCK_EXTRACT_FIELDS, TRACKED_SERIES, loadRequiredSymbols } from "./lib/series.mts";
 
 /** Must match the fetch scripts' window. */
 const BACKFILL_DAYS = 420;
@@ -103,7 +103,7 @@ async function main() {
     throw new Error("public/data/refresh-state.json is missing - run fetch-index-history and fetch-stock-bhavcopy first.");
   });
   const benchmarkLatest = indexSeries[BENCHMARK.slug]?.bars.at(-1)?.date ?? latestMarketDate;
-  const hash = symbolSetHash(await loadRequiredSymbols(path.join(DATA_DIR, "constituents.json")), TRACKED_SERIES);
+  const hash = symbolSetHash(await loadRequiredSymbols(path.join(DATA_DIR, "constituents.json")), TRACKED_SERIES, STOCK_EXTRACT_FIELDS);
   const now = new Date();
   const summary = evaluateRefresh(state, targetDates(now, BACKFILL_DAYS), benchmarkLatest, hash, now);
   let previousComplete: string | null = null;

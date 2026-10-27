@@ -12,11 +12,18 @@ export type MaWindow = 20 | 50 | 200;
  * callers must treat null as "not eligible", never as false.
  */
 export function isAboveMovingAverage(closes: number[], window: MaWindow): boolean | null {
-  if (closes.length < window) return null;
-  const slice = closes.slice(closes.length - window);
-  const sma = slice.reduce((sum, c) => sum + c, 0) / window;
+  const sma = simpleMovingAverage(closes, window);
+  if (sma === null) return null;
   const latest = closes[closes.length - 1];
   return latest > sma;
+}
+
+/** Simple moving average of the trailing `window` closes (ending at, and including, the latest); null when there are fewer closes than `window`. */
+export function simpleMovingAverage(closes: number[], window: number): number | null {
+  if (closes.length < window || window <= 0) return null;
+  let sum = 0;
+  for (let i = closes.length - window; i < closes.length; i++) sum += closes[i];
+  return sum / window;
 }
 
 /**

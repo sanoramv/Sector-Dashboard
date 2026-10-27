@@ -77,10 +77,16 @@ export function pruneState(state: RefreshState, cutoffIso: string): void {
   }
 }
 
-/** Identifies the set of rows a stock archive was ingested for; changing series or symbols means older dates must be re-extracted. */
-export function symbolSetHash(symbols: Iterable<string>, series: Iterable<string>): string {
+/**
+ * Identifies the set of rows a stock archive was ingested for, and which
+ * columns were extracted from them; changing series, symbols or `fields`
+ * means older dates must be re-extracted (in bounded batches - see planFetch).
+ * An empty `fields` keeps the original hash, so states written before
+ * fields were tracked hash identically.
+ */
+export function symbolSetHash(symbols: Iterable<string>, series: Iterable<string>, fields = ""): string {
   const h = createHash("sha256");
-  h.update([...series].sort().join(",") + "|" + [...symbols].sort().join(","));
+  h.update([...series].sort().join(",") + "|" + [...symbols].sort().join(",") + (fields ? `|${fields}` : ""));
   return h.digest("hex").slice(0, 16);
 }
 

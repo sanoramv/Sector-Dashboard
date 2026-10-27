@@ -11,7 +11,7 @@ export interface TabsProps {
 
 export function Tabs({ tabs, active, onChange }: TabsProps) {
   return (
-    <div role="tablist" aria-label="Dashboard sections" style={{ display: "flex", gap: 4, marginBottom: 16, borderBottom: "1px solid var(--color-border)" }}>
+    <div role="tablist" aria-label="Dashboard sections" style={{ display: "flex", gap: 4, marginBottom: 16, borderBottom: "1px solid var(--color-border)", overflowX: "auto" }}>
       {tabs.map((t) => (
         <button
           key={t.key}
@@ -28,6 +28,8 @@ export function Tabs({ tabs, active, onChange }: TabsProps) {
             fontWeight: active === t.key ? 700 : 500,
             fontSize: 13.5,
             cursor: "pointer",
+            whiteSpace: "nowrap",
+            flexShrink: 0,
           }}
         >
           {t.label}

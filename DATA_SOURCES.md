@@ -27,7 +27,7 @@ The coverage figures describe the dataset audited on 2026-10-13 (latest market d
 |---|---|
 | **Source** | NSE daily full equity bhavcopy: `https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_DDMMYYYY.csv` (official, no authentication) |
 | **Produced by** | `scripts/fetch-stock-bhavcopy.mts` |
-| **Fields kept** | `OPEN_PRICE`, `HIGH_PRICE`, `LOW_PRICE`, `CLOSE_PRICE` by `DATE1` (session date). Volume isn't stored. |
+| **Fields kept** | `OPEN_PRICE`, `HIGH_PRICE`, `LOW_PRICE`, `CLOSE_PRICE` by `DATE1` (session date). Volume, turnover and delivery from the same rows go to `stock-activity.json` (dataset 6). |
 | **Rows kept** | Symbols in any tracked constituent list, in series `EQ`, `RR` (REIT/InvIT), `BE` and `BZ` (trade-for-trade). `BE`/`BZ` were added after the audit; see `AUDIT_REPORT.md` H1. |
 | **Coverage** | 758 symbols required (NIFTY 500 ∪ sector lists ∪ market-cap lists); 753 with data. Up to 302 sessions (2025-07-21 → 2026-10-09). |
 | **Window and refresh** | Same as index history. A date is re-fetched if any tracked symbol lacks it. |
@@ -63,6 +63,25 @@ The coverage figures describe the dataset audited on 2026-10-13 (latest market d
 | **Contents** | `latestMarketDate` (newest index bar), `generatedAt` (when this file was written - not proof data advanced), source URLs, data-quality warnings, and `refresh`: the run's outcome (complete / partial / failed), `latestDueDate`, `tradingDaysBehind`, reasons, and `lastCompleteRefreshAt` (only advanced by complete runs) |
 | **Warnings it raises** | Index series that are behind the latest date; constituents with no history; stale stocks; stocks with missing sessions; suspected corporate-action breaks |
 
+### 6. Trading activity — `public/data/stock-activity.json` (added 2026-10-28)
+
+| | |
+|---|---|
+| **Source** | The same official bhavcopy rows as dataset 2: `TTL_TRD_QNTY` (volume), `TURNOVER_LACS`, `DELIV_PER` (delivery %, `-` stored as null), `SERIES` |
+| **Produced by** | `scripts/fetch-stock-bhavcopy.mts` (no extra downloads); format in `src/lib/activity.ts` |
+| **Coverage** | Every date re-extracted since the field was added: 283 sessions (2025-09-03 → 2026-10-27) for 754 symbols. The 20 oldest retained price dates (2025-08-04 → 2025-09-02) are outside the 420-day fetch window and have no activity rows; they age out of the 450-day retention within about a month. |
+| **Used by** | Next-Day Momentum only (loaded lazily); the main dashboard does not download it |
+| **Limitations** | Delivery % is 100% by rule in the BE/BZ trade-for-trade series. A row whose activity columns do not parse keeps its price bar but gets no activity row (never zero). |
+
+### 7. Exchange filings — `public/data/announcements.json` (added 2026-10-28)
+
+| | |
+|---|---|
+| **Source** | NSE corporate announcements RSS: `https://nsearchives.nseindia.com/content/RSS/Online_announcements.xml` (official, no authentication; verified 2026-10-27) |
+| **Produced by** | `scripts/fetch-announcements.mts`, a `continue-on-error` step in `update-data.yml` |
+| **Contents** | Filings for tracked stocks, retained 30 days: company, NSE subject, summary, direct filing link, publication time (IST), category from the subject line, and how the symbol was matched (filing-link prefix or exact normalized company name; conflicting matches dropped). Each read is recorded in `checks`, with the span of items it saw. |
+| **Limitations** | The feed holds only the current IST day (observed: it restarts at midnight), so filings published after the last read of a day are missed, and nothing before collection began exists. The page reports coverage per window and says "unknown" rather than "no news" when uncovered. No sentiment is inferred. |
+
 ## Derived figures (computed in the browser, not published by NSE)
 
 | Figure | Inputs | Notes |
@@ -72,6 +91,7 @@ The coverage figures describe the dataset audited on 2026-10-13 (latest market d
 | Industry metrics | Stock history (2) + NIFTY 500 industry labels (3) | **Equal-weighted averages computed by this app.** NSE does not publish them; labelled as such in Help. |
 | Stock screen, patterns, scores, regimes | (1)–(3) | Transparent heuristics; see `metricGlossary.ts` and `AUDIT_REPORT.md` |
 | Backtest | (1)–(3) | Current constituents applied to the past; exploratory only |
+| Next-Day Momentum lists, features, labels, historical evaluation | (1)–(3), (6), (7) | Rules and results in `NEXT_DAY_MOMENTUM.md` |
 
 ## Caching and fallback in the browser
 
@@ -91,4 +111,5 @@ The coverage figures describe the dataset audited on 2026-10-13 (latest market d
 
 - `www.nseindia.com` pages and `/api/*`: these require browser session cookies.
 - The niftyindices.com historical-data API: it rejected server-side requests.
+- Groww: its Trade API is a paid, per-account subscription with daily-expiring tokens and no top-gainers endpoint, and a token cannot be kept secret on a static site. Its website's lists come from private endpoints, which are not scraped.
 - Yahoo Finance: used only by `scripts/audit/yahoo-crosscheck.mts` to verify data. The dashboard never displays or computes from it.

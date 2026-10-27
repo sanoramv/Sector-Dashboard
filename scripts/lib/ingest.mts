@@ -6,6 +6,8 @@
  * here, so a failed, invalid or incomplete download leaves existing data as it was.
  */
 import type { DailyBar, IndexSeries, StockSeries } from "../../src/types/market.ts";
+import type { ActivityRow } from "../../src/types/activity.ts";
+import { parseActivityColumns } from "../../src/lib/activity.ts";
 import type { ArchiveOutcome } from "./http.mts";
 import { interpretArchive } from "./archives.mts";
 import { nseDateToIso, nseMonthNameDateToIso } from "./dates.mts";
@@ -80,6 +82,15 @@ export interface StockIngestContext {
   checkedAt: string;
   /** Rows kept per series, for the run log. */
   rowsPerSeries?: Map<string, number>;
+  /**
+   * When given, each merged row's trading activity (volume, turnover,
+   * delivery %, series) is appended here - from the same validated row as
+   * its OHLC bar, so the two can never disagree about the date. A row whose
+   * activity columns are not valid numbers keeps its bar but adds no
+   * activity (counted in `activitySkipped`), never a zero.
+   */
+  activity?: Record<string, ActivityRow[]>;
+  activitySkipped?: { count: number };
 }
 
 export function ingestStockOutcome(
@@ -99,7 +110,7 @@ export function ingestStockOutcome(
     if (parsed.kind !== "match") {
       entry = { status: parsed.kind === "earlier-session" ? "earlier-session" : "invalid", checkedAt: ctx.checkedAt, attempts: outcome.attempts, detail: `file is for ${parsed.fileDate}` };
     } else {
-      const rows: Array<{ symbol: string; series: string; bar: DailyBar }> = [];
+      const rows: Array<{ symbol: string; series: string; bar: DailyBar; activity: ActivityRow | null }> = [];
       for (const row of parsed.rows) {
         if (!ctx.trackedSeries.has(row["SERIES"])) continue;
         const symbol = row["SYMBOL"];
@@ -111,7 +122,10 @@ export function ingestStockOutcome(
           low: Number(row["LOW_PRICE"]),
           close: Number(row["CLOSE_PRICE"]),
         };
-        if (validBar(bar)) rows.push({ symbol, series: row["SERIES"], bar });
+        if (validBar(bar)) {
+          const activity = parseActivityColumns(bar.date, row["SERIES"], row["TTL_TRD_QNTY"], row["TURNOVER_LACS"], row["DELIV_PER"]);
+          rows.push({ symbol, series: row["SERIES"], bar, activity });
+        }
       }
       if (ctx.expectedSymbols >= 20 && rows.length < ctx.expectedSymbols * ctx.minCoverage) {
         entry = {
@@ -121,9 +135,13 @@ export function ingestStockOutcome(
           detail: `only ${rows.length} tracked symbols in file, expected about ${ctx.expectedSymbols}`,
         };
       } else {
-        for (const { symbol, series, bar } of rows) {
+        for (const { symbol, series, bar, activity } of rows) {
           (stocks[symbol] ??= { symbol, bars: [] }).bars.push(bar);
           ctx.rowsPerSeries?.set(series, (ctx.rowsPerSeries.get(series) ?? 0) + 1);
+          if (ctx.activity) {
+            if (activity) (ctx.activity[symbol] ??= []).push(activity);
+            else if (ctx.activitySkipped) ctx.activitySkipped.count += 1;
+          }
         }
         entry = { status: "ok", checkedAt: ctx.checkedAt, attempts: outcome.attempts, symbolSetHash: ctx.symbolSetHash, detail: `${rows.length} tracked symbols` };
       }
@@ -134,7 +152,7 @@ export function ingestStockOutcome(
 }
 
 /** Dedupes by date (a later-ingested bar for the same date wins), drops bars before `cutoffIso`, sorts ascending. */
-export function finalizeBars(bars: DailyBar[], cutoffIso: string): DailyBar[] {
+export function finalizeBars<T extends { date: string }>(bars: T[], cutoffIso: string): T[] {
   const dedup = new Map(bars.map((b) => [b.date, b]));
   return [...dedup.values()].filter((b) => b.date >= cutoffIso).sort((a, b) => a.date.localeCompare(b.date));
 }

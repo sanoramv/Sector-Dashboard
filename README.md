@@ -152,8 +152,8 @@ the extra cost is O(symbols x dates) set lookups, trivial in practice (~750 x ~3
 ## 2. Features
 
 The homepage leads with a **Market Capitalisation Segments** section (four panels: NIFTY 500, Midcap 150,
-Smallcap 250, Microcap 250 - see section 1), then the existing NIFTY-500-and-sectors Market Overview, then five
-tabs: **Sectors**, **Industries**, **Stock Screener**, **Backtest**, and **History**.
+Smallcap 250, Microcap 250 - see section 1), then the existing NIFTY-500-and-sectors Market Overview, then six
+tabs: **Sectors**, **Industries**, **Stock Screener**, **Next-Day Momentum**, **Backtest**, and **History**.
 
 - **Market Capitalisation Segments** (homepage, above the tabs): one card per benchmark with 1D/1W/1M/3M/6M
   index-level returns, % of constituents above their 20/50/200-day moving averages (with eligible/total counts),
@@ -179,6 +179,11 @@ tabs: **Sectors**, **Industries**, **Stock Screener**, **Backtest**, and **Histo
   every pattern is a disclosed, parameterized heuristic, not a validated chart-pattern recognizer, with the exact
   window/threshold shown. A separate 0-10 stock-level score and full pass/fail reason list is shown per stock.
   The detail view carries an explicit "not a recommendation, no entry/stop/target" disclaimer.
+- **Next-Day Momentum tab**: each session's top gainers and losers across the NIFTY 500 + Microcap 250 universe
+  (computed from NSE end-of-day data, not Groww's live list), with price, volume, pattern, sector and market
+  features, NSE exchange filings, a rule-based research label with the evidence on both sides, and a walk-forward
+  evaluation of what happened on the next session. No probability is shown, because the labels showed no
+  predictive skill. See [`NEXT_DAY_MOMENTUM.md`](NEXT_DAY_MOMENTUM.md).
 - **Backtest tab**: runs every screening rule above against the full available price history with no look-ahead
   by construction, reporting forward-return evidence (sample size, win rate, average/median net return) against
   an unconditional baseline - with explicit survivorship-bias, execution-assumption, and small-sample
@@ -252,6 +257,7 @@ newer one yourself:
 npm run fetch:constituents   # rarely needed - index constituents change a few times a year
 npm run fetch:index-history  # incremental: only fetches missing trading days
 npm run fetch:stocks         # incremental: only fetches missing trading days (requires constituents.json)
+npm run fetch:announcements  # optional: NSE filings for the Next-Day Momentum page
 npm run build:manifest       # always run last
 ```
 
