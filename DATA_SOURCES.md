@@ -13,7 +13,7 @@ The coverage figures describe the dataset audited on 2026-10-13 (latest market d
 | **Source** | NSE daily all-indices close file: `https://nsearchives.nseindia.com/content/indices/ind_close_all_DDMMYYYY.csv` (official, no authentication) |
 | **Produced by** | `scripts/fetch-index-history.mts` |
 | **Fields kept** | Open/High/Low/Close per index, keyed by the file's `Index Date` (the exchange session date, not the fetch time) |
-| **Coverage** | 19 series: NIFTY 500 (benchmark), 15 sectoral indices (`src/config/sectorUniverse.ts`), Midcap 150, Smallcap 250 and Microcap 250 (`src/config/marketCapSegments.ts`). 283 sessions (2025-08-18 → 2026-10-09). NIFTY Chemicals starts 2025-11-10 (227 sessions). |
+| **Coverage** | 20 series: NIFTY 50 (market context for Next-Day Momentum; added 2026-10-28, 283 sessions from 2025-09-03), NIFTY 500 (benchmark), 15 sectoral indices (`src/config/sectorUniverse.ts`), Midcap 150, Smallcap 250 and Microcap 250 (`src/config/marketCapSegments.ts`). 283 sessions (2025-08-18 → 2026-10-09). NIFTY Chemicals starts 2025-11-10 (227 sessions). |
 | **Window** | Weekdays in the last 420 calendar days; prunes anything older than 450 days |
 | **Refresh** | `update-data.yml`, weekdays 14:30 UTC (20:00 IST) plus a 02:30 UTC (08:00 IST) retry. Only dates not yet resolved in `public/data/refresh-state.json` are requested (recent 5 always until OK; at most 40 older per run). |
 | **Missing dates** | Every date's outcome is recorded. HTTP 404 for the index file plus NSE serving the *previous* session's bhavcopy = non-trading day. A timeout, connection error, 429/5xx (after 4 attempts), HTML page or malformed file is recorded as failed/invalid, retried on later runs, and makes the refresh "failed" if it affects one of the 5 most recent due dates. Nothing is interpolated. |
@@ -55,12 +55,21 @@ The coverage figures describe the dataset audited on 2026-10-13 (latest market d
 | **Contents** | For every due weekday in the window and each archive (index, stocks): `ok`, `missing`, `earlier-session`, `failed`, `invalid` or `incomplete`, with the check time, attempts and detail. Stock entries also record the symbol/series set they were extracted for, so changing it triggers a bounded re-extraction. |
 | **Why** | Decides what the next run fetches (no full re-download on every run) and lets `build-manifest` judge whether the published data is actually current. |
 
+### 4a. Constituent change log — `public/data/constituent-changes.json` (added 2026-10-28)
+
+| | |
+|---|---|
+| **Produced by** | `scripts/fetch-constituents.mts` (manual workflow), via `scripts/lib/constituent-changes.mts` |
+| **Contents** | For each list: symbols added/removed compared with the previous fetch, with both fetch times. The file is created on the next constituents run. |
+| **Limitations** | niftyindices.com publishes no effective dates and no history: a change took effect somewhere between the two fetches, and membership before the first logged fetch is unknown. The historical evaluation therefore still uses current membership (survivorship bias, disclosed). |
+
 ### 5. Manifest — `public/data/manifest.json`
 
 | | |
 |---|---|
 | **Produced by** | `scripts/build-manifest.mts`, the last step of every pipeline run |
 | **Contents** | `latestMarketDate` (newest index bar), `generatedAt` (when this file was written - not proof data advanced), source URLs, data-quality warnings, and `refresh`: the run's outcome (complete / partial / failed), `latestDueDate`, `tradingDaysBehind`, reasons, and `lastCompleteRefreshAt` (only advanced by complete runs) |
+| **Supplements** | `supplements`: the activity file's latest date and session count; the filings feed's last successful read, last attempt and outcome. Missing or unreadable supplementary files are reported here and **never** change `refresh`. |
 | **Warnings it raises** | Index series that are behind the latest date; constituents with no history; stale stocks; stocks with missing sessions; suspected corporate-action breaks |
 
 ### 6. Trading activity — `public/data/stock-activity.json` (added 2026-10-28)

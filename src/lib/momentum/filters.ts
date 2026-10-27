@@ -1,4 +1,11 @@
-import type { MomentumCandidate, MomentumLabel, SizeSegment } from "../../types/momentum";
+import type { EvidenceCategory, MomentumCandidate, MomentumLabel, SizeSegment } from "../../types/momentum";
+import type { CoverageStatus } from "./news";
+
+/** News availability for one candidate: filings found in its window, and how much of the window the feed covered. */
+export interface NewsAvailability {
+  filings: number;
+  coverage: CoverageStatus;
+}
 
 export interface MomentumFilters {
   minAbsChangePct: number;
@@ -12,6 +19,9 @@ export interface MomentumFilters {
   maxBelowResistancePct: number | null;
   pattern: "any" | "breakout-today" | "near-52w-high" | "consolidation-before" | "triangle-before" | "retest";
   label: MomentumLabel | "all";
+  category: EvidenceCategory | "all";
+  /** has-filing: at least one filing in the window; none-covered: none, and the feed covered the window; unknown: not (fully) covered. */
+  news: "any" | "has-filing" | "none-covered" | "unknown";
 }
 
 export const DEFAULT_FILTERS: MomentumFilters = {
@@ -23,9 +33,18 @@ export const DEFAULT_FILTERS: MomentumFilters = {
   maxBelowResistancePct: null,
   pattern: "any",
   label: "all",
+  category: "all",
+  news: "any",
 };
 
-export function matchesFilters(c: MomentumCandidate, f: MomentumFilters): boolean {
+export function matchesFilters(c: MomentumCandidate, f: MomentumFilters, news?: NewsAvailability): boolean {
+  if (f.category !== "all" && c.assessment.category !== f.category) return false;
+  if (f.news !== "any") {
+    if (!news) return false;
+    if (f.news === "has-filing" && news.filings === 0) return false;
+    if (f.news === "none-covered" && !(news.filings === 0 && news.coverage === "covered")) return false;
+    if (f.news === "unknown" && !(news.filings === 0 && news.coverage !== "covered")) return false;
+  }
   if (Math.abs(c.price.dailyChangePct) < f.minAbsChangePct) return false;
   if (f.minRelativeVolume > 0 && !(c.activity.relativeVolume.available && c.activity.relativeVolume.value >= f.minRelativeVolume)) return false;
   if (f.industry !== "all" && c.industry !== f.industry) return false;
@@ -56,12 +75,14 @@ export function matchesFilters(c: MomentumCandidate, f: MomentumFilters): boolea
   return true;
 }
 
-export type SortKey = "change" | "rvol" | "closeLocation" | "turnover" | "dist52w" | "resistance" | "vsPeers" | "continuation" | "reversal" | "symbol";
+export type SortKey = "change" | "evidence" | "rvol" | "closeLocation" | "turnover" | "dist52w" | "resistance" | "vsPeers" | "continuation" | "reversal" | "symbol";
 
 export function sortValue(c: MomentumCandidate, key: SortKey): number | string | null {
   switch (key) {
     case "change":
       return c.price.dailyChangePct;
+    case "evidence":
+      return c.assessment.category === "insufficient" ? null : c.assessment.total;
     case "rvol":
       return c.activity.relativeVolume.available ? c.activity.relativeVolume.value : null;
     case "closeLocation":

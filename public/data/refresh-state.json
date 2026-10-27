@@ -4,33 +4,38 @@
   "index": {
    "2026-10-27": {
     "status": "ok",
-    "checkedAt": "2026-10-27T18:01:02.355Z",
+    "checkedAt": "2026-10-27T19:03:35.179Z",
     "attempts": 1,
-    "detail": "19 tracked series"
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-26": {
     "status": "ok",
-    "checkedAt": "2026-10-26T20:02:01.187Z",
+    "checkedAt": "2026-10-27T19:03:35.462Z",
     "attempts": 1,
-    "detail": "19 tracked series"
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-23": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:19.474Z",
+    "checkedAt": "2026-10-27T19:03:35.883Z",
     "attempts": 1,
-    "detail": "19 tracked series"
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-22": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:19.570Z",
+    "checkedAt": "2026-10-27T19:03:36.282Z",
     "attempts": 1,
-    "detail": "19 tracked series"
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-21": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:19.859Z",
+    "checkedAt": "2026-10-27T19:03:36.698Z",
     "attempts": 1,
-    "detail": "19 tracked series"
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-20": {
     "status": "missing",
@@ -39,59 +44,80 @@
    },
    "2026-10-19": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:20.651Z",
+    "checkedAt": "2026-10-27T19:03:37.084Z",
     "attempts": 1,
-    "detail": "19 tracked series"
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-16": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:21.056Z",
+    "checkedAt": "2026-10-27T19:03:37.478Z",
     "attempts": 1,
-    "detail": "19 tracked series"
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-15": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:21.447Z",
+    "checkedAt": "2026-10-27T19:03:37.874Z",
     "attempts": 1,
-    "detail": "19 tracked series"
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-14": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:21.848Z",
+    "checkedAt": "2026-10-27T19:03:38.280Z",
     "attempts": 1,
-    "detail": "19 tracked series"
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-13": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:22.423Z",
+    "checkedAt": "2026-10-27T19:03:38.687Z",
     "attempts": 1,
-    "detail": "19 tracked series"
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-12": {
     "status": "ok",
-    "checkedAt": "2026-10-26T06:02:22.649Z",
+    "checkedAt": "2026-10-27T19:03:39.098Z",
     "attempts": 1,
-    "detail": "19 tracked series"
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-09": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:39.477Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-08": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:39.890Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-07": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:40.288Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-06": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:40.686Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-05": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:41.105Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-10-02": {
     "status": "missing",
@@ -100,55 +126,94 @@
    },
    "2026-10-01": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:41.487Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-30": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:41.888Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-29": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:42.296Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-28": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:42.693Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-25": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:43.080Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-24": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:43.495Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-23": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:43.891Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-22": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:44.280Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-21": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:44.691Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-18": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:45.079Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-17": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:45.475Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-16": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:45.884Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-15": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:46.278Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-14": {
     "status": "missing",
@@ -157,223 +222,388 @@
    },
    "2026-09-11": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:46.673Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-10": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:47.078Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-09": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:47.472Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-08": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:47.876Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-07": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:48.276Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-04": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:48.683Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-03": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:49.073Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-02": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:49.474Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-09-01": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:49.878Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-31": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:50.277Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-28": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:50.676Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-27": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:51.075Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-26": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:51.479Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-25": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:51.881Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-24": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:52.291Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-21": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:52.681Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-20": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:53.087Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-19": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:53.488Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-18": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:53.879Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-17": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:54.291Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-14": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:54.677Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-13": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:55.081Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-12": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:55.490Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-11": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:55.890Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-10": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:56.279Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-07": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:56.711Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-06": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:57.083Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-05": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:57.488Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-04": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:57.871Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-08-03": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:58.304Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-31": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:58.686Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-30": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:59.079Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-29": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:59.480Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-28": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:03:59.881Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-27": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:00.290Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-24": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:00.677Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-23": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:01.090Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-22": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:01.486Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-21": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:01.877Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-20": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:02.289Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-17": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:02.676Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-16": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:03.090Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-15": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:03.478Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-14": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:03.891Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-13": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:04.285Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-10": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:04.675Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-09": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:05.088Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-08": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:05.479Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-07": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:05.901Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-06": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:06.281Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-03": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:06.689Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-02": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:07.082Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-07-01": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:07.480Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-30": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:07.885Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-29": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:08.285Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-26": {
     "status": "missing",
@@ -382,83 +612,143 @@
    },
    "2026-06-25": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:08.687Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-24": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:09.087Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-23": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:09.487Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-22": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:09.882Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-19": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:10.287Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-18": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:10.683Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-17": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:11.093Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-16": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:11.482Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-15": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:11.878Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-12": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:12.295Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-11": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:12.675Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-10": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:13.088Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-09": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:13.472Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-08": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:13.883Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-05": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:14.281Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-04": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:14.687Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-03": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:15.083Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-02": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:15.472Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-06-01": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:15.887Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-29": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:16.283Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-28": {
     "status": "missing",
@@ -467,75 +757,129 @@
    },
    "2026-05-27": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:16.682Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-26": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:17.078Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-25": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:17.482Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-22": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:17.872Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-21": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:18.278Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-20": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:18.692Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-19": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:19.074Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-18": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:19.482Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-15": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:19.884Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-14": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:20.286Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-13": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:20.681Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-12": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:21.090Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-11": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:21.473Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-08": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:21.889Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-07": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:22.279Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-06": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:22.692Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-05": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:23.082Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-04": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:23.485Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-05-01": {
     "status": "missing",
@@ -544,51 +888,87 @@
    },
    "2026-04-30": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:23.882Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-29": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:24.286Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-28": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:24.680Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-27": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:25.085Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-24": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:25.477Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-23": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:25.883Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-22": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:26.277Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-21": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:26.689Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-20": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:27.072Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-17": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:27.485Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-16": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:27.874Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-15": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:28.279Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-14": {
     "status": "missing",
@@ -597,27 +977,45 @@
    },
    "2026-04-13": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:28.690Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-10": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:29.081Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-09": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:29.496Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-08": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:29.879Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-07": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:30.287Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-06": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:30.674Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-03": {
     "status": "missing",
@@ -626,11 +1024,17 @@
    },
    "2026-04-02": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:31.080Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-04-01": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:31.474Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-31": {
     "status": "missing",
@@ -639,11 +1043,17 @@
    },
    "2026-03-30": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:31.884Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-27": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:32.335Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-26": {
     "status": "missing",
@@ -652,67 +1062,115 @@
    },
    "2026-03-25": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:32.680Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-24": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:33.090Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-23": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:33.484Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-20": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:33.939Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-19": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:34.291Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-18": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:34.686Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-17": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:35.088Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-16": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:35.491Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-13": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:35.891Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-12": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:36.289Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-11": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:36.691Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-10": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:37.087Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-09": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:37.492Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-06": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:37.884Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-05": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:38.276Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-04": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:38.694Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-03-03": {
     "status": "missing",
@@ -721,103 +1179,178 @@
    },
    "2026-03-02": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:39.075Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-27": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:39.490Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-26": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:39.874Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-25": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:40.289Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-24": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:40.670Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-23": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:41.073Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-20": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:41.489Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-19": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:41.889Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-18": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:42.291Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-17": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:42.671Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-16": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:43.094Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-13": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:43.477Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-12": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:43.897Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-11": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:44.292Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-10": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:44.675Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-09": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:45.091Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-06": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:45.475Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-05": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:45.890Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-04": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:46.280Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-03": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:46.685Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-02-02": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:47.074Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-30": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:47.489Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-29": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:47.868Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-28": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:48.292Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-27": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:48.677Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-26": {
     "status": "missing",
@@ -826,27 +1359,45 @@
    },
    "2026-01-23": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:49.094Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-22": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:49.474Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-21": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:49.892Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-20": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:50.278Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-19": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:50.674Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-16": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:51.096Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-15": {
     "status": "missing",
@@ -855,59 +1406,101 @@
    },
    "2026-01-14": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:51.475Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-13": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:51.878Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-12": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:52.294Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-09": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:52.692Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-08": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:53.095Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-07": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:53.477Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-06": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:53.894Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-05": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:54.294Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-02": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:54.694Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2026-01-01": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:55.088Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-31": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:55.474Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-30": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:55.888Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-29": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:56.276Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-26": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:56.693Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-25": {
     "status": "missing",
@@ -916,143 +1509,248 @@
    },
    "2025-12-24": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:57.074Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-23": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:57.472Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-22": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:57.881Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-19": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:58.278Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-18": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:58.685Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-17": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:59.088Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-16": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:59.476Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-15": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:04:59.895Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-12": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:00.275Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-11": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:00.674Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-10": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:01.095Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-09": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:01.490Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-08": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:01.871Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-05": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:02.292Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-04": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:02.676Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-03": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:03.095Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-02": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:03.491Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-12-01": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:03.875Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-28": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:04.291Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-27": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:04.674Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-26": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:05.094Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-25": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:05.475Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-24": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:05.884Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-21": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:06.278Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-20": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:06.687Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-19": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:07.072Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-18": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:07.489Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-17": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:07.869Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-14": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:08.291Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-13": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:08.678Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-12": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:09.089Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-11": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:09.472Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-10": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:09.889Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-07": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:10.270Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-06": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:10.691Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-05": {
     "status": "missing",
@@ -1061,39 +1759,66 @@
    },
    "2025-11-04": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:11.075Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-11-03": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:11.467Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-31": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:11.890Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-30": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:12.278Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-29": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:12.692Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-28": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:13.090Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-27": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:13.494Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-24": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:13.876Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-23": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:14.276Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-22": {
     "status": "missing",
@@ -1102,55 +1827,94 @@
    },
    "2025-10-21": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:14.698Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-20": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:15.078Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-17": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:15.490Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-16": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:15.874Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-15": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:16.276Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-14": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:16.691Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-13": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:17.076Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-10": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:17.488Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-09": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:17.870Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-08": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:18.291Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-07": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:18.672Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-06": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:19.088Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-03": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:19.495Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-10-02": {
     "status": "missing",
@@ -1159,87 +1923,150 @@
    },
    "2025-10-01": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:19.875Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-30": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:20.294Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-29": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:20.675Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-26": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:21.097Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-25": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:21.474Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-24": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:21.954Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-23": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:22.276Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-22": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:22.694Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-19": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:23.071Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-18": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:23.498Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-17": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:23.872Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-16": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:24.292Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-15": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:24.674Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-12": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:25.094Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-11": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:25.477Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-10": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:25.888Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-09": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:26.278Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-08": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:26.699Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-05": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:27.095Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-04": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:27.476Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-03": {
     "status": "ok",
-    "checkedAt": "bootstrap"
+    "checkedAt": "2026-10-27T19:05:27.892Z",
+    "attempts": 1,
+    "detail": "19 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
    },
    "2025-09-02": {
     "status": "ok",

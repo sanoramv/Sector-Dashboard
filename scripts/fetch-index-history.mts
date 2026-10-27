@@ -18,8 +18,8 @@
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { BENCHMARK, SECTOR_UNIVERSE } from "../src/config/sectorUniverse.ts";
-import { MARKET_CAP_SEGMENTS } from "../src/config/marketCapSegments.ts";
+import { BENCHMARK } from "../src/config/sectorUniverse.ts";
+import { ALL_INDEX_DEFS, INDEX_SET_HASH } from "./lib/index-defs.mts";
 import type { IndexSeries } from "../src/types/market.ts";
 import { createPacer, fetchArchive, mapWithConcurrency } from "./lib/http.mts";
 import { toDdMmYyyy } from "./lib/dates.mts";
@@ -35,10 +35,7 @@ const CONCURRENCY = 2;
 const MIN_REQUEST_INTERVAL_MS = 400;
 const MAX_BACKFILL_DATES = Number(process.env.MAX_BACKFILL_DATES ?? 40);
 
-// MARKET_CAP_SEGMENTS includes NIFTY 500 again (as the self-benchmark entry) -
-// excluded here since it's already covered by BENCHMARK, same slug/index name.
-const NEW_SEGMENT_DEFS = MARKET_CAP_SEGMENTS.filter((s) => s.slug !== BENCHMARK.slug);
-const ALL_DEFS = [BENCHMARK, ...SECTOR_UNIVERSE, ...NEW_SEGMENT_DEFS];
+const ALL_DEFS = ALL_INDEX_DEFS;
 
 async function loadExisting(): Promise<Record<string, IndexSeries>> {
   let text: string;
@@ -74,7 +71,7 @@ async function main() {
   const state = await loadState(STATE_PATH, bootstrapFrom(existing));
 
   const targets = targetDates(new Date(), BACKFILL_DAYS);
-  const plan = planFetch("index", targets, state, { maxBackfill: MAX_BACKFILL_DATES });
+  const plan = planFetch("index", targets, state, { maxBackfill: MAX_BACKFILL_DATES, currentSymbolSetHash: INDEX_SET_HASH });
   const dates = [...plan.recent, ...plan.backfill];
   console.log(
     `[index-history] latest due date ${targets[0]}; fetching ${plan.recent.length} recent + ${plan.backfill.length} backfill date(s)` +
@@ -89,6 +86,7 @@ async function main() {
       defs: ALL_DEFS,
       benchmarkIndexName: BENCHMARK.nseIndexName,
       checkedAt: new Date().toISOString(),
+      indexSetHash: INDEX_SET_HASH,
     });
     if (entry.status === "failed" || entry.status === "invalid") {
       console.warn(`[index-history] UNRESOLVED ${iso}: ${entry.status} (${entry.detail}) after ${entry.attempts} attempt(s)`);

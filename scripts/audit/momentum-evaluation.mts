@@ -55,6 +55,25 @@ async function main() {
   for (const g of r.byGroup) console.log(row(`top ${r.config.topN} ${g.key}s`, g.stats));
   console.log("\n== By group and label");
   for (const g of r.byGroupLabel) console.log(row(`${g.key.group} / ${LABEL_TEXT[g.key.label]}`, g.stats));
+  console.log("\n== By evidence category");
+  for (const g of r.byCategory) console.log(row(`${g.key.group} / ${g.key.category}`, g.stats));
+  console.log("\n== Category precision/recall vs taking every top mover (base rate)");
+  for (const c of r.classification) {
+    console.log(
+      `${c.group} ${c.category} -> ${c.target}: predicted ${c.predicted} (${c.predictedDates} dates) precision ${c.precision?.toFixed(1) ?? "n/a"}% ` +
+        `${c.precisionCi ? `[${c.precisionCi[0].toFixed(1)}, ${c.precisionCi[1].toFixed(1)}]` : ""} recall ${c.recall?.toFixed(1) ?? "n/a"}% base rate ${c.baseRate.toFixed(1)}% lift ${c.liftPp?.toFixed(1) ?? "n/a"}pp`,
+    );
+  }
+  console.log("\n== Category by chronological third");
+  for (const g of r.byCategoryFold) console.log(row(`F${g.key.fold} ${g.key.group} / ${g.key.category}`, g.stats));
+  console.log("\n== First appearance only (no consecutive-day repeats)");
+  for (const g of r.firstAppearanceOnly) console.log(row(`${g.key}s`, g.stats));
+  console.log("\n== By liquidity (median 20-session turnover)");
+  for (const g of r.byLiquidity) console.log(row(`${g.key.group} / ${g.key.liquidity}`, g.stats));
+  console.log("\n== By move magnitude");
+  for (const g of r.byMagnitude) console.log(row(`${g.key.group} / ${g.key.magnitude}`, g.stats));
+  console.log("\n== By NSE industry");
+  for (const g of r.byIndustry) console.log(row(`${g.key.group} / ${g.key.industry}`.slice(0, 46), g.stats));
   console.log("\n== By market regime");
   for (const g of r.byRegime) console.log(row(`${g.key.group} / ${g.key.regime}`, g.stats));
   console.log("\n== By volume confirmation (RVOL >= 1.5)");
@@ -66,10 +85,13 @@ async function main() {
     console.log(`${w.group}: scored=${w.scored} brier(label)=${w.brierLabelModel?.toFixed(4)} brier(group)=${w.brierGroupModel?.toFixed(4)} skill=${w.skill?.toFixed(4)}`);
     for (const b of w.reliability) console.log(`   predicted ${b.bin}: n=${b.n} mean predicted ${b.meanPredicted.toFixed(1)}% observed ${b.observed.toFixed(1)}%`);
   }
+  console.log("\n== Walk-forward: evidence category frequency vs group frequency");
+  for (const w of r.walkForwardCategory) console.log(`${w.group}: scored=${w.scored} brier(category)=${w.brierLabelModel?.toFixed(4)} brier(group)=${w.brierGroupModel?.toFixed(4)} skill=${w.skill?.toFixed(4)}`);
   const out = process.argv.indexOf("--json");
   if (out > 0 && process.argv[out + 1]) {
     const { observations: _omit, ...summary } = r;
-    await writeFile(process.argv[out + 1], JSON.stringify(summary, null, 1));
+    const strip = (w: (typeof r.walkForward)[number]) => ({ ...w, predictions: undefined });
+    await writeFile(process.argv[out + 1], JSON.stringify({ ...summary, walkForward: r.walkForward.map(strip), walkForwardCategory: r.walkForwardCategory.map(strip) }, null, 1));
   }
 }
 

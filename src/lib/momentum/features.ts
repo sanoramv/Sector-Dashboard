@@ -63,6 +63,15 @@ export function computePriceAction(bars: DailyBar[]): PriceActionFeatures {
       : unavailable("zero volatility in the baseline window")
     : unavailable(volatility20.reason);
 
+  const range = today.high - today.low;
+  const share = (x: number) => (range > 0 ? x / range : null);
+  let distFromSwingHigh20Pct: Maybe<number> = unavailable("need 20 comparable sessions before today");
+  if (bars.length >= 21) {
+    let swing = -Infinity;
+    for (let i = bars.length - 21; i < bars.length - 1; i++) swing = Math.max(swing, bars[i].high);
+    distFromSwingHigh20Pct = ok(pct(today.close, swing));
+  }
+
   return {
     close: today.close,
     prevClose: prev.close,
@@ -71,6 +80,9 @@ export function computePriceAction(bars: DailyBar[]): PriceActionFeatures {
     gapPct: pct(today.open, prev.close),
     closeLocation: today.high > today.low ? (today.close - today.low) / (today.high - today.low) : null,
     rangePct: ((today.high - today.low) / prev.close) * 100,
+    bodyShare: share(Math.abs(today.close - today.open)),
+    upperWickShare: share(today.high - Math.max(today.open, today.close)),
+    lowerWickShare: share(Math.min(today.open, today.close) - today.low),
     r3: computeReturnOverSessions(bars, 3),
     r5: computeReturnOverSessions(bars, 5),
     r10: computeReturnOverSessions(bars, 10),
@@ -81,6 +93,7 @@ export function computePriceAction(bars: DailyBar[]): PriceActionFeatures {
     distSma50Pct: distFromSma(closes, 50),
     distSma200Pct: distFromSma(closes, 200),
     distanceFrom52wHigh: computeDistanceFrom52wHigh(bars),
+    distFromSwingHigh20Pct,
   };
 }
 
@@ -96,6 +109,13 @@ export function computePatternContext(bars: DailyBar[], settings: AppSettings): 
   const resistance = detectResistance(bars, settings.screening);
   const breakoutToday = resistance.available ? today.close > resistance.value.level : null;
   const failedBreakoutToday = resistance.available ? today.high > resistance.value.level && today.close <= resistance.value.level : null;
+  const lookback = settings.screening.resistanceLookbackSessions;
+  let breakdownToday: boolean | null = null;
+  if (bars.length >= lookback + 1) {
+    let support = Infinity;
+    for (let i = bars.length - 1 - lookback; i < bars.length - 1; i++) support = Math.min(support, bars[i].low);
+    breakdownToday = today.close < support;
+  }
 
   let retest: PatternContext["retest"] = null;
   for (let k = 1; k <= FEATURE_RULES.retestLookbackSessions && bars.length - k >= 2; k++) {
@@ -115,6 +135,7 @@ export function computePatternContext(bars: DailyBar[], settings: AppSettings): 
   return {
     resistance,
     breakoutToday,
+    breakdownToday,
     failedBreakoutToday,
     retest,
     consolidationBefore: detectConsolidation(before, settings.screening),
@@ -150,6 +171,8 @@ export function computeActivityFeatures(bars: DailyBar[], activityByDate: Map<st
       avgDeliveryPct20: unavailable(reason),
       series: null,
       tradeForTrade: false,
+      zeroVolume: false,
+      priorParticipation: unavailable(reason),
       liquidityWarnings: [],
     };
   }
@@ -175,6 +198,22 @@ export function computeActivityFeatures(bars: DailyBar[], activityByDate: Map<st
       ? ok(deliveries.reduce((a, b) => a + b, 0) / deliveries.length)
       : unavailable("delivery % missing for too many baseline sessions");
 
+  // Participation trend before today: the 3 previous sessions' mean volume vs the 20 sessions before those.
+  const rowsAt = (from: number, to: number) =>
+    bars
+      .slice(Math.max(0, from), Math.max(0, to))
+      .map((b) => activityByDate.get(b.date))
+      .filter((r): r is ActivityRow => r !== undefined);
+  const recent3 = rowsAt(bars.length - 4, bars.length - 1);
+  const base20 = rowsAt(bars.length - 24, bars.length - 4);
+  const base20Mean = base20.length > 0 ? base20.reduce((a, r) => a + r.volume, 0) / base20.length : 0;
+  const priorParticipation: Maybe<number> =
+    recent3.length === 3 && base20.length >= FEATURE_RULES.minActivityBaselineRows && base20Mean > 0
+      ? ok(recent3.reduce((a, r) => a + r.volume, 0) / 3 / base20Mean)
+      : unavailable("need volume for the 3 previous sessions and 18 of the 20 before them");
+
+  const zeroVolume = row.volume === 0;
+  if (zeroVolume) warnings.push("NSE recorded no shares traded today for this stock (zero volume - not missing data).");
   const tradeForTrade = row.series === "BE" || row.series === "BZ";
   if (tradeForTrade) {
     warnings.push(`Trades in NSE's ${row.series} (trade-for-trade) series: every trade must be settled by delivery, intraday trading is not possible, and delivery % is 100% by rule.`);
@@ -194,6 +233,8 @@ export function computeActivityFeatures(bars: DailyBar[], activityByDate: Map<st
     avgDeliveryPct20,
     series: row.series,
     tradeForTrade,
+    zeroVolume,
+    priorParticipation,
     liquidityWarnings: warnings,
   };
 }

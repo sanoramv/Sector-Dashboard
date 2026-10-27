@@ -95,6 +95,7 @@ function candidate(over: Partial<MomentumCandidate> & { symbol: string; change: 
     patterns: {
       resistance: over.dist === null ? unavailable("n/a") : ok({ level: 100, levelDate: "2026-09-01", distancePct: over.dist ?? 1, isApproaching: false }),
       breakoutToday: (over.dist ?? 1) > 0,
+      breakdownToday: false,
       failedBreakoutToday: false,
       retest: null,
       consolidationBefore: unavailable("n/a"),
@@ -109,6 +110,7 @@ function candidate(over: Partial<MomentumCandidate> & { symbol: string; change: 
     context: { stockVsPeersPp: 1 } as MomentumCandidate["context"],
     quality: { status: "ok", barsUsed: 200, usableFrom: "2025-08-01", notes: [] },
     label: over.label ?? "momentum-continuation",
+    assessment: over.assessment ?? { category: "continuation", components: [], total: 3, missingEvidence: [], rationale: "" },
     continuationFactors: [],
     reversalFactors: [],
     lowConfidenceReasons: [],

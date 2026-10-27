@@ -41,6 +41,16 @@ export function momentumFreshnessNotices(
   if (supplements.activity === "unavailable") {
     out.push({ level: "warning", text: "Volume/turnover data could not be loaded: relative volume and liquidity are unavailable and most stocks are labelled 'Insufficient evidence'." });
   }
+  const sup = manifest.supplements;
+  if (sup?.activity?.latestDate && sup.activity.latestDate < manifest.latestMarketDate) {
+    out.push({ level: "warning", text: `Volume data ends ${sup.activity.latestDate}, before the latest price date ${manifest.latestMarketDate}: relative volume is unavailable for later sessions.` });
+  }
+  if (sup?.announcements?.lastAttemptOutcome === "failed") {
+    out.push({
+      level: "warning",
+      text: `The latest filings-feed read failed (${sup.announcements.lastAttemptDetail ?? "unknown error"})${sup.announcements.lastSuccessfulReadAt ? `; last successful read ${sup.announcements.lastSuccessfulReadAt}` : ""}. Filings after that are not covered.`,
+    });
+  }
   if (supplements.announcements === "unavailable") {
     out.push({ level: "warning", text: "Exchange filings could not be loaded: catalyst information is unavailable (not 'no news')." });
   }

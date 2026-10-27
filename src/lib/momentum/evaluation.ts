@@ -1,9 +1,9 @@
 import type { AppSettings } from "../../types/config";
-import type { DiscoveryGroup, MomentumLabel } from "../../types/momentum";
+import type { DiscoveryGroup, EvidenceCategory, MomentumLabel } from "../../types/momentum";
 import type { Regime } from "../../types/metrics";
 import type { PreparedUniverse } from "./universe";
 import { marketContextAt } from "./market";
-import { DEFAULT_TOP_N, buildCandidate, moversOn, rankMovers, type CandidateBuildContext } from "./discovery";
+import { DEFAULT_TOP_N, buildCandidate, makeBuildContext, moversOn, rankMovers, type CandidateBuildContext } from "./discovery";
 import { nextSessionOutcome, type NextSessionOutcome } from "./outcomes";
 import { MOMENTUM_RULES } from "./classify";
 
@@ -24,7 +24,8 @@ import { MOMENTUM_RULES } from "./classify";
  * running frequency) to test whether the labels add anything.
  *
  * Effective sample size: same-day candidates move together (market and
- * sector effects), so confidence intervals are clustered by date, and the
+ * sector effects) and stocks recur across dates, so confidence intervals are
+ * clustered by date and by stock (two-way), and the
  * number of distinct dates is reported next to n.
  */
 
@@ -42,11 +43,28 @@ export const MIN_DISTINCT_DATES = 20;
 
 export type VolumeConfirmation = "confirmed" | "not-confirmed" | "unavailable";
 
+export type LiquidityBucket = "under 1 cr" | "1-10 cr" | "10-100 cr" | "100 cr+" | "unknown";
+export type MagnitudeBucket = "under 3%" | "3-5%" | "5-10%" | "10%+";
+
+export function liquidityBucket(medianTurnoverCr: number | null): LiquidityBucket {
+  if (medianTurnoverCr === null) return "unknown";
+  return medianTurnoverCr < 1 ? "under 1 cr" : medianTurnoverCr < 10 ? "1-10 cr" : medianTurnoverCr < 100 ? "10-100 cr" : "100 cr+";
+}
+
+export function magnitudeBucket(changePct: number): MagnitudeBucket {
+  const a = Math.abs(changePct);
+  return a < 3 ? "under 3%" : a < 5 ? "3-5%" : a < 10 ? "5-10%" : "10%+";
+}
+
 export interface Observation {
   date: string;
   symbol: string;
   group: DiscoveryGroup;
   label: MomentumLabel;
+  category: EvidenceCategory;
+  industry: string;
+  liquidity: LiquidityBucket;
+  magnitude: MagnitudeBucket;
   volume: VolumeConfirmation;
   regime: Regime;
   /** The same stock was also in the same group on the previous session. */
@@ -59,7 +77,7 @@ export interface OutcomeStats {
   dates: number;
   stocks: number;
   pctPositive: number;
-  /** 95% interval, clustered by date. Null with fewer than 2 dates. */
+  /** 95% interval, clustered by date and stock. Null with fewer than 2 dates. */
   pctPositiveCi: [number, number] | null;
   meanPct: number;
   meanCi: [number, number] | null;
@@ -102,6 +120,28 @@ export interface WalkForwardResult {
   predictions: Array<{ date: string; symbol: string; pLabel: number; pGroup: number; positive: boolean }>;
 }
 
+/**
+ * Does a category pick out the outcome it describes better than taking every
+ * mover in the group? "Continued" = the next close moved further in today's
+ * direction (higher for a gainer, lower for a loser); "reversed" = the
+ * opposite. Precision is compared with the base rate (the precision of
+ * simply taking every top mover - the no-score baseline).
+ */
+export interface ClassificationMetrics {
+  group: DiscoveryGroup;
+  category: "continuation" | "exhaustion-reversal";
+  target: "continued" | "reversed";
+  predicted: number;
+  predictedDates: number;
+  precision: number | null;
+  /** 95% interval for precision, clustered by date and stock. */
+  precisionCi: [number, number] | null;
+  recall: number | null;
+  baseRate: number;
+  /** precision - baseRate, percentage points. */
+  liftPp: number | null;
+}
+
 export interface EvaluationResult {
   config: EvaluationConfig;
   firstDate: string | null;
@@ -116,7 +156,17 @@ export interface EvaluationResult {
   byRegime: Array<StatsRow<{ group: DiscoveryGroup; regime: Regime }>>;
   byVolume: Array<StatsRow<{ group: DiscoveryGroup; volume: VolumeConfirmation }>>;
   byFold: Array<StatsRow<{ group: DiscoveryGroup; fold: number; from: string; to: string; label: MomentumLabel | null }>>;
+  byCategory: Array<StatsRow<{ group: DiscoveryGroup; category: EvidenceCategory }>>;
+  byCategoryFold: Array<StatsRow<{ group: DiscoveryGroup; fold: number; from: string; to: string; category: EvidenceCategory }>>;
+  byIndustry: Array<StatsRow<{ group: DiscoveryGroup; industry: string }>>;
+  byLiquidity: Array<StatsRow<{ group: DiscoveryGroup; liquidity: LiquidityBucket }>>;
+  byMagnitude: Array<StatsRow<{ group: DiscoveryGroup; magnitude: MagnitudeBucket }>>;
+  /** Each stock counted only on the first day of a consecutive run in the same list - guards against repeats inflating results. */
+  firstAppearanceOnly: Array<StatsRow<DiscoveryGroup>>;
+  classification: ClassificationMetrics[];
   walkForward: WalkForwardResult[];
+  /** The same walk-forward test using the evidence category instead of the setup label. */
+  walkForwardCategory: WalkForwardResult[];
   exclusions: {
     pendingNextSession: number;
     noNextBar: number;
@@ -145,17 +195,38 @@ function quantile(sorted: number[], q: number): number {
   return sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
 }
 
-/** Mean with a 95% interval whose standard error is clustered by date (observations on the same date are not independent). */
-export function clusteredMean(values: number[], clusters: string[]): { mean: number; ci: [number, number] | null } {
-  const n = values.length;
-  const mean = values.reduce((a, b) => a + b, 0) / n;
+/** Cluster-robust variance of a mean from residuals grouped by `keys` (with the usual G/(G-1) small-sample factor); null with fewer than 2 clusters. */
+function clusterVariance(resid: number[], keys: string[]): number | null {
   const sums = new Map<string, number>();
-  values.forEach((x, k) => sums.set(clusters[k], (sums.get(clusters[k]) ?? 0) + (x - mean)));
+  resid.forEach((r, k) => sums.set(keys[k], (sums.get(keys[k]) ?? 0) + r));
   const g = sums.size;
-  if (g < 2) return { mean, ci: null };
+  if (g < 2) return null;
   let ss = 0;
   for (const s of sums.values()) ss += s * s;
-  const se = (Math.sqrt(ss) / n) * Math.sqrt(g / (g - 1));
+  return (ss / resid.length ** 2) * (g / (g - 1));
+}
+
+/**
+ * Mean with a 95% interval whose standard error allows for dependence.
+ * Clustered by date: observations on the same date share market and sector
+ * moves. When `stocks` is given, also clustered by stock (two-way, Cameron-
+ * Gelbach-Miller): the same stock recurring across dates is not independent
+ * either. The larger of the two-way and the two one-way variances is used,
+ * so adding the stock dimension can only widen the interval.
+ */
+export function clusteredMean(values: number[], dates: string[], stocks?: string[]): { mean: number; ci: [number, number] | null } {
+  const n = values.length;
+  const mean = values.reduce((a, b) => a + b, 0) / n;
+  const resid = values.map((x) => x - mean);
+  const vDate = clusterVariance(resid, dates);
+  if (vDate === null) return { mean, ci: null };
+  let v = vDate;
+  if (stocks) {
+    const vStock = clusterVariance(resid, stocks);
+    const vBoth = clusterVariance(resid, dates.map((d, k) => `${d}|${stocks[k]}`)) ?? 0;
+    if (vStock !== null) v = Math.max(vDate, vStock, vDate + vStock - vBoth);
+  }
+  const se = Math.sqrt(v);
   return { mean, ci: [mean - 1.96 * se, mean + 1.96 * se] };
 }
 
@@ -165,10 +236,12 @@ export function computeOutcomeStats(obs: Array<Pick<Observation, "date" | "symbo
   const dates = obs.map((o) => o.date);
   const c2c = obs.map((o) => o.outcome.closeToClosePct);
   const sorted = [...c2c].sort((a, b) => a - b);
-  const mean = clusteredMean(c2c, dates);
+  const symbols = obs.map((o) => o.symbol);
+  const mean = clusteredMean(c2c, dates, symbols);
   const pos = clusteredMean(
     c2c.map((x) => (x > 0 ? 100 : 0)),
     dates,
+    symbols,
   );
   const share = (pred: (o: (typeof obs)[number]) => boolean) => (obs.filter(pred).length / n) * 100;
   const avg = (f: (o: (typeof obs)[number]) => number) => obs.reduce((s, o) => s + f(o), 0) / n;
@@ -217,9 +290,9 @@ export function computeOutcomeStats(obs: Array<Pick<Observation, "date" | "symbo
  *   group model: (positives + 1) / (n + 2) for the group
  * Scoring starts once the group has MIN_OBSERVATIONS prior observations.
  */
-export function walkForward(obs: Observation[], group: DiscoveryGroup): WalkForwardResult {
+export function walkForward(obs: Observation[], group: DiscoveryGroup, keyOf: (o: Observation) => string = (o) => o.label): WalkForwardResult {
   const mine = obs.filter((o) => o.group === group).sort((a, b) => a.date.localeCompare(b.date));
-  const labelCounts = new Map<MomentumLabel, { n: number; pos: number }>();
+  const labelCounts = new Map<string, { n: number; pos: number }>();
   const groupCount = { n: 0, pos: 0 };
   let bl = 0;
   let bg = 0;
@@ -234,7 +307,7 @@ export function walkForward(obs: Observation[], group: DiscoveryGroup): WalkForw
     if (groupCount.n >= MIN_OBSERVATIONS) {
       const pGroup = (groupCount.pos + 1) / (groupCount.n + 2);
       for (const o of today) {
-        const lc = labelCounts.get(o.label);
+        const lc = labelCounts.get(keyOf(o));
         const pLabel = lc && lc.n >= MIN_OBSERVATIONS ? (lc.pos + 1) / (lc.n + 2) : pGroup;
         const y = o.outcome.closeToClosePct > 0 ? 1 : 0;
         bl += (pLabel - y) ** 2;
@@ -251,10 +324,10 @@ export function walkForward(obs: Observation[], group: DiscoveryGroup): WalkForw
     }
     for (const o of today) {
       const y = o.outcome.closeToClosePct > 0 ? 1 : 0;
-      const lc = labelCounts.get(o.label) ?? { n: 0, pos: 0 };
+      const lc = labelCounts.get(keyOf(o)) ?? { n: 0, pos: 0 };
       lc.n += 1;
       lc.pos += y;
-      labelCounts.set(o.label, lc);
+      labelCounts.set(keyOf(o), lc);
       groupCount.n += 1;
       groupCount.pos += y;
     }
@@ -299,7 +372,7 @@ export function runMomentumEvaluation(u: PreparedUniverse, settings: AppSettings
     }
 
     const regime = marketContextAt(u, date, settings).regime.regime;
-    const ctx: CandidateBuildContext = { settings, marketRegime: regime, day, benchmarkUpTo: u.benchmark.slice(0, ci + 1), activityLoaded: u.activityLoaded };
+    const ctx: CandidateBuildContext = makeBuildContext(u, date, settings, regime, day);
     const members: Record<DiscoveryGroup, Set<string>> = { gainer: new Set(), loser: new Set() };
     let any = false;
     for (const group of GROUPS) {
@@ -325,6 +398,10 @@ export function runMomentumEvaluation(u: PreparedUniverse, settings: AppSettings
           symbol: c.symbol,
           group,
           label: c.label,
+          category: c.assessment.category,
+          industry: c.industry,
+          liquidity: liquidityBucket(c.activity.medianTurnover20Cr.available ? c.activity.medianTurnover20Cr.value : null),
+          magnitude: magnitudeBucket(c.price.dailyChangePct),
           volume: !rv.available ? "unavailable" : rv.value >= MOMENTUM_RULES.volumeConfirmRvol ? "confirmed" : "not-confirmed",
           regime,
           repeat: prevMembers[group].has(c.symbol),
@@ -370,13 +447,66 @@ export function runMomentumEvaluation(u: PreparedUniverse, settings: AppSettings
     }
   }
 
+  const CATEGORIES: EvidenceCategory[] = ["continuation", "mixed", "exhaustion-reversal", "insufficient"];
+  const byCategory = GROUPS.flatMap((group) =>
+    CATEGORIES.map((category) => ({ key: { group, category }, stats: computeOutcomeStats(observations.filter((o) => o.group === group && o.category === category)) })),
+  ).filter((r) => r.stats !== null);
+  const byCategoryFold: EvaluationResult["byCategoryFold"] = [];
+  for (let f = 0; f < 3 && evalDates.length >= 3; f++) {
+    const from = evalDates[Math.floor((f * evalDates.length) / 3)];
+    const to = evalDates[Math.floor(((f + 1) * evalDates.length) / 3) - 1];
+    for (const group of GROUPS) {
+      for (const category of CATEGORIES) {
+        const st = computeOutcomeStats(observations.filter((o) => o.date >= from && o.date <= to && o.group === group && o.category === category));
+        if (st) byCategoryFold.push({ key: { group, fold: f + 1, from, to, category }, stats: st });
+      }
+    }
+  }
+  const by = <K extends string>(field: (o: Observation) => K) =>
+    GROUPS.flatMap((group) =>
+      [...new Set(observations.filter((o) => o.group === group).map(field))].sort().map((k) => ({ key: { group, k }, stats: computeOutcomeStats(observations.filter((o) => o.group === group && field(o) === k)) })),
+    ).filter((r) => r.stats !== null);
+  const byIndustry = by((o) => o.industry).map((r) => ({ key: { group: r.key.group, industry: r.key.k }, stats: r.stats }));
+  const byLiquidity = by((o) => o.liquidity).map((r) => ({ key: { group: r.key.group, liquidity: r.key.k }, stats: r.stats }));
+  const byMagnitude = by((o) => o.magnitude).map((r) => ({ key: { group: r.key.group, magnitude: r.key.k }, stats: r.stats }));
+  const firstAppearanceOnly = GROUPS.map((g) => ({ key: g, stats: computeOutcomeStats(observations.filter((o) => o.group === g && !o.repeat)) }));
+
+  const classification: ClassificationMetrics[] = [];
+  for (const group of GROUPS) {
+    const mine = observations.filter((o) => o.group === group);
+    const dir = group === "gainer" ? 1 : -1;
+    for (const [category, target] of [
+      ["continuation", "continued"],
+      ["exhaustion-reversal", "reversed"],
+    ] as const) {
+      const hit = (o: Observation) => (target === "continued" ? o.outcome.closeToClosePct * dir > 0 : o.outcome.closeToClosePct * dir < 0);
+      const predicted = mine.filter((o) => o.category === category);
+      const actual = mine.filter(hit);
+      const tp = predicted.filter(hit).length;
+      const prec = predicted.length > 0 ? clusteredMean(predicted.map((o) => (hit(o) ? 100 : 0)), predicted.map((o) => o.date), predicted.map((o) => o.symbol)) : null;
+      const baseRate = mine.length > 0 ? (actual.length / mine.length) * 100 : 0;
+      classification.push({
+        group,
+        category,
+        target,
+        predicted: predicted.length,
+        predictedDates: new Set(predicted.map((o) => o.date)).size,
+        precision: prec ? prec.mean : null,
+        precisionCi: prec ? prec.ci : null,
+        recall: actual.length > 0 ? (tp / actual.length) * 100 : null,
+        baseRate,
+        liftPp: prec ? prec.mean - baseRate : null,
+      });
+    }
+  }
+
   const sortedNifty = [...niftyReturns].sort((a, b) => a - b);
   const discontinuities = Object.values(exclusions.nextSessionDiscontinuity).reduce((a, b) => a + b, 0);
   const warnings = [
     `Universe: today's NIFTY 500 + NIFTY Microcap 250 constituent lists (the Nifty Total Market components) applied to the whole history. Stocks that were delisted, merged or dropped from these indices during the period are missing (survivorship bias), and stocks added recently are counted as if they had always been members. Past top-gainer/loser lists therefore differ from what a live list (e.g. Groww's) showed on those days.`,
     `History: ${sessions} sessions from ${firstDate ?? "?"} to ${lastDate ?? "?"} - roughly one year in a single market environment. Features needing long windows (200-day average, 52-week high) are unavailable for the earliest part, and volume features for the first ~20 sessions with volume data.`,
     `Thresholds were fixed before this evaluation was run and are not fitted to it. Changing them after reading these results would make any improvement in-sample.`,
-    `Same-day candidates are correlated (market and sector moves), so confidence intervals are clustered by date and "dates" is the better guide to sample size than n. ${observations.length > 0 ? `${((observations.filter((o) => o.repeat).length / observations.length) * 100).toFixed(0)}% of observations are a stock repeating in the same list on consecutive days.` : ""}`,
+    `Same-day candidates are correlated (market and sector moves), and the same stocks recur across dates, so confidence intervals are clustered by both date and stock, and "dates" is the better guide to sample size than n. ${observations.length > 0 ? `${((observations.filter((o) => o.repeat).length / observations.length) * 100).toFixed(0)}% of observations are a stock repeating in the same list on consecutive days.` : ""}`,
     `Corporate actions: NSE prices are unadjusted. ${Object.values(exclusions.moversExcluded).reduce((a, b) => a + b, 0)} stock-days were not ranked because that day's bar starts a price discontinuity, and ${discontinuities} candidate observations were dropped because the NEXT bar does. Some of those were genuine 15%+ gap-downs, so the worst real next-day falls are under-represented. Smaller bonuses/rights issues are not detected.`,
     `Close-to-close returns are not tradable (the signal is only known at the close). The tradable outcome is next-open to next-close, net of an assumed ${config.costBps} bps round-trip cost; MFE/MAE use the daily high/low and say nothing about the order in which they occurred.`,
     `No news or filings are used historically: the announcements feed only provides recent items, so catalyst information cannot be tested.`,
@@ -404,7 +534,15 @@ export function runMomentumEvaluation(u: PreparedUniverse, settings: AppSettings
     byRegime,
     byVolume,
     byFold,
+    byCategory,
+    byCategoryFold,
+    byIndustry,
+    byLiquidity,
+    byMagnitude,
+    firstAppearanceOnly,
+    classification,
     walkForward: GROUPS.map((g) => walkForward(observations, g)),
+    walkForwardCategory: GROUPS.map((g) => walkForward(observations, g, (o) => o.category)),
     exclusions,
     warnings,
   };

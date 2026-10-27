@@ -50,7 +50,11 @@ export interface FixtureStock {
   segment?: "midcap150" | "smallcap250";
 }
 
-export function buildDataset(benchmark: DailyBar[], stocks: FixtureStock[]): RawDataset {
+export function buildDataset(
+  benchmark: DailyBar[],
+  stocks: FixtureStock[],
+  extra: { indices?: Record<string, { nseIndexName: string; bars: DailyBar[]; constituents?: string[] }> } = {},
+): RawDataset {
   const listOf = (slug: string) =>
     stocks
       .filter((s) => (s.list ?? "nifty500") === slug || s.segment === slug)
@@ -74,10 +78,18 @@ export function buildDataset(benchmark: DailyBar[], stocks: FixtureStock[]): Raw
         reasons: [],
       },
     },
-    indexSeries: { nifty500: { slug: "nifty500", nseIndexName: "Nifty 500", bars: benchmark } },
-    constituents: Object.fromEntries(
-      ["nifty500", "microcap250", "midcap150", "smallcap250"].map((slug) => [slug, { slug, constituents: listOf(slug), fetchedAt }]),
-    ),
+    indexSeries: {
+      nifty500: { slug: "nifty500", nseIndexName: "Nifty 500", bars: benchmark },
+      ...Object.fromEntries(Object.entries(extra.indices ?? {}).map(([slug, x]) => [slug, { slug, nseIndexName: x.nseIndexName, bars: x.bars }])),
+    },
+    constituents: {
+      ...Object.fromEntries(["nifty500", "microcap250", "midcap150", "smallcap250"].map((slug) => [slug, { slug, constituents: listOf(slug), fetchedAt }])),
+      ...Object.fromEntries(
+        Object.entries(extra.indices ?? {})
+          .filter(([, x]) => x.constituents)
+          .map(([slug, x]) => [slug, { slug, constituents: (x.constituents ?? []).map((symbol) => ({ symbol, companyName: `${symbol} Ltd.`, industry: "Information Technology" })), fetchedAt }]),
+      ),
+    },
     stocks: Object.fromEntries(stocks.map((s) => [s.symbol, { symbol: s.symbol, bars: s.bars }])),
   };
 }

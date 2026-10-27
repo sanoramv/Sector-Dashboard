@@ -5,11 +5,13 @@ import type { ActivityRow } from "../types/activity";
 import type { Maybe } from "../types/metrics";
 import type { OutcomeStats } from "../lib/momentum/evaluation";
 import type { FilingWindowResult } from "../lib/momentum/news";
-import { CATEGORY_TEXT } from "../lib/momentum/news";
+import { CATEGORY_TEXT as CATEGORY_TEXT_FILING } from "../lib/momentum/news";
 import { LABEL_DEFINITION, LABEL_TEXT } from "../lib/momentum/classify";
 import { formatDateHuman, formatDateTimeHuman } from "../lib/format";
 import { LineChart } from "./LineChart";
-import { LABEL_BADGE } from "./MomentumTable";
+import { CATEGORY_BADGE, LABEL_BADGE } from "./MomentumTable";
+import { CATEGORY_TEXT } from "../lib/momentum/assess";
+import { explainCandidate } from "../lib/momentum/explain";
 
 export interface MomentumDetailPanelProps {
   candidate: MomentumCandidate;
@@ -19,6 +21,9 @@ export interface MomentumDetailPanelProps {
   filings: FilingWindowResult;
   /** Historical next-session statistics for this candidate's group and label, if the evaluation has been run. */
   history: OutcomeStats | null;
+  /** Historical stats for this group and evidence category, and for all top movers in the group (baseline). */
+  categoryHistory?: OutcomeStats | null;
+  groupHistory?: OutcomeStats | null;
   historyRan: boolean;
   onClose: () => void;
 }
@@ -42,7 +47,15 @@ function Stat({ label, value, title }: { label: string; value: React.ReactNode; 
 
 const grid: React.CSSProperties = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 12 };
 
-export function MomentumDetailPanel({ candidate: c, bars, activityByDate, filings, history, historyRan, onClose }: MomentumDetailPanelProps) {
+const DIMENSION_TEXT: Record<string, string> = {
+  "price-structure": "Price structure",
+  volume: "Volume / participation",
+  "relative-strength": "Relative strength & sector",
+  market: "Market",
+  extension: "Extension / exhaustion",
+};
+
+export function MomentumDetailPanel({ candidate: c, bars, activityByDate, filings, history, categoryHistory = null, groupHistory = null, historyRan, onClose }: MomentumDetailPanelProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     closeRef.current?.focus();
@@ -84,12 +97,37 @@ export function MomentumDetailPanel({ candidate: c, bars, activityByDate, filing
           </div>
 
           <div>
-            <span className={`badge ${LABEL_BADGE[c.label]}`} style={{ fontSize: 12 }}>
-              {LABEL_TEXT[c.label]}
+            <span className={`badge ${CATEGORY_BADGE[c.assessment.category]}`} style={{ fontSize: 12 }}>
+              {CATEGORY_TEXT[c.group][c.assessment.category]}
+            </span>{" "}
+            <span className={`badge ${LABEL_BADGE[c.label]}`} style={{ fontSize: 11 }} title={LABEL_DEFINITION[c.label]}>
+              Setup: {LABEL_TEXT[c.label]}
             </span>
-            <p style={{ fontSize: 12.5, margin: "8px 0 0" }} className="text-muted">
-              {LABEL_DEFINITION[c.label]}
-            </p>
+            <p style={{ fontSize: 13, margin: "8px 0 0" }}>{explainCandidate(c, categoryHistory, groupHistory, historyRan)}</p>
+          </div>
+
+          <div className="scroll-x">
+            <h3 style={{ fontSize: 13, margin: "0 0 6px" }}>Component scores (toward continuation of today's {c.group === "gainer" ? "rise" : "fall"})</h3>
+            <table style={{ fontSize: 12.5 }} aria-label="Component scores">
+              <tbody>
+                {c.assessment.components.map((comp) => (
+                  <tr key={comp.dimension} style={{ borderTop: "1px solid var(--color-border)" }}>
+                    <td style={{ padding: "5px 8px", whiteSpace: "nowrap", verticalAlign: "top" }}>{DIMENSION_TEXT[comp.dimension]}</td>
+                    <td className="num" style={{ padding: "5px 8px", whiteSpace: "nowrap", verticalAlign: "top" }}>
+                      {comp.score === null ? "N/A" : `${comp.score > 0 ? "+" : ""}${comp.score}`} <span className="text-faint">({comp.min} to {comp.max > 0 ? "+" : ""}{comp.max})</span>
+                    </td>
+                    <td style={{ padding: "5px 8px" }} className="text-muted">
+                      {comp.score === null ? "inputs unavailable" : comp.reasons.length > 0 ? comp.reasons.join("; ") : "no rule triggered"}
+                    </td>
+                  </tr>
+                ))}
+                <tr style={{ borderTop: "2px solid var(--color-border)" }}>
+                  <td style={{ padding: "5px 8px" }}><strong>Net</strong></td>
+                  <td className="num" style={{ padding: "5px 8px" }}><strong>{c.assessment.total > 0 ? "+" : ""}{c.assessment.total}</strong></td>
+                  <td style={{ padding: "5px 8px" }} className="text-muted">{c.assessment.rationale} An evidence tally, not a probability.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
@@ -140,7 +178,7 @@ export function MomentumDetailPanel({ candidate: c, bars, activityByDate, filing
               <>
                 <div style={grid}>
                   <Stat label="Observations (dates)" value={`${history.n} (${history.dates})`} />
-                  <Stat label="Next close higher" value={`${history.pctPositive.toFixed(1)}%`} title={history.pctPositiveCi ? `95% interval ${history.pctPositiveCi[0].toFixed(1)}-${history.pctPositiveCi[1].toFixed(1)}%, clustered by date` : undefined} />
+                  <Stat label="Next close higher" value={`${history.pctPositive.toFixed(1)}%`} title={history.pctPositiveCi ? `95% interval ${history.pctPositiveCi[0].toFixed(1)}-${history.pctPositiveCi[1].toFixed(1)}%, clustered by date and stock` : undefined} />
                   <Stat label="Mean / median next session" value={`${history.meanPct.toFixed(2)}% / ${history.medianPct.toFixed(2)}%`} />
                   <Stat label="Beat NIFTY 500" value={`${history.pctOutperformNifty.toFixed(1)}%`} />
                   <Stat label="Next low below today's low" value={`${history.pctLowerLow.toFixed(1)}%`} />
@@ -161,6 +199,12 @@ export function MomentumDetailPanel({ candidate: c, bars, activityByDate, filing
               <Stat label="Open→close" value={`${c.price.openToClosePct.toFixed(2)}%`} />
               <Stat label="Gap at open" value={`${c.price.gapPct.toFixed(2)}%`} />
               <Stat label="Close in day's range" value={c.price.closeLocation === null ? "N/A" : `${Math.round(c.price.closeLocation * 100)}%`} />
+              <Stat
+                label="Body / upper / lower wick"
+                value={c.price.bodyShare === null ? "N/A" : `${Math.round(c.price.bodyShare * 100)} / ${Math.round((c.price.upperWickShare ?? 0) * 100)} / ${Math.round((c.price.lowerWickShare ?? 0) * 100)}%`}
+                title="Shares of the day's high-low range. A single candle is not a reliable forecast on its own."
+              />
+              <Stat label="vs 20-session swing high" value={pct(c.price.distFromSwingHigh20Pct, 1)} />
               <Stat label="3 / 5 sessions" value={`${pct(c.price.r3, 1)} / ${pct(c.price.r5, 1)}`} />
               <Stat label="10 / 20 sessions" value={`${pct(c.price.r10, 1)} / ${pct(c.price.r20, 1)}`} />
               <Stat label="Move vs own volatility" value={c.price.moveZ.available ? `${c.price.moveZ.value.toFixed(1)}σ` : "N/A"} title="Today's change divided by the standard deviation of the previous 20 daily changes" />
@@ -232,6 +276,20 @@ export function MomentumDetailPanel({ candidate: c, bars, activityByDate, filing
               <Stat label="Industry 1M vs NIFTY 500" value={pp(c.context.industryRelativeStrength1m)} title="Median 21-session return of industry peers minus NIFTY 500's" />
               <Stat label="NIFTY 500 today" value={pct(c.context.benchmarkChangePct)} />
               <Stat label="Market regime" value={c.context.marketRegime} />
+              <Stat label="NIFTY 50 today" value={c.context.nifty50 ? pct(c.context.nifty50.changePct) : "not tracked"} />
+              {c.context.sectorIndex ? (
+                <>
+                  <Stat label={`${c.context.sectorIndex.displayName} today`} value={pct(c.context.sectorIndex.changePct)} />
+                  <Stat label="Stock vs sector index today" value={c.context.stockVsSectorIndexPp === null ? "N/A" : `${c.context.stockVsSectorIndexPp >= 0 ? "+" : ""}${c.context.stockVsSectorIndexPp.toFixed(2)}pp`} />
+                  <Stat label="Sector index 1M vs NIFTY 500" value={pp(c.context.sectorIndex.relativeStrength1m)} />
+                  <Stat
+                    label="Sector stocks above 50-DMA"
+                    value={c.context.sectorIndex.breadth50?.pct.available ? `${c.context.sectorIndex.breadth50.pct.value.toFixed(0)}% of ${c.context.sectorIndex.breadth50.eligible}` : "N/A"}
+                  />
+                </>
+              ) : (
+                <Stat label="Sector index" value="not in a tracked sector index" />
+              )}
             </div>
           </div>
 
@@ -247,7 +305,7 @@ export function MomentumDetailPanel({ candidate: c, bars, activityByDate, filing
                 {filings.filings.map((f) => (
                   <li key={f.id} style={{ marginBottom: 6 }}>
                     <span className="badge badge-sideways" style={{ fontSize: 10 }}>
-                      {CATEGORY_TEXT[f.category]}
+                      {CATEGORY_TEXT_FILING[f.category]}
                     </span>{" "}
                     <span className={`badge ${f.timing === "before-close" ? "badge-insufficient" : "badge-sideways"}`} style={{ fontSize: 10 }}>
                       {f.timing === "before-close" ? "before the close" : "after the close"}
@@ -257,6 +315,10 @@ export function MomentumDetailPanel({ candidate: c, bars, activityByDate, filing
                     </a>{" "}
                     <span className="text-faint">({formatDateTimeHuman(f.publishedAt)})</span>
                     {f.description && <div className="text-muted" style={{ fontSize: 12 }}>{f.description}</div>}
+                    <div className="text-faint" style={{ fontSize: 11.5 }}>
+                      Why it can matter: {f.relevance}
+                      {f.followUpOf && ` Possibly a follow-up: an earlier ${CATEGORY_TEXT_FILING[f.category].toLowerCase()} filing was published ${formatDateTimeHuman(f.followUpOf.publishedAt)} ("${f.followUpOf.subject}").`}
+                    </div>
                   </li>
                 ))}
               </ul>

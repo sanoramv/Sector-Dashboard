@@ -179,11 +179,12 @@ tabs: **Sectors**, **Industries**, **Stock Screener**, **Next-Day Momentum**, **
   every pattern is a disclosed, parameterized heuristic, not a validated chart-pattern recognizer, with the exact
   window/threshold shown. A separate 0-10 stock-level score and full pass/fail reason list is shown per stock.
   The detail view carries an explicit "not a recommendation, no entry/stop/target" disclaimer.
-- **Next-Day Momentum tab**: each session's top gainers and losers across the NIFTY 500 + Microcap 250 universe
-  (computed from NSE end-of-day data, not Groww's live list), with price, volume, pattern, sector and market
-  features, NSE exchange filings, a rule-based research label with the evidence on both sides, and a walk-forward
-  evaluation of what happened on the next session. No probability is shown, because the labels showed no
-  predictive skill. See [`NEXT_DAY_MOMENTUM.md`](NEXT_DAY_MOMENTUM.md).
+- **Next-Day Momentum tab**: each session's top gainers, top losers and unusual-volume movers across the NIFTY 500 +
+  Microcap 250 universe (computed from NSE end-of-day data, not Groww's live list). It adds lists of moves with
+  continuation characteristics and with exhaustion/reversal risk, and shows price, candle, volume, pattern, sector,
+  NIFTY 50/500 and filings evidence as per-dimension component scores with a plain-language explanation. A
+  walk-forward evaluation shows what happened on the next session. No probability is shown, because neither the
+  categories nor the setup labels beat simply taking the top movers. See [`NEXT_DAY_MOMENTUM.md`](NEXT_DAY_MOMENTUM.md).
 - **Backtest tab**: runs every screening rule above against the full available price history with no look-ahead
   by construction, reporting forward-return evidence (sample size, win rate, average/median net return) against
   an unconditional baseline - with explicit survivorship-bias, execution-assumption, and small-sample

@@ -30,6 +30,24 @@ export const CATEGORY_TEXT: Record<FilingCategory, string> = {
   other: "Other filing",
 };
 
+/**
+ * Why a filing of this category CAN matter - generic, evidence-based context
+ * for the reader, never a judgement of this particular filing (open it).
+ */
+export const CATEGORY_RELEVANCE: Record<FilingCategory, string> = {
+  results: "Earnings filings often move prices on whether results differed from expectations; the filing itself does not say how the market expected them.",
+  "orders-contracts": "Order wins can change revenue visibility; relevance depends on the order's size relative to the company's revenue.",
+  "acquisition-merger": "Deals can change the company's business or capital structure; terms and approvals determine the effect.",
+  "corporate-action": "Dividends, bonuses, splits and record dates can change the quoted price mechanically on the ex-date without changing value.",
+  "fund-raising": "New shares or debt can dilute existing holders or fund growth; the price and size matter.",
+  "credit-rating": "A rating change affects borrowing costs and is often read as a signal of financial health.",
+  "legal-regulatory": "Regulatory or legal developments can carry penalties or restrictions; check the order's scope.",
+  "management-change": "Leadership changes can affect strategy and confidence; usually less price-moving than results.",
+  "meeting-investor-communication": "Investor meetings and presentations may contain guidance; often a schedule notice with no new information.",
+  "routine-compliance": "Routine compliance filing - rarely price-relevant.",
+  other: "Uncategorised filing - open it to judge its relevance.",
+};
+
 const IST = "+05:30";
 export const sessionCloseIst = (date: string) => `${date}T15:30:00${IST}`;
 export const sessionOpenIst = (date: string) => `${date}T09:15:00${IST}`;
@@ -38,6 +56,9 @@ export type FilingTiming = "before-close" | "after-close";
 
 export interface TimedFiling extends Announcement {
   timing: FilingTiming;
+  relevance: string;
+  /** An earlier filing of the same category for this stock within the retained window (more than 24h before) - this may be a follow-up, not new information. */
+  followUpOf: { publishedAt: string; subject: string } | null;
 }
 
 export type CoverageStatus = "covered" | "partial" | "not-covered" | "no-data";
@@ -107,7 +128,18 @@ export function filingsForSession(
       const t = Date.parse(i.publishedAt);
       return t > a && t <= end;
     })
-    .map((i) => ({ ...i, timing: (Date.parse(i.publishedAt) <= close ? "before-close" : "after-close") as FilingTiming }))
+    .map((i) => {
+      const t = Date.parse(i.publishedAt);
+      const earlier = file.items
+        .filter((e) => e.symbol === symbol && e.category === i.category && e.id !== i.id && Date.parse(e.publishedAt) < t - 86_400_000)
+        .sort((x, y) => Date.parse(y.publishedAt) - Date.parse(x.publishedAt))[0];
+      return {
+        ...i,
+        timing: (t <= close ? "before-close" : "after-close") as FilingTiming,
+        relevance: CATEGORY_RELEVANCE[i.category],
+        followUpOf: earlier ? { publishedAt: earlier.publishedAt, subject: earlier.subject } : null,
+      };
+    })
     .sort((x, y) => Date.parse(x.publishedAt) - Date.parse(y.publishedAt));
 
   const span = Math.max(0, end - a);

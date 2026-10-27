@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import type { RawDataset } from "../types/dataset";
 import type { AppSettings } from "../types/config";
-import type { MomentumCandidate, MomentumLabel, SizeSegment } from "../types/momentum";
+import type { EvidenceCategory, MomentumCandidate, MomentumLabel, SizeSegment } from "../types/momentum";
 import { loadMomentumSupplements, type MomentumSupplements } from "../lib/providers/momentumData";
 import { prepareUniverse, comparableBarsUpTo } from "../lib/momentum/universe";
-import { marketContextAt } from "../lib/momentum/market";
+import { indexContextAt, marketContextAt } from "../lib/momentum/market";
 import { DEFAULT_TOP_N, discover } from "../lib/momentum/discovery";
-import { DEFAULT_FILTERS, matchesFilters, type MomentumFilters } from "../lib/momentum/filters";
-import { filingsForSession } from "../lib/momentum/news";
+import { DEFAULT_FILTERS, matchesFilters, type MomentumFilters, type NewsAvailability } from "../lib/momentum/filters";
+import { filingsForSession, type FilingWindowResult } from "../lib/momentum/news";
+import { CATEGORY_TEXT } from "../lib/momentum/assess";
 import { momentumFreshnessNotices } from "../lib/momentum/freshness";
 import { LABEL_TEXT } from "../lib/momentum/classify";
 import { runMomentumEvaluation, type EvaluationConfig, type EvaluationResult } from "../lib/momentum/evaluation";
@@ -31,6 +32,17 @@ const SEGMENTS: Array<{ value: SizeSegment; label: string }> = [
   { value: "micro", label: "Microcap 250" },
 ];
 
+/** Candidates are built for this many movers per list; the list-size control only changes how many are shown. */
+const POOL_SIZE = 50;
+const CATEGORIES: EvidenceCategory[] = ["continuation", "mixed", "exhaustion-reversal", "insufficient"];
+type ListView = "movers" | "volume" | "continuation" | "exhaustion";
+const VIEWS: Array<{ key: ListView; label: string }> = [
+  { key: "movers", label: "Top gainers & losers" },
+  { key: "volume", label: "Unusual volume" },
+  { key: "continuation", label: "Continuation characteristics" },
+  { key: "exhaustion", label: "Exhaustion / reversal risk" },
+];
+
 const NOTICE_BG = { info: "var(--color-accent-bg)", warning: "var(--color-insufficient-bg)", error: "var(--color-bearish-bg)" } as const;
 
 export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPanelProps) {
@@ -41,6 +53,7 @@ export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPane
   const [selected, setSelected] = useState<MomentumCandidate | null>(null);
   const [evaluation, setEvaluation] = useState<EvaluationResult | null>(null);
   const [running, setRunning] = useState(false);
+  const [view, setView] = useState<ListView>("movers");
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -56,19 +69,40 @@ export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPane
   const date = selectedDate ?? latestDate;
   const market = useMemo(() => (universe ? marketContextAt(universe, date, settings) : null), [universe, date, settings]);
   const discovery = useMemo(
-    () => (universe && market ? discover(universe, date, settings, market.regime.regime, topN) : null),
-    [universe, market, date, settings, topN],
+    () => (universe && market ? discover(universe, date, settings, market.regime.regime, POOL_SIZE) : null),
+    [universe, market, date, settings],
   );
   const industries = useMemo(() => [...new Set(universe?.stocks.map((s) => s.industry) ?? [])].sort(), [universe]);
 
-  const gainers = useMemo(() => discovery?.gainers.filter((c) => matchesFilters(c, filters)) ?? [], [discovery, filters]);
-  const losers = useMemo(() => discovery?.losers.filter((c) => matchesFilters(c, filters)) ?? [], [discovery, filters]);
+  const announcementsFile = supplements?.announcements.status === "ok" ? supplements.announcements.value : null;
+  const filingsBySymbol = useMemo(() => {
+    const out = new Map<string, FilingWindowResult>();
+    if (!universe || !discovery) return out;
+    const ci = universe.calendarIndex.get(date) ?? universe.calendar.length - 1;
+    const now = new Date();
+    for (const c of [...discovery.gainers, ...discovery.losers, ...discovery.volumeMovers]) {
+      if (!out.has(c.symbol)) out.set(c.symbol, filingsForSession(announcementsFile, c.symbol, date, universe.calendar[ci - 1] ?? null, universe.calendar[ci + 1] ?? null, now));
+    }
+    return out;
+  }, [universe, discovery, announcementsFile, date]);
+  const newsOf = (c: MomentumCandidate): NewsAvailability | undefined => {
+    const f = filingsBySymbol.get(c.symbol);
+    return f ? { filings: f.filings.length, coverage: f.coverage } : undefined;
+  };
+  const keep = (c: MomentumCandidate) => matchesFilters(c, filters, newsOf(c));
+  const byAbsChange = (a: MomentumCandidate, b: MomentumCandidate) => Math.abs(b.price.dailyChangePct) - Math.abs(a.price.dailyChangePct) || a.symbol.localeCompare(b.symbol);
+  const pool = discovery ? [...discovery.gainers, ...discovery.losers] : [];
+  const gainers = (discovery?.gainers.slice(0, topN) ?? []).filter(keep);
+  const losers = (discovery?.losers.slice(0, topN) ?? []).filter(keep);
+  const volumeMovers = (discovery?.volumeMovers.slice(0, topN) ?? []).filter(keep);
+  const continuationList = pool.filter((c) => c.assessment.category === "continuation").sort(byAbsChange).filter(keep).slice(0, topN);
+  const exhaustionList = pool.filter((c) => c.assessment.category === "exhaustion-reversal").sort(byAbsChange).filter(keep).slice(0, topN);
 
   const notices = momentumFreshnessNotices(rawDataset.manifest, date, latestDate, dataStatus, {
     activity: supplements ? supplements.activity.status : "loading",
     announcements: supplements ? supplements.announcements.status : "loading",
   });
-  const announcements = supplements?.announcements.status === "ok" ? supplements.announcements.value : null;
+  const announcements = announcementsFile;
   const lastFeedRead = announcements?.checks.find((c) => c.outcome === "ok")?.checkedAt ?? null;
 
   function runEvaluation(config: EvaluationConfig) {
@@ -92,6 +126,8 @@ export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPane
   }
 
   const calIdx = universe.calendarIndex.get(date) ?? universe.calendar.length - 1;
+  const nifty50Index = universe.indices.get("nifty50");
+  const nifty50 = nifty50Index ? indexContextAt(universe, nifty50Index, date) : null;
   const detail = selected
     ? (() => {
         const stock = universe.bySymbol.get(selected.symbol);
@@ -100,8 +136,10 @@ export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPane
         return {
           bars: comparableBarsUpTo(stock, i),
           activity: stock.activityByDate,
-          filings: filingsForSession(announcements, selected.symbol, selected.date, universe.calendar[calIdx - 1] ?? null, universe.calendar[calIdx + 1] ?? null, new Date()),
+          filings: filingsBySymbol.get(selected.symbol) ?? filingsForSession(announcements, selected.symbol, selected.date, universe.calendar[calIdx - 1] ?? null, universe.calendar[calIdx + 1] ?? null, new Date()),
           history: evaluation?.byGroupLabel.find((r) => r.key.group === selected.group && r.key.label === selected.label)?.stats ?? null,
+          categoryHistory: evaluation?.byCategory.find((r) => r.key.group === selected.group && r.key.category === selected.assessment.category)?.stats ?? null,
+          groupHistory: evaluation?.byGroup.find((r) => r.key === selected.group)?.stats ?? null,
         };
       })()
     : null;
@@ -131,6 +169,12 @@ export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPane
             <strong>Filings:</strong> NSE announcements feed{lastFeedRead ? `, last read ${formatDateTimeHuman(lastFeedRead)}` : " — not yet collected"}
           </div>
         </div>
+        <p style={{ margin: "8px 0 0", fontSize: 12 }}>
+          <strong>Evidence so far:</strong> in the documented historical check (data to 27 Oct 2026, see NEXT_DAY_MOMENTUM.md),
+          neither the evidence categories nor the setup labels identified next-session continuation better than simply
+          taking the day's top movers. Labels describe today's conditions; they are not forecasts. Run the evaluation
+          below to re-check on the current data.
+        </p>
         <p className="text-faint" style={{ margin: "8px 0 0", fontSize: 11.5 }}>
           Not Groww's live list: Groww has no public API for its top gainers/losers (its Trade API is a paid, per-account
           service), so the lists are computed from NSE's official end-of-day files and can differ from intraday lists or
@@ -154,13 +198,20 @@ export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPane
             <span className="text-faint">NIFTY 500 that day: </span>
             <span className="num">{market.benchmarkReturns.d1.available ? `${market.benchmarkReturns.d1.value >= 0 ? "+" : ""}${market.benchmarkReturns.d1.value.toFixed(2)}%` : "N/A"}</span>
           </div>
+          {nifty50 && (
+            <div>
+              <span className="text-faint">NIFTY 50 that day: </span>
+              <span className="num">{nifty50.changePct.available ? `${nifty50.changePct.value >= 0 ? "+" : ""}${nifty50.changePct.value.toFixed(2)}%` : "N/A"}</span>
+              <span className="text-faint">{nifty50.above50dma === null ? "" : nifty50.above50dma ? " (above its 50-DMA)" : " (below its 50-DMA)"}</span>
+            </div>
+          )}
           <div>
             <span className="text-faint">Above 50-DMA: </span>
             <span className="num">{market.breadth.above50dma.pct.available ? `${market.breadth.above50dma.pct.value.toFixed(0)}%` : "N/A"}</span>
             <span className="text-faint"> of {market.breadth.above50dma.eligible} NIFTY 500 stocks</span>
           </div>
           <div className="text-faint">
-            {discovery.eligibleCount} of {discovery.universeSize} stocks ranked · {discovery.noSessionCount} had no bar this session · {discovery.excluded.length} excluded for price discontinuities
+            {discovery.eligibleCount} of {discovery.universeSize} stocks with a comparable change · {discovery.unchangedCount} unchanged · {discovery.noSessionCount} had no bar this session · {discovery.excluded.length} excluded for price discontinuities
           </div>
         </div>
       </section>
@@ -243,13 +294,28 @@ export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPane
             <option value="consolidation-before">Consolidating before the move</option>
             <option value="triangle-before">Confirmed triangle before the move</option>
           </select>
-          <select style={input} value={filters.label} onChange={(e) => set("label", e.target.value as MomentumFilters["label"])} aria-label="Filter by research label">
-            <option value="all">All labels</option>
+          <select style={input} value={filters.label} onChange={(e) => set("label", e.target.value as MomentumFilters["label"])} aria-label="Filter by setup label">
+            <option value="all">All setups</option>
             {LABELS.map((l) => (
               <option key={l} value={l}>
                 {LABEL_TEXT[l]}
               </option>
             ))}
+          </select>
+          <select style={input} value={filters.category} onChange={(e) => set("category", e.target.value as MomentumFilters["category"])} aria-label="Filter by evidence category">
+            <option value="all">All evidence categories</option>
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {CATEGORY_TEXT.gainer[c]}
+                {c === "continuation" ? " (losers: downside)" : c === "exhaustion-reversal" ? " (losers: rebound)" : ""}
+              </option>
+            ))}
+          </select>
+          <select style={input} value={filters.news} onChange={(e) => set("news", e.target.value as MomentumFilters["news"])} aria-label="Filter by news availability">
+            <option value="any">Any news status</option>
+            <option value="has-filing">Exchange filing found</option>
+            <option value="none-covered">No filing (window covered)</option>
+            <option value="unknown">Not covered (unknown)</option>
           </select>
           <label style={{ display: "flex", gap: 6, alignItems: "center" }}>
             <input type="checkbox" checked={filters.liquidOnly} onChange={(e) => set("liquidOnly", e.target.checked)} />
@@ -266,8 +332,52 @@ export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPane
         </p>
       </section>
 
-      <MomentumTable title={`Top ${topN} gainers — ${formatDateHuman(date)}`} group="gainer" candidates={gainers} totalBeforeFilters={discovery.gainers.length} onSelect={setSelected} />
-      <MomentumTable title={`Top ${topN} losers — ${formatDateHuman(date)}`} group="loser" candidates={losers} totalBeforeFilters={discovery.losers.length} onSelect={setSelected} />
+      <div role="tablist" aria-label="Mover lists" style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
+        {VIEWS.map((v) => (
+          <button key={v.key} type="button" role="tab" aria-selected={view === v.key} className={`btn${view === v.key ? " btn-primary" : ""}`} onClick={() => setView(v.key)}>
+            {v.label}
+          </button>
+        ))}
+      </div>
+
+      {view === "movers" && (
+        <>
+          <MomentumTable title={`Top ${topN} gainers — ${formatDateHuman(date)}`} group="gainer" candidates={gainers} totalBeforeFilters={Math.min(topN, discovery.gainers.length)} onSelect={setSelected} />
+          <MomentumTable title={`Top ${topN} losers — ${formatDateHuman(date)}`} group="loser" candidates={losers} totalBeforeFilters={Math.min(topN, discovery.losers.length)} onSelect={setSelected} />
+        </>
+      )}
+      {view === "volume" && (
+        <MomentumTable
+          title={`Unusual volume — ${formatDateHuman(date)}`}
+          group="mixed"
+          description="Highest volume relative to each stock's own previous-20-session average, in either direction. High volume shows participation, not who initiated it; thinly traded stocks are flagged."
+          candidates={volumeMovers}
+          totalBeforeFilters={Math.min(topN, discovery.volumeMovers.length)}
+          onSelect={setSelected}
+        />
+      )}
+      {view === "continuation" && (
+        <MomentumTable
+          title={`Continuation characteristics — ${formatDateHuman(date)}`}
+          group="mixed"
+          defaultSort={{ key: "evidence", dir: "desc" }}
+          description={`Among the top ${POOL_SIZE} gainers and top ${POOL_SIZE} losers: a close confirming the move on meaningful volume with net supporting evidence (for losers, downside continuation). Historically this category did NOT reliably continue - see the evaluation below.`}
+          candidates={continuationList}
+          totalBeforeFilters={pool.filter((c) => c.assessment.category === "continuation").length}
+          onSelect={setSelected}
+        />
+      )}
+      {view === "exhaustion" && (
+        <MomentumTable
+          title={`Exhaustion / reversal risk — ${formatDateHuman(date)}`}
+          group="mixed"
+          defaultSort={{ key: "evidence", dir: "asc" }}
+          description={`Among the top ${POOL_SIZE} gainers and top ${POOL_SIZE} losers: stretched moves, rejection in the candle, or warning signs outweighing support (for losers, rebound risk). Not an instruction to trade against the move.`}
+          candidates={exhaustionList}
+          totalBeforeFilters={pool.filter((c) => c.assessment.category === "exhaustion-reversal").length}
+          onSelect={setSelected}
+        />
+      )}
 
       {discovery.excluded.length > 0 && (
         <section className="card" style={{ padding: 12, marginBottom: 16, fontSize: 12.5 }}>
@@ -293,6 +403,8 @@ export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPane
           activityByDate={detail.activity}
           filings={detail.filings}
           history={detail.history}
+          categoryHistory={detail.categoryHistory}
+          groupHistory={detail.groupHistory}
           historyRan={evaluation !== null}
           onClose={() => setSelected(null)}
         />

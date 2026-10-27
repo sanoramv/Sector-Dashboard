@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import type { MomentumCandidate, MomentumLabel } from "../types/momentum";
+import type { EvidenceCategory, MomentumCandidate, MomentumLabel } from "../types/momentum";
+import { CATEGORY_TEXT } from "../lib/momentum/assess";
 import { LABEL_DEFINITION, LABEL_TEXT } from "../lib/momentum/classify";
 import { sortCandidates, type SortKey } from "../lib/momentum/filters";
 
@@ -13,11 +14,18 @@ export const LABEL_BADGE: Record<MomentumLabel, string> = {
   "insufficient-evidence": "badge-insufficient",
 };
 
+export const CATEGORY_BADGE: Record<EvidenceCategory, string> = {
+  continuation: "badge-bullish",
+  mixed: "badge-sideways",
+  "exhaustion-reversal": "badge-bearish",
+  insufficient: "badge-insufficient",
+};
+
 const fmtPct = (n: number | null, digits = 2) => (n === null ? "N/A" : `${n >= 0 ? "+" : ""}${n.toFixed(digits)}%`);
 const signCls = (n: number | null) => (n === null ? "text-faint" : n > 0 ? "text-pos" : n < 0 ? "text-neg" : "text-muted");
 
 interface Col {
-  key: SortKey | "rank" | "label";
+  key: SortKey | "rank" | "label" | "category";
   label: string;
   title?: string;
   align?: "left";
@@ -100,8 +108,19 @@ const COLUMNS: Col[] = [
     ),
   },
   {
+    key: "category",
+    label: "Evidence",
+    align: "left",
+    title: "Evidence category from per-dimension component scores (for losers: downside continuation vs rebound risk). Describes evidence, not an outcome.",
+    render: (c) => (
+      <span className={`badge ${CATEGORY_BADGE[c.assessment.category]}`} style={{ fontSize: 10.5, whiteSpace: "nowrap" }} title={c.assessment.rationale}>
+        {CATEGORY_TEXT[c.group][c.assessment.category]}
+      </span>
+    ),
+  },
+  {
     key: "label",
-    label: "Research label",
+    label: "Setup",
     align: "left",
     render: (c) => (
       <span className={`badge ${LABEL_BADGE[c.label]}`} style={{ fontSize: 10.5, whiteSpace: "nowrap" }} title={LABEL_DEFINITION[c.label]}>
@@ -110,8 +129,14 @@ const COLUMNS: Col[] = [
     ),
   },
   {
+    key: "evidence",
+    label: "Score",
+    title: "Net component points toward continuation of today's direction (an evidence tally, not a probability).",
+    render: (c) => (c.assessment.category === "insufficient" ? <span className="text-faint">—</span> : <span className="num">{c.assessment.total > 0 ? "+" : ""}{c.assessment.total}</span>),
+  },
+  {
     key: "continuation",
-    label: "Evidence",
+    label: "For / against",
     title: "Number of factors supporting continuation of today's direction / reversal. A count, not a probability.",
     render: (c) => (
       <span className="num" style={{ whiteSpace: "nowrap" }}>
@@ -123,19 +148,23 @@ const COLUMNS: Col[] = [
 
 export interface MomentumTableProps {
   title: string;
-  group: "gainer" | "loser";
+  /** Default sort direction by change: gainers largest first, losers most negative first; "mixed" lists sort by relative volume. */
+  group: "gainer" | "loser" | "mixed";
+  description?: string;
+  /** Overrides the initial sort (the user can still re-sort). */
+  defaultSort?: { key: SortKey; dir: "asc" | "desc" };
   candidates: MomentumCandidate[];
   totalBeforeFilters: number;
   onSelect: (c: MomentumCandidate) => void;
 }
 
-export function MomentumTable({ title, group, candidates, totalBeforeFilters, onSelect }: MomentumTableProps) {
-  const [sortKey, setSortKey] = useState<SortKey>("change");
-  const [sortDir, setSortDir] = useState<"asc" | "desc">(group === "gainer" ? "desc" : "asc");
+export function MomentumTable({ title, group, description, defaultSort, candidates, totalBeforeFilters, onSelect }: MomentumTableProps) {
+  const [sortKey, setSortKey] = useState<SortKey>(defaultSort?.key ?? (group === "mixed" ? "rvol" : "change"));
+  const [sortDir, setSortDir] = useState<"asc" | "desc">(defaultSort?.dir ?? (group === "loser" ? "asc" : "desc"));
   const sorted = useMemo(() => sortCandidates(candidates, sortKey, sortDir), [candidates, sortKey, sortDir]);
 
   function toggle(key: Col["key"]) {
-    if (key === "rank" || key === "label") return;
+    if (key === "rank" || key === "label" || key === "category") return;
     if (key === sortKey) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
     else {
       setSortKey(key);
@@ -148,9 +177,14 @@ export function MomentumTable({ title, group, candidates, totalBeforeFilters, on
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: 8 }}>
         <h2 style={{ fontSize: 14, margin: "0 0 8px" }}>{title}</h2>
         <span className="text-faint" style={{ fontSize: 12 }}>
-          {candidates.length} of {totalBeforeFilters} shown · "Evidence" = continuation / reversal factor counts, not a probability
+          {candidates.length} of {totalBeforeFilters} shown · "Score" and "For / against" are evidence tallies, not probabilities
         </span>
       </div>
+      {description && (
+        <p className="text-faint" style={{ fontSize: 11.5, margin: "0 0 8px" }}>
+          {description}
+        </p>
+      )}
       <div className="scroll-x">
         <table aria-label={title}>
           <thead>
@@ -166,8 +200,8 @@ export function MomentumTable({ title, group, candidates, totalBeforeFilters, on
                   <button
                     type="button"
                     onClick={() => toggle(col.key)}
-                    disabled={col.key === "rank" || col.key === "label"}
-                    style={{ background: "none", border: "none", padding: 0, font: "inherit", color: "inherit", cursor: col.key === "rank" || col.key === "label" ? "default" : "pointer" }}
+                    disabled={col.key === "rank" || col.key === "label" || col.key === "category"}
+                    style={{ background: "none", border: "none", padding: 0, font: "inherit", color: "inherit", cursor: col.key === "rank" || col.key === "label" || col.key === "category" ? "default" : "pointer" }}
                   >
                     {col.label}
                     {sortKey === col.key && <span aria-hidden="true">{sortDir === "asc" ? " ↑" : " ↓"}</span>}

@@ -7,8 +7,11 @@ import { computeReturnOverSessions } from "../calculations/returns";
 import { computeRelativeStrength } from "../calculations/relativeStrength";
 import { describeBreak } from "../calculations/validation";
 import { comparableBarsUpTo, type PreparedUniverse, type UniverseStock } from "./universe";
+import { MARKET_CONTEXT_INDICES } from "../../config/marketIndices";
 import { computeActivityFeatures, computePatternContext, computePriceAction } from "./features";
 import { classify, explainFactors, lowConfidenceReasons, MOMENTUM_RULES } from "./classify";
+import { assessEvidence } from "./assess";
+import { indexContextAt, type IndexContextAt } from "./market";
 
 /** Default list length: the size of a typical "top gainers / top losers" list. Fixed, not tuned. */
 export const DEFAULT_TOP_N = 20;
@@ -84,6 +87,18 @@ function medianOf(xs: number[]): number | null {
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
 }
 
+/** Memoised index context for one date (NIFTY 50 and sector indices), so each is computed once per date. */
+export function indexContextCache(u: PreparedUniverse, date: string): (slug: string) => IndexContextAt | null {
+  const cache = new Map<string, IndexContextAt | null>();
+  return (slug) => {
+    if (!cache.has(slug)) {
+      const index = u.indices.get(slug);
+      cache.set(slug, index ? indexContextAt(u, index, date) : null);
+    }
+    return cache.get(slug) as IndexContextAt | null;
+  };
+}
+
 export interface CandidateBuildContext {
   settings: AppSettings;
   marketRegime: Regime;
@@ -92,6 +107,9 @@ export interface CandidateBuildContext {
   /** Benchmark bars up to and including the date. */
   benchmarkUpTo: DailyBar[];
   activityLoaded: boolean;
+  /** Prepared universe (for sector membership) and the per-date index-context cache. */
+  universe: PreparedUniverse;
+  indexContext: (slug: string) => IndexContextAt | null;
 }
 
 export function buildCandidate(mover: Mover, group: DiscoveryGroup, rank: number, ctx: CandidateBuildContext): MomentumCandidate {
@@ -122,6 +140,11 @@ export function buildCandidate(mover: Mover, group: DiscoveryGroup, rank: number
         : unavailable(`fewer than ${MIN_PEERS} industry peers with 21 comparable sessions`);
   const benchD1 = computeReturnOverSessions(ctx.benchmarkUpTo, 1);
 
+  const sectorSlug = ctx.universe.sectorsOf.get(stock.symbol)?.find((slug) => ctx.universe.indices.has(slug)) ?? null;
+  const sectorIndex = sectorSlug ? ctx.indexContext(sectorSlug) : null;
+  const nifty50 = ctx.indexContext(MARKET_CONTEXT_INDICES[0].slug);
+  const stockVsSectorIndexPp = sectorIndex && sectorIndex.changePct.available ? mover.changePct - sectorIndex.changePct.value : null;
+
   const brk = stock.breakAt[i - stock.posInSeg[i]];
   const notes: string[] = [];
   if (brk) notes.push(`Features use only prices from ${bars[0].date} (${describeBreak(brk)}).`);
@@ -148,6 +171,9 @@ export function buildCandidate(mover: Mover, group: DiscoveryGroup, rank: number
       industryRelativeStrength1m,
       benchmarkChangePct: benchD1,
       marketRegime: ctx.marketRegime,
+      nifty50,
+      sectorIndex,
+      stockVsSectorIndexPp,
     },
     quality: {
       status: (brk || bars.length < MOMENTUM_RULES.minBarsForEvidence || !activity.available ? "limited" : "ok") as "ok" | "limited",
@@ -160,6 +186,7 @@ export function buildCandidate(mover: Mover, group: DiscoveryGroup, rank: number
   return {
     ...base,
     label: classify(base),
+    assessment: assessEvidence(base),
     continuationFactors: continuation,
     reversalFactors: reversal,
     lowConfidenceReasons: lowConfidenceReasons(base, group),
@@ -171,19 +198,59 @@ export function buildCandidate(mover: Mover, group: DiscoveryGroup, rank: number
  * data available at that date's close. `marketRegime` should come from
  * marketContextAt(u, date, settings).regime.
  */
-export function discover(u: PreparedUniverse, date: string, settings: AppSettings, marketRegime: Regime, topN = DEFAULT_TOP_N): DiscoveryResult {
-  const day = moversOn(u, date);
+export function makeBuildContext(u: PreparedUniverse, date: string, settings: AppSettings, marketRegime: Regime, day: DayMovers): CandidateBuildContext {
   const benchIdx = u.calendarIndex.get(date);
   const benchmarkUpTo = benchIdx === undefined ? u.benchmark.filter((b) => b.date <= date) : u.benchmark.slice(0, benchIdx + 1);
-  const ctx: CandidateBuildContext = { settings, marketRegime, day, benchmarkUpTo, activityLoaded: u.activityLoaded };
+  return { settings, marketRegime, day, benchmarkUpTo, activityLoaded: u.activityLoaded, universe: u, indexContext: indexContextCache(u, date) };
+}
+
+/**
+ * Relative volume (today / mean of the previous 20 comparable sessions'
+ * volume) for ranking unusual-volume movers - the same definition the
+ * candidate features use. Null when the baseline is incomplete.
+ */
+export function moverRelativeVolume(m: Mover): number | null {
+  const bars = m.stock.segments[m.stock.segOf[m.i]];
+  const p = m.stock.posInSeg[m.i];
+  const today = m.stock.activityByDate.get(bars[p].date);
+  if (!today || p < 1) return null;
+  const prior = bars
+    .slice(Math.max(0, p - 20), p)
+    .map((b) => m.stock.activityByDate.get(b.date))
+    .filter((r) => r !== undefined);
+  if (prior.length < 18) return null;
+  const mean = prior.reduce((a, r) => a + r.volume, 0) / prior.length;
+  return mean > 0 ? today.volume / mean : null;
+}
+
+/** Top-N by relative volume among ranked stocks with a nonzero change (direction defines the group); ties by symbol. */
+export function rankVolumeMovers(movers: Mover[], topN: number): Array<{ mover: Mover; rvol: number }> {
+  return movers
+    .filter((m) => m.changePct !== 0)
+    .map((mover) => ({ mover, rvol: moverRelativeVolume(mover) }))
+    .filter((x): x is { mover: Mover; rvol: number } => x.rvol !== null)
+    .sort((a, b) => b.rvol - a.rvol || a.mover.stock.symbol.localeCompare(b.mover.stock.symbol))
+    .slice(0, topN);
+}
+
+/**
+ * Top gainers, top losers and unusual-volume movers for `date`, with every
+ * feature computed from data available at that date's close.
+ * `marketRegime` should come from marketContextAt(u, date, settings).regime.
+ */
+export function discover(u: PreparedUniverse, date: string, settings: AppSettings, marketRegime: Regime, topN = DEFAULT_TOP_N): DiscoveryResult {
+  const day = moversOn(u, date);
+  const ctx = makeBuildContext(u, date, settings, marketRegime, day);
   const build = (group: DiscoveryGroup) => rankMovers(day.movers, group, topN).map((m, k) => buildCandidate(m, group, k + 1, ctx));
   return {
     date,
     eligibleCount: day.movers.length,
     universeSize: day.universeSize,
     noSessionCount: day.noSessionCount,
+    unchangedCount: day.movers.filter((m) => m.changePct === 0).length,
     excluded: day.excluded,
     gainers: build("gainer"),
     losers: build("loser"),
+    volumeMovers: rankVolumeMovers(day.movers, topN).map(({ mover }, k) => buildCandidate(mover, mover.changePct > 0 ? "gainer" : "loser", k + 1, ctx)),
   };
 }

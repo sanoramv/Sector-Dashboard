@@ -14,6 +14,10 @@ import { SCHEMA_VERSION } from "../src/types/dataset.ts";
 import { isStale, splitAtPriceBreaks, type PriceBreakKind } from "../src/lib/calculations/validation.ts";
 import { evaluateRefresh, loadState, symbolSetHash, targetDates, toRefreshStatus } from "./lib/refresh-state.mts";
 import { STOCK_EXTRACT_FIELDS, TRACKED_SERIES, loadRequiredSymbols } from "./lib/series.mts";
+import { INDEX_SET_HASH } from "./lib/index-defs.mts";
+import { summarizeSupplements } from "./lib/supplements.mts";
+import type { StockActivityFile } from "../src/types/activity.ts";
+import type { AnnouncementsFile } from "../src/types/announcements.ts";
 
 /** Must match the fetch scripts' window. */
 const BACKFILL_DAYS = 420;
@@ -105,7 +109,7 @@ async function main() {
   const benchmarkLatest = indexSeries[BENCHMARK.slug]?.bars.at(-1)?.date ?? latestMarketDate;
   const hash = symbolSetHash(await loadRequiredSymbols(path.join(DATA_DIR, "constituents.json")), TRACKED_SERIES, STOCK_EXTRACT_FIELDS);
   const now = new Date();
-  const summary = evaluateRefresh(state, targetDates(now, BACKFILL_DAYS), benchmarkLatest, hash, now);
+  const summary = evaluateRefresh(state, targetDates(now, BACKFILL_DAYS), benchmarkLatest, hash, now, INDEX_SET_HASH);
   let previousComplete: string | null = null;
   try {
     previousComplete = (await readJson<Manifest>("manifest.json")).refresh?.lastCompleteRefreshAt ?? null;
@@ -117,6 +121,17 @@ async function main() {
       `Data refresh ${summary.outcome.toUpperCase()} (pipeline run ${summary.evaluatedAt}): ${summary.reasons.join(" | ")}`,
     );
   }
+
+  // Supplementary data: unreadable or missing files are reported, never fatal.
+  const optional = async <T,>(file: string): Promise<T | null> => {
+    try {
+      return await readJson<T>(file);
+    } catch (err) {
+      console.log(`[manifest] ${file} unavailable: ${String(err).slice(0, 120)}`);
+      return null;
+    }
+  };
+  const supplements = summarizeSupplements(await optional<StockActivityFile>("stock-activity.json"), await optional<AnnouncementsFile>("announcements.json"));
 
   const manifest: Manifest = {
     schemaVersion: SCHEMA_VERSION,
@@ -132,6 +147,7 @@ async function main() {
     benchmark: BENCHMARK.slug,
     warnings,
     refresh: toRefreshStatus(summary, previousComplete),
+    supplements,
   };
 
   await writeFile(path.join(DATA_DIR, "manifest.json"), JSON.stringify(manifest, null, 2));
@@ -141,6 +157,7 @@ async function main() {
       `pending ${summary.pendingPublication.length}, non-trading ${summary.nonTradingDates}, backfill remaining ${summary.backfillRemaining}) warnings=${warnings.length}`,
   );
   warnings.forEach((w) => console.log(`  - ${w}`));
+  console.log(`[manifest] supplements: ${JSON.stringify(supplements)}`);
 }
 
 main().catch((err) => {

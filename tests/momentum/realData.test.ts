@@ -7,7 +7,7 @@ import { DEFAULT_SETTINGS } from "../../src/types/config";
 import { buildDashboardData } from "../../src/lib/dashboard";
 import { decodeAllActivity } from "../../src/lib/activity";
 import { prepareUniverse, comparableBarsUpTo } from "../../src/lib/momentum/universe";
-import { marketContextAt } from "../../src/lib/momentum/market";
+import { indexContextAt, marketContextAt } from "../../src/lib/momentum/market";
 import { discover } from "../../src/lib/momentum/discovery";
 
 /**
@@ -52,6 +52,26 @@ describe("Next-Day Momentum agrees with the dashboard (real committed data)", ()
       expect(a.available).toBe(b.available);
       if (a.available && b.available) expect(a.value).toBeCloseTo(b.value, 10);
     }
+  });
+
+  it("sector-index 50-DMA breadth matches the dashboard's sector table for every tracked sector", () => {
+    for (const sector of dash.sectors) {
+      const index = u.indices.get(sector.slug);
+      if (!index || !sector.latestDate.available) continue;
+      const mine = indexContextAt(u, index, sector.latestDate.value).breadth50!;
+      expect(mine.eligible).toBe(sector.breadth.above50dma.eligible);
+      expect(mine.total).toBe(sector.breadth.above50dma.total);
+      const a = mine.pct;
+      const b = sector.breadth.above50dma.pct;
+      expect(a.available).toBe(b.available);
+      if (a.available && b.available) expect(a.value).toBeCloseTo(b.value, 10);
+    }
+  });
+
+  it("has NIFTY 50 for the latest session, from the same official index file", () => {
+    const n50 = u.indices.get("nifty50");
+    expect(n50?.bars.at(-1)?.date).toBe(latest);
+    expect(indexContextAt(u, n50!, latest).changePct.available).toBe(true);
   });
 
   it("features of each latest-session candidate match the screener's for the same stock", () => {

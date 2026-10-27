@@ -146,7 +146,9 @@ export function explainFactors(c: Inputs): { continuation: MomentumFactor[]; rev
   }
 
   const bench = v(c.context.benchmarkChangePct);
-  if (bench !== null && Math.abs(bench) >= 0.5) {
+  const n50 = c.context.nifty50 ? v(c.context.nifty50.changePct) : null;
+  // Same rule as the market component score: the broad move only counts when NIFTY 50 agrees (when it is available).
+  if (bench !== null && Math.abs(bench) >= 0.5 && (n50 === null || Math.sign(n50) === Math.sign(bench))) {
     if (up === bench > 0) add(cont, "market", `NIFTY 500 moved the same direction (${f2(bench)}%).`);
     else add(rev, "market", `NIFTY 500 moved the opposite way (${f2(bench)}%) - the stock moved against the market.`);
   }

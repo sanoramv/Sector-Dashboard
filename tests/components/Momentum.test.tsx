@@ -38,7 +38,7 @@ describe("MomentumTable", () => {
     const row = screen.getByRole("button", { name: /GAMMA/ });
     expect(within(row).getByText("-4.00%")).toBeTruthy();
     expect(within(row).getAllByText("N/A").length).toBeGreaterThan(0);
-    expect(within(row).getByText("Insufficient evidence")).toBeTruthy();
+    expect(within(row).getAllByText("Insufficient evidence")).toHaveLength(2); // evidence category and setup label
   });
 
   it("sorts by a column when its header is clicked and calls onSelect for a row", () => {
@@ -80,6 +80,19 @@ describe("MomentumPanel", () => {
     expect(screen.getByText(/NSE equity bhavcopy \(official\)/)).toBeTruthy();
     expect(screen.getByText(/Not Groww's live list/)).toBeTruthy();
     expect(screen.queryByText(/buy now|sell now|target price|stop-loss at/i)).toBeNull();
+  });
+
+  it("switches between the gainers/losers, unusual-volume, continuation and exhaustion lists", async () => {
+    stubFetch({});
+    render(<MomentumPanel rawDataset={ds} settings={DEFAULT_SETTINGS} dataStatus="live" />);
+    await screen.findByRole("region", { name: /Top 20 gainers/ });
+    fireEvent.click(screen.getByRole("tab", { name: "Unusual volume" }));
+    expect(screen.getByRole("region", { name: /Unusual volume/ })).toBeTruthy();
+    expect(screen.queryByRole("region", { name: /Top 20 gainers/ })).toBeNull();
+    fireEvent.click(screen.getByRole("tab", { name: "Continuation characteristics" }));
+    expect(screen.getByText(/Historically this category did NOT reliably continue/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("tab", { name: "Exhaustion / reversal risk" }));
+    expect(screen.getByText(/Not an instruction to trade against the move/)).toBeTruthy();
   });
 
   it("keeps working, and says so, when the volume and filings files are missing", async () => {

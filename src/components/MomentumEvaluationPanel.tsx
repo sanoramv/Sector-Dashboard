@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { EvaluationConfig, EvaluationResult, OutcomeStats } from "../lib/momentum/evaluation";
 import { DEFAULT_EVALUATION_CONFIG } from "../lib/momentum/evaluation";
 import { LABEL_TEXT } from "../lib/momentum/classify";
+import { CATEGORY_TEXT } from "../lib/momentum/assess";
 
 export interface MomentumEvaluationPanelProps {
   result: EvaluationResult | null;
@@ -137,7 +138,77 @@ export function MomentumEvaluationPanel({ result, running, onRun }: MomentumEval
           )}
 
           <StatsTable
-            caption="By research label"
+            caption="By evidence category (the headline classification)"
+            rows={result.byCategory.map((r) => ({ key: `${r.key.group}-${r.key.category}`, name: `${groupName(r.key.group)} · ${CATEGORY_TEXT[r.key.group][r.key.category]}`, s: r.stats }))}
+          />
+
+          <h3 style={{ fontSize: 13, margin: "4px 0 6px" }}>Does a category beat simply taking every top mover?</h3>
+          <p style={{ fontSize: 12.5, marginTop: 0 }}>
+            "Continued" = the next close moved further in the day's direction (higher for gainers, lower for losers). The
+            base rate is the precision of taking every top mover in the group without any score.
+          </p>
+          <div className="scroll-x" style={{ marginBottom: 14 }}>
+            <table style={{ fontSize: 12 }} aria-label="Category precision and recall">
+              <thead>
+                <tr>
+                  {["Group · category", "Predicts", "Flagged (dates)", "Precision", "95% CI", "Base rate", "Lift", "Recall"].map((h) => (
+                    <th key={h} className="text-muted" style={{ textAlign: h.startsWith("Group") ? "left" : "right", padding: "6px 8px", fontSize: 11, whiteSpace: "nowrap" }}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {result.classification.map((m) => {
+                  const td: React.CSSProperties = { textAlign: "right", padding: "6px 8px", whiteSpace: "nowrap" };
+                  const ciCoversBase = m.precisionCi ? m.precisionCi[0] <= m.baseRate && m.baseRate <= m.precisionCi[1] : true;
+                  return (
+                    <tr key={`${m.group}-${m.category}`} style={{ borderTop: "1px solid var(--color-border)" }}>
+                      <td style={{ padding: "6px 8px" }}>{groupName(m.group)} · {CATEGORY_TEXT[m.group][m.category]}</td>
+                      <td style={td}>{m.target}</td>
+                      <td className="num" style={td}>{m.predicted} ({m.predictedDates})</td>
+                      <td className="num" style={td}>{m.precision === null ? "n/a" : `${f(m.precision, 1)}%`}</td>
+                      <td className="num text-faint" style={td}>{ci(m.precisionCi)}</td>
+                      <td className="num" style={td}>{f(m.baseRate, 1)}%</td>
+                      <td className="num" style={td}>
+                        {m.liftPp === null ? "n/a" : `${m.liftPp >= 0 ? "+" : ""}${f(m.liftPp, 1)}pp`}{" "}
+                        {ciCoversBase && <span className="badge badge-insufficient" style={{ fontSize: 9.5 }}>within uncertainty</span>}
+                      </td>
+                      <td className="num" style={td}>{m.recall === null ? "n/a" : `${f(m.recall, 1)}%`}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <StatsTable
+            caption="Evidence category by chronological third"
+            rows={result.byCategoryFold.map((r) => ({
+              key: `${r.key.fold}-${r.key.group}-${r.key.category}`,
+              name: `${r.key.from} to ${r.key.to} · ${groupName(r.key.group)} · ${CATEGORY_TEXT[r.key.group][r.key.category]}`,
+              s: r.stats,
+            }))}
+          />
+          <StatsTable
+            caption="First appearance only (consecutive-day repeats removed)"
+            rows={result.firstAppearanceOnly.map((r) => ({ key: r.key, name: `${groupName(r.key)} (first day of each run)`, s: r.stats }))}
+          />
+          <StatsTable
+            caption="By liquidity (median daily turnover, previous 20 sessions)"
+            rows={result.byLiquidity.map((r) => ({ key: `${r.key.group}-${r.key.liquidity}`, name: `${groupName(r.key.group)} · ${r.key.liquidity === "unknown" ? "unknown (no volume baseline)" : `₹${r.key.liquidity}`}`, s: r.stats }))}
+          />
+          <StatsTable
+            caption="By size of the day's move"
+            rows={result.byMagnitude.map((r) => ({ key: `${r.key.group}-${r.key.magnitude}`, name: `${groupName(r.key.group)} · ${r.key.magnitude}`, s: r.stats }))}
+          />
+          <details style={{ marginBottom: 14 }}>
+            <summary style={{ cursor: "pointer", fontSize: 12.5, fontWeight: 700 }}>By NSE industry ({result.byIndustry.length} rows)</summary>
+            <StatsTable caption="By NSE industry" rows={result.byIndustry.map((r) => ({ key: `${r.key.group}-${r.key.industry}`, name: `${groupName(r.key.group)} · ${r.key.industry}`, s: r.stats }))} />
+          </details>
+
+          <StatsTable
+            caption="By setup label"
             rows={result.byGroupLabel.map((r) => ({ key: `${r.key.group}-${r.key.label}`, name: `${groupName(r.key.group)} · ${LABEL_TEXT[r.key.label]}`, s: r.stats }))}
           />
           <StatsTable
@@ -167,7 +238,7 @@ export function MomentumEvaluationPanel({ result, running, onRun }: MomentumEval
             <table style={{ fontSize: 12 }} aria-label="Walk-forward calibration">
               <thead>
                 <tr>
-                  {["Group", "Scored", "Brier (label)", "Brier (group base rate)", "Skill", "Reliability (predicted → observed)"].map((h) => (
+                  {["Group", "Scored", "Brier (label or category)", "Brier (group base rate)", "Skill", "Reliability (predicted → observed)"].map((h) => (
                     <th key={h} className="text-muted" style={{ textAlign: "left", padding: "6px 8px", fontSize: 11 }}>
                       {h}
                     </th>
@@ -175,9 +246,9 @@ export function MomentumEvaluationPanel({ result, running, onRun }: MomentumEval
                 </tr>
               </thead>
               <tbody>
-                {result.walkForward.map((w) => (
-                  <tr key={w.group} style={{ borderTop: "1px solid var(--color-border)" }}>
-                    <td style={{ padding: "6px 8px" }}>{groupName(w.group)}</td>
+                {[...result.walkForward.map((w) => ({ w, by: "setup label" })), ...result.walkForwardCategory.map((w) => ({ w, by: "evidence category" }))].map(({ w, by }) => (
+                  <tr key={`${w.group}-${by}`} style={{ borderTop: "1px solid var(--color-border)" }}>
+                    <td style={{ padding: "6px 8px" }}>{groupName(w.group)} · by {by}</td>
                     <td className="num" style={{ padding: "6px 8px" }}>{w.scored}</td>
                     <td className="num" style={{ padding: "6px 8px" }}>{w.brierLabelModel?.toFixed(4) ?? "n/a"}</td>
                     <td className="num" style={{ padding: "6px 8px" }}>{w.brierGroupModel?.toFixed(4) ?? "n/a"}</td>

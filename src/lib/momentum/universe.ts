@@ -2,7 +2,8 @@ import type { DailyBar } from "../../types/market";
 import type { RawDataset } from "../../types/dataset";
 import type { ActivityRow } from "../../types/activity";
 import type { SizeSegment } from "../../types/momentum";
-import { BENCHMARK } from "../../config/sectorUniverse";
+import { BENCHMARK, SECTOR_UNIVERSE } from "../../config/sectorUniverse";
+import { MARKET_CONTEXT_INDICES } from "../../config/marketIndices";
 import { splitAtPriceBreaks, validateBars, type PriceBreak } from "../calculations/validation";
 
 /**
@@ -46,9 +47,28 @@ export interface UniverseStock {
   activityByDate: Map<string, ActivityRow>;
 }
 
+export interface PreparedIndex {
+  slug: string;
+  displayName: string;
+  /** Validated bars. */
+  bars: DailyBar[];
+  indexByDate: Map<string, number>;
+  /** Constituent symbols (sector indices only; empty for NIFTY 50). */
+  constituents: string[];
+}
+
 export interface PreparedUniverse {
   /** Validated NIFTY 500 bars (the benchmark and trading calendar). */
   benchmark: DailyBar[];
+  /** Tracked sector indices and NIFTY 50, keyed by slug. Missing series are simply absent. */
+  indices: Map<string, PreparedIndex>;
+  /** Tracked sector slugs each symbol belongs to, in SECTOR_UNIVERSE order. */
+  sectorsOf: Map<string, string[]>;
+  /**
+   * Every stock with prepared history: the ranking universe plus sector-index
+   * constituents outside it (used only for sector breadth, never ranked).
+   */
+  contextStocks: Map<string, UniverseStock>;
   calendar: string[];
   calendarIndex: Map<string, number>;
   stocks: UniverseStock[];
@@ -78,45 +98,69 @@ export function prepareUniverse(dataset: RawDataset, activity: Record<string, Ac
     lists[slug] = new Set(dataset.constituents[slug]?.constituents.map((c) => c.symbol) ?? []);
   }
 
-  const seen = new Set<string>();
+  const prepare = (c: { symbol: string; companyName: string; industry: string }): UniverseStock => {
+    const { bars } = validateBars(dataset.stocks[c.symbol]?.bars ?? [], { splitAtBreaks: false });
+    const { segments, breaks } = splitAtPriceBreaks(bars, calendar);
+    const segOf = new Int32Array(bars.length);
+    const posInSeg = new Int32Array(bars.length);
+    let k = 0;
+    segments.forEach((seg, s) => {
+      seg.forEach((_b, p) => {
+        segOf[k] = s;
+        posInSeg[k] = p;
+        k += 1;
+      });
+    });
+    const breakByDate = new Map(breaks.map((b) => [b.date, b]));
+    const activityRows = activity?.[c.symbol] ?? [];
+    return {
+      symbol: c.symbol,
+      companyName: c.companyName,
+      industry: c.industry,
+      segment: segmentFor(c.symbol, lists),
+      bars,
+      segOf,
+      posInSeg,
+      segments,
+      breakAt: bars.map((b) => breakByDate.get(b.date) ?? null),
+      indexByDate: new Map(bars.map((b, i) => [b.date, i])),
+      activityByDate: new Map(activityRows.map((r) => [r.date, r])),
+    };
+  };
+
   const stocks: UniverseStock[] = [];
+  const contextStocks = new Map<string, UniverseStock>();
   for (const slug of TOTAL_MARKET_COMPONENT_SLUGS) {
     for (const c of dataset.constituents[slug]?.constituents ?? []) {
-      if (seen.has(c.symbol)) continue;
-      seen.add(c.symbol);
-      const { bars } = validateBars(dataset.stocks[c.symbol]?.bars ?? [], { splitAtBreaks: false });
-      const { segments, breaks } = splitAtPriceBreaks(bars, calendar);
-      const segOf = new Int32Array(bars.length);
-      const posInSeg = new Int32Array(bars.length);
-      let k = 0;
-      segments.forEach((seg, s) => {
-        seg.forEach((_b, p) => {
-          segOf[k] = s;
-          posInSeg[k] = p;
-          k += 1;
-        });
-      });
-      const breakByDate = new Map(breaks.map((b) => [b.date, b]));
-      const activityRows = activity?.[c.symbol] ?? [];
-      stocks.push({
-        symbol: c.symbol,
-        companyName: c.companyName,
-        industry: c.industry,
-        segment: segmentFor(c.symbol, lists),
-        bars,
-        segOf,
-        posInSeg,
-        segments,
-        breakAt: bars.map((b) => breakByDate.get(b.date) ?? null),
-        indexByDate: new Map(bars.map((b, i) => [b.date, i])),
-        activityByDate: new Map(activityRows.map((r) => [r.date, r])),
-      });
+      if (contextStocks.has(c.symbol)) continue;
+      const stock = prepare(c);
+      stocks.push(stock);
+      contextStocks.set(c.symbol, stock);
     }
+  }
+
+  const indices = new Map<string, PreparedIndex>();
+  const sectorsOf = new Map<string, string[]>();
+  for (const def of [...SECTOR_UNIVERSE, ...MARKET_CONTEXT_INDICES]) {
+    const raw = dataset.indexSeries[def.slug]?.bars;
+    if (!raw || raw.length === 0) continue;
+    const { bars } = validateBars(raw);
+    const constituents = dataset.constituents[def.slug]?.constituents ?? [];
+    for (const c of constituents) {
+      if (!contextStocks.has(c.symbol)) contextStocks.set(c.symbol, prepare(c));
+      const list = sectorsOf.get(c.symbol) ?? [];
+      list.push(def.slug);
+      sectorsOf.set(c.symbol, list);
+    }
+    indices.set(def.slug, { slug: def.slug, displayName: def.displayName, bars, indexByDate: new Map(bars.map((b, i) => [b.date, i])), constituents: constituents.map((c) => c.symbol) });
   }
 
   const fetchedAt = dataset.constituents[BENCHMARK.slug]?.fetchedAt ?? null;
   return {
     benchmark,
+    indices,
+    sectorsOf,
+    contextStocks,
     calendar,
     calendarIndex,
     stocks,

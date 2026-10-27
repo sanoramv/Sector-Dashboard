@@ -102,7 +102,7 @@ describe("no look-ahead", () => {
     const outcome = (pos: boolean) => ({ nextDate: "", closeToClosePct: pos ? 1 : -1, excessVsNifty500Pp: 0, higherHigh: false, lowerLow: false, gapPct: 0, openToCloseNetPct: 0, mfeFromOpenPct: 0, maeFromOpenPct: 0 });
     // 40 dates x 1 observation of label A, always positive; then on date 41 a negative one.
     for (let i = 0; i < 41; i++) {
-      obs.push({ date: dates[i], symbol: `X${i}`, group: "gainer", label: "possible-breakout", volume: "confirmed", regime: "sideways", repeat: false, outcome: outcome(i < 40) });
+      obs.push({ date: dates[i], symbol: `X${i}`, group: "gainer", label: "possible-breakout", category: "continuation", industry: "IT", liquidity: "10-100 cr", magnitude: "5-10%", volume: "confirmed", regime: "sideways", repeat: false, outcome: outcome(i < 40) });
     }
     const w = walkForward(obs, "gainer");
     // First scored prediction is on date 31 (after 30 prior observations), using 30 positives.
@@ -147,6 +147,27 @@ describe("sample-size and uncertainty reporting", () => {
     expect(twice.mean).toBeCloseTo(once.mean, 10);
     expect(width(twice.ci)).toBeCloseTo(width(once.ci), 10);
     expect(clusteredMean([1, 2], [ds[0], ds[0]]).ci).toBeNull();
+  });
+
+  it("also clusters by stock: one stock recurring with the same outcome across dates widens the interval", () => {
+    // 40 dates; stock A always +3 and stock B always -3, alongside 38 independent-looking stocks.
+    const dates40 = dates.slice(0, 40);
+    const values: number[] = [];
+    const d: string[] = [];
+    const st: string[] = [];
+    dates40.forEach((date, i) => {
+      values.push(3, -3, i % 2 ? 1 : -1);
+      d.push(date, date, date);
+      st.push("A", "B", `X${i}`);
+    });
+    const width = (c: [number, number] | null) => (c ? c[1] - c[0] : NaN);
+    const dateOnly = clusteredMean(values, d);
+    const twoWay = clusteredMean(values, d, st);
+    expect(twoWay.mean).toBeCloseTo(dateOnly.mean, 12);
+    expect(width(twoWay.ci)).toBeGreaterThan(width(dateOnly.ci));
+    // With every stock distinct, the stock dimension adds nothing beyond date clustering.
+    const distinct = clusteredMean(values, d, values.map((_, k) => `S${k}`));
+    expect(width(distinct.ci)).toBeGreaterThanOrEqual(width(dateOnly.ci) - 1e-12);
   });
 });
 

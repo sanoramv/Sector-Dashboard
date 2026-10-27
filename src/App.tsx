@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
 import { useMarketData } from "./hooks/useMarketData";
 import { Header } from "./components/Header";
 import { MarketOverview } from "./components/MarketOverview";
@@ -10,7 +10,6 @@ import { IndustryDetailPanel } from "./components/IndustryDetailPanel";
 import { StockScreenerTable } from "./components/StockScreenerTable";
 import { StockDetailPanel } from "./components/StockDetailPanel";
 import { BacktestPanel } from "./components/BacktestPanel";
-import { MomentumPanel } from "./components/MomentumPanel";
 import { HistoryPanel } from "./components/HistoryPanel";
 import { Tabs } from "./components/Tabs";
 import { SettingsPanel } from "./components/SettingsPanel";
@@ -19,6 +18,9 @@ import { UNAVAILABLE_SECTORS } from "./config/sectorUniverse";
 import { sectorsToCsv, stocksToCsv, downloadCsv } from "./lib/export/csv";
 import { downloadJson } from "./lib/export/json";
 import { computeRegimeHistory } from "./lib/dashboard";
+
+// Loaded on first use: the momentum page and its analysis code are only downloaded when the tab is opened.
+const MomentumPanel = lazy(() => import("./components/MomentumPanel").then((m) => ({ default: m.MomentumPanel })));
 
 type TabKey = "sectors" | "industries" | "screener" | "momentum" | "backtest" | "history";
 
@@ -200,7 +202,15 @@ export default function App() {
             )}
 
             {activeTab === "momentum" && market.rawDataset && (
-              <MomentumPanel rawDataset={market.rawDataset} settings={market.settings} dataStatus={market.status} />
+              <Suspense
+                fallback={
+                  <div className="card" style={{ padding: 24, textAlign: "center" }} aria-live="polite">
+                    Loading the Next-Day Momentum page…
+                  </div>
+                }
+              >
+                <MomentumPanel rawDataset={market.rawDataset} settings={market.settings} dataStatus={market.status} />
+              </Suspense>
             )}
 
             {activeTab === "backtest" && market.rawDataset && (

@@ -13,8 +13,10 @@ import { MARKET_CAP_SEGMENTS } from "../src/config/marketCapSegments.ts";
 import type { SectorConstituents } from "../src/types/market.ts";
 import { fetchText, mapWithConcurrency, sleep } from "./lib/http.mts";
 import { parseCsvObjects } from "./lib/csv.mts";
+import { appendChanges, diffConstituents, type ConstituentChangeLog } from "./lib/constituent-changes.mts";
 
 const OUT_PATH = path.resolve("public/data/constituents.json");
+const CHANGES_PATH = path.resolve("public/data/constituent-changes.json");
 // MARKET_CAP_SEGMENTS includes NIFTY 500 again (as the self-benchmark entry) -
 // excluded here since it's already covered by BENCHMARK, same slug/file.
 const NEW_SEGMENT_DEFS = MARKET_CAP_SEGMENTS.filter((s) => s.slug !== BENCHMARK.slug);
@@ -31,6 +33,7 @@ async function loadExisting(): Promise<Record<string, SectorConstituents>> {
 async function main() {
   const now = new Date().toISOString();
   const result = await loadExisting();
+  const previous: Record<string, SectorConstituents> = JSON.parse(JSON.stringify(result));
   const failures: string[] = [];
 
   await mapWithConcurrency(ALL_DEFS, 1, async (def) => {
@@ -64,6 +67,21 @@ async function main() {
 
   await mkdir(path.dirname(OUT_PATH), { recursive: true });
   await writeFile(OUT_PATH, JSON.stringify(result, null, 2));
+
+  // Membership changes since the previous fetch (only lists fetched successfully this run).
+  let log: ConstituentChangeLog | null = null;
+  try {
+    log = JSON.parse(await readFile(CHANGES_PATH, "utf-8"));
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err; // never silently reset a corrupt log
+  }
+  const fetchedNow = Object.fromEntries(Object.entries(result).filter(([, v]) => v.fetchedAt === now));
+  const changes = diffConstituents(previous, fetchedNow, now);
+  const trackingSince = Object.values(previous)[0]?.fetchedAt ?? now;
+  if (changes.length > 0 || !log) {
+    await writeFile(CHANGES_PATH, JSON.stringify(appendChanges(log, changes, trackingSince), null, 1));
+  }
+  for (const c of changes) console.log(`[constituents] ${c.list}: +${c.added.join(",") || "-"} / -${c.removed.join(",") || "-"} (between ${c.previousFetchedAt} and ${c.detectedAt})`);
   console.log(`[constituents] wrote ${OUT_PATH} (${Object.keys(result).length}/${ALL_DEFS.length} sectors)`);
   if (failures.length > 0) {
     console.warn(`[constituents] FAILED sectors (re-run this script to retry just these): ${failures.join(", ")}`);

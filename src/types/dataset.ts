@@ -29,6 +29,19 @@ export interface RefreshStatus {
   reasons: string[];
 }
 
+/** Status of supplementary datasets used only by the Next-Day Momentum page. Never affects `refresh`. Null fields = file missing/unreadable. */
+export interface SupplementStatus {
+  activity: { latestDate: string | null; sessions: number } | null;
+  announcements: {
+    lastSuccessfulReadAt: string | null;
+    lastAttemptAt: string | null;
+    lastAttemptOutcome: "ok" | "failed" | null;
+    lastAttemptDetail: string | null;
+    retainedItems: number;
+    retentionDays: number;
+  } | null;
+}
+
 export interface Manifest {
   schemaVersion: number;
   /** When this manifest file was written by the pipeline (ISO datetime). Says nothing about whether market data advanced - see `refresh`. */
@@ -47,6 +60,7 @@ export interface Manifest {
   /** Per-sector note on any fetch issues during the last pipeline run. */
   warnings: string[];
   refresh?: RefreshStatus;
+  supplements?: SupplementStatus;
 }
 
 import type { IndexSeries, SectorConstituents, StockSeries } from "./market";

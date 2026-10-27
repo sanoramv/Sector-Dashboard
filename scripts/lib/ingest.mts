@@ -28,6 +28,8 @@ export interface IndexIngestContext {
   defs: Array<{ slug: string; nseIndexName: string }>;
   benchmarkIndexName: string;
   checkedAt: string;
+  /** Recorded on OK entries so that adding a tracked index triggers re-extraction of older dates. */
+  indexSetHash?: string;
 }
 
 export function ingestIndexOutcome(
@@ -64,7 +66,7 @@ export function ingestIndexOutcome(
         (series[def.slug] ??= { slug: def.slug, nseIndexName: def.nseIndexName, bars: [] }).bars.push(bar);
         kept += 1;
       }
-      entry = { status: "ok", checkedAt: ctx.checkedAt, attempts: outcome.attempts, detail: `${kept} tracked series` };
+      entry = { status: "ok", checkedAt: ctx.checkedAt, attempts: outcome.attempts, detail: `${kept} tracked series`, ...(ctx.indexSetHash ? { symbolSetHash: ctx.indexSetHash } : {}) };
     }
   }
   state.archives.index[iso] = entry;

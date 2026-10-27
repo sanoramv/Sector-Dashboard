@@ -30,7 +30,7 @@ export interface ArchiveEntry {
   checkedAt: string;
   detail?: string;
   attempts?: number;
-  /** stocks only: the tracked-symbol/series set the rows were extracted for. */
+  /** The tracked-symbol/series set (stocks) or tracked-index set (index) the rows were extracted for. */
   symbolSetHash?: string;
 }
 
@@ -68,6 +68,11 @@ export async function saveState(path: string, state: RefreshState): Promise<void
     path,
     JSON.stringify({ schemaVersion: 1, archives: { index: sortEntries(state.archives.index), stocks: sortEntries(state.archives.stocks) } }, null, 1),
   );
+}
+
+/** Identifies the set of index series extracted from each ind_close_all file; adding an index re-extracts older dates (bounded). */
+export function indexSetHash(nseIndexNames: Iterable<string>): string {
+  return createHash("sha256").update([...nseIndexNames].sort().join("|")).digest("hex").slice(0, 16);
 }
 
 /** Drops entries older than `cutoffIso` (outside the retained data window). */
@@ -145,7 +150,8 @@ export function planFetch(
     if (!e) return true;
     switch (e.status) {
       case "ok":
-        return kind === "stocks" && e.symbolSetHash !== opts.currentSymbolSetHash;
+        // Re-extract when the date was ingested for a different symbol/series set (stocks) or index set (index).
+        return opts.currentSymbolSetHash !== undefined && e.symbolSetHash !== opts.currentSymbolSetHash;
       case "missing":
       case "earlier-session":
         return recent; // settled once it ages out of the recent window
@@ -206,7 +212,7 @@ export interface RefreshSummary {
   unresolvedHistorical: DateIssue[];
   pendingPublication: string[];
   nonTradingDates: number;
-  /** Older stock dates still to be re-extracted for the current symbol/series set (bounded backfill). */
+  /** Older dates still to be re-extracted for the current stock symbol/series set or index set (bounded backfill). */
   backfillRemaining: number;
   reasons: string[];
 }
@@ -222,6 +228,8 @@ export function evaluateRefresh(
   latestMarketDate: string,
   currentSymbolSetHash: string,
   now: Date,
+  /** When given, index dates extracted for a different index set also count as backfill remaining. */
+  currentIndexSetHash?: string,
 ): RefreshSummary {
   const unresolvedRecent: DateIssue[] = [];
   const unresolvedHistorical: DateIssue[] = [];
@@ -239,6 +247,7 @@ export function evaluateRefresh(
     if (status === "unresolved") (i < RECENT_DATES ? unresolvedRecent : unresolvedHistorical).push({ date, index: describe(idx), stocks: describe(stk) });
     if ((status === "trading" || status === "unresolved") && date > latestMarketDate) tradingDaysBehind += 1;
     if (stk?.status === "ok" && stk.symbolSetHash !== currentSymbolSetHash) backfillRemaining += 1;
+    else if (currentIndexSetHash !== undefined && idx?.status === "ok" && idx.symbolSetHash !== currentIndexSetHash) backfillRemaining += 1;
   });
 
   const reasons: string[] = [];
@@ -247,7 +256,7 @@ export function evaluateRefresh(
   }
   if (tradingDaysBehind > 0) reasons.push(`published market data (${latestMarketDate}) is ${tradingDaysBehind} trading day(s) behind the latest due date ${targets[0]}`);
   if (unresolvedHistorical.length > 0) reasons.push(`${unresolvedHistorical.length} older date(s) unresolved (historical gaps): ${unresolvedHistorical.map((u) => u.date).join(", ")}`);
-  if (backfillRemaining > 0) reasons.push(`${backfillRemaining} older stock date(s) still to be re-extracted for the current symbol/series set`);
+  if (backfillRemaining > 0) reasons.push(`${backfillRemaining} older date(s) still to be re-extracted for the current tracked symbols/series/indices`);
 
   const outcome = unresolvedRecent.length > 0 || tradingDaysBehind > 0 ? "failed" : unresolvedHistorical.length > 0 || backfillRemaining > 0 ? "partial" : "complete";
   return {

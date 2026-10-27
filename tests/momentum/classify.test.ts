@@ -1,72 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { ok, unavailable } from "../../src/types/metrics";
-import type { MomentumCandidate } from "../../src/types/momentum";
+import { base } from "./candidateFixture";
 import { classify, explainFactors, lowConfidenceReasons, MOMENTUM_RULES } from "../../src/lib/momentum/classify";
-
-type Inputs = Pick<MomentumCandidate, "group" | "price" | "patterns" | "activity" | "context" | "quality">;
-
-/** A clean, well-supported gainer; each test changes only what it is about. */
-function base(over: { group?: "gainer" | "loser"; price?: Partial<Inputs["price"]>; patterns?: Partial<Inputs["patterns"]>; activity?: Partial<Inputs["activity"]>; context?: Partial<Inputs["context"]>; quality?: Partial<Inputs["quality"]> } = {}): Inputs {
-  return {
-    group: over.group ?? "gainer",
-    price: {
-      close: 108,
-      prevClose: 100,
-      dailyChangePct: 8,
-      openToClosePct: 5,
-      gapPct: 1,
-      closeLocation: 0.85,
-      rangePct: 9,
-      r3: ok(9),
-      r5: ok(10),
-      r10: ok(11),
-      r20: ok(12),
-      volatility20: ok(2),
-      moveZ: ok(2),
-      distSma20Pct: ok(8),
-      distSma50Pct: ok(10),
-      distSma200Pct: ok(15),
-      distanceFrom52wHigh: ok(-3),
-      ...over.price,
-    },
-    patterns: {
-      resistance: ok({ level: 110, levelDate: "2026-09-01", distancePct: -1.8, isApproaching: true }),
-      breakoutToday: false,
-      failedBreakoutToday: false,
-      retest: null,
-      consolidationBefore: unavailable("n/a"),
-      triangleBefore: unavailable("n/a"),
-      ...over.patterns,
-    },
-    activity: {
-      available: true,
-      unavailableReason: null,
-      volume: 300_000,
-      relativeVolume: ok(2.5),
-      turnoverCr: 30,
-      medianTurnover20Cr: ok(10),
-      deliveryPct: 45,
-      avgDeliveryPct20: ok(40),
-      series: "EQ",
-      tradeForTrade: false,
-      liquidityWarnings: [],
-      ...over.activity,
-    },
-    context: {
-      industry: "IT",
-      peerCount: 10,
-      peerMedianChangePct: 0.5,
-      stockVsPeersPp: 7.5,
-      moveScope: "stock-specific",
-      relativeStrength1m: ok(4),
-      industryRelativeStrength1m: ok(1),
-      benchmarkChangePct: ok(0.2),
-      marketRegime: "sideways",
-      ...over.context,
-    },
-    quality: { status: "ok", barsUsed: 250, usableFrom: "2025-08-04", notes: [], ...over.quality },
-  };
-}
 
 describe("research labels (pre-declared rules)", () => {
   it("gainer: strong close + volume + above 50-DMA + positive 1M RS -> momentum continuation", () => {
@@ -128,6 +63,13 @@ describe("evidence factors", () => {
     const f = explainFactors(base({ group: "loser", price: { dailyChangePct: -6, closeLocation: 0.1, distSma50Pct: ok(-4), distSma200Pct: ok(-9) }, context: { relativeStrength1m: ok(-5) } }));
     expect(f.continuation.map((x) => x.id)).toEqual(expect.arrayContaining(["close-location", "trend", "relative-strength"]));
     expect(f.continuation.find((x) => x.id === "close-location")?.text).toMatch(/low/);
+  });
+
+  it("counts the broad-market move only when NIFTY 50 agrees with NIFTY 500", () => {
+    const idx = (change: number) => ({ slug: "nifty50", displayName: "NIFTY 50", changePct: ok(change), relativeStrength1m: ok(0), above50dma: true, breadth50: null });
+    expect(explainFactors(base({ context: { benchmarkChangePct: ok(0.6), nifty50: idx(0.4) } })).continuation.map((x) => x.id)).toContain("market");
+    const split = explainFactors(base({ context: { benchmarkChangePct: ok(0.6), nifty50: idx(-0.02) } }));
+    expect([...split.continuation, ...split.reversal].map((x) => x.id)).not.toContain("market");
   });
 
   it("flags a gap that faded after the open", () => {
