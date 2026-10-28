@@ -91,18 +91,21 @@ describe("Next-Day Momentum agrees with the dashboard (real committed data)", ()
 
 describe("stock-activity.json lines up with stocks.json", () => {
   it("every activity row has a price bar on the same date, with non-negative volume and valid delivery %", () => {
+    // Same checks on every row; violations are collected and asserted once (one expect per row
+    // across ~226k rows made this test slow enough to time out on GitHub's runners).
     let rows = 0;
+    const violations: string[] = [];
     for (const [symbol, list] of Object.entries(activity)) {
       const dates = new Set(ds.stocks[symbol]?.bars.map((b) => b.date));
       for (const r of list) {
-        expect(dates.has(r.date)).toBe(true);
-        expect(r.volume).toBeGreaterThanOrEqual(0);
-        expect(r.turnoverLakhs).toBeGreaterThanOrEqual(0);
-        if (r.deliveryPct !== null) expect(r.deliveryPct).toBeGreaterThanOrEqual(0);
-        if (r.deliveryPct !== null) expect(r.deliveryPct).toBeLessThanOrEqual(100);
         rows += 1;
+        if (!dates.has(r.date)) violations.push(`${symbol} ${r.date}: no price bar`);
+        if (!(r.volume >= 0)) violations.push(`${symbol} ${r.date}: volume ${r.volume}`);
+        if (!(r.turnoverLakhs >= 0)) violations.push(`${symbol} ${r.date}: turnover ${r.turnoverLakhs}`);
+        if (r.deliveryPct !== null && !(r.deliveryPct >= 0 && r.deliveryPct <= 100)) violations.push(`${symbol} ${r.date}: delivery ${r.deliveryPct}`);
       }
     }
+    expect(violations.slice(0, 20)).toEqual([]);
     expect(rows).toBeGreaterThan(100_000);
   });
 
