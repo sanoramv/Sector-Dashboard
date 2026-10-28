@@ -137,7 +137,7 @@ export default function App() {
                 { key: "sectors", label: "Sectors" },
                 { key: "industries", label: `Industries (${market.dashboardData.industries.length})` },
                 { key: "screener", label: `Stock Screener (${market.dashboardData.stockScreen.length})` },
-                { key: "momentum", label: "Next-Day Momentum" },
+                { key: "momentum", label: "Daily Movers & Continuation" },
                 { key: "backtest", label: "Backtest" },
                 { key: "history", label: `History (${market.snapshotHistory.length})` },
               ]}
@@ -205,7 +205,7 @@ export default function App() {
               <Suspense
                 fallback={
                   <div className="card" style={{ padding: 24, textAlign: "center" }} aria-live="polite">
-                    Loading the Next-Day Momentum page…
+                    Loading Daily Movers & Continuation…
                   </div>
                 }
               >

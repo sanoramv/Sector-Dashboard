@@ -1,5 +1,7 @@
 # Next-Day Momentum research
 
+Shown in the dashboard as the **Daily Movers & Continuation** tab (internal key `momentum`).
+
 A dashboard tab that lists one NSE session's top gainers and top losers, sets out the evidence for and against
 each move continuing into the next session, and shows how similar setups did historically. It is a research tool
 that describes observed conditions. **It does not predict tomorrow's prices and gives no buy/sell, entry,

@@ -106,28 +106,27 @@ export function MomentumDetailPanel({ candidate: c, bars, activityByDate, filing
             <p style={{ fontSize: 13, margin: "8px 0 0" }}>{explainCandidate(c, categoryHistory, groupHistory, historyRan)}</p>
           </div>
 
-          <div className="scroll-x">
+          <div>
             <h3 style={{ fontSize: 13, margin: "0 0 6px" }}>Component scores (toward continuation of today's {c.group === "gainer" ? "rise" : "fall"})</h3>
-            <table style={{ fontSize: 12.5 }} aria-label="Component scores">
-              <tbody>
-                {c.assessment.components.map((comp) => (
-                  <tr key={comp.dimension} style={{ borderTop: "1px solid var(--color-border)" }}>
-                    <td style={{ padding: "5px 8px", whiteSpace: "nowrap", verticalAlign: "top" }}>{DIMENSION_TEXT[comp.dimension]}</td>
-                    <td className="num" style={{ padding: "5px 8px", whiteSpace: "nowrap", verticalAlign: "top" }}>
-                      {comp.score === null ? "N/A" : `${comp.score > 0 ? "+" : ""}${comp.score}`} <span className="text-faint">({comp.min} to {comp.max > 0 ? "+" : ""}{comp.max})</span>
-                    </td>
-                    <td style={{ padding: "5px 8px" }} className="text-muted">
-                      {comp.score === null ? "inputs unavailable" : comp.reasons.length > 0 ? comp.reasons.join("; ") : "no rule triggered"}
-                    </td>
-                  </tr>
-                ))}
-                <tr style={{ borderTop: "2px solid var(--color-border)" }}>
-                  <td style={{ padding: "5px 8px" }}><strong>Net</strong></td>
-                  <td className="num" style={{ padding: "5px 8px" }}><strong>{c.assessment.total > 0 ? "+" : ""}{c.assessment.total}</strong></td>
-                  <td style={{ padding: "5px 8px" }} className="text-muted">{c.assessment.rationale} An evidence tally, not a probability.</td>
-                </tr>
-              </tbody>
-            </table>
+            {/* Grid rather than <table>: on narrow screens each explanation wraps beneath its score (see .score-row in global.css). */}
+            <div role="table" aria-label="Component scores" className="score-table">
+              {c.assessment.components.map((comp) => (
+                <div role="row" key={comp.dimension} className="score-row">
+                  <span role="rowheader" className="score-dimension">{DIMENSION_TEXT[comp.dimension]}</span>
+                  <span role="cell" className="num score-value">
+                    {comp.score === null ? "N/A" : `${comp.score > 0 ? "+" : ""}${comp.score}`} <span className="text-faint">({comp.min} to {comp.max > 0 ? "+" : ""}{comp.max})</span>
+                  </span>
+                  <span role="cell" className="text-muted score-reasons">
+                    {comp.score === null ? "inputs unavailable" : comp.reasons.length > 0 ? comp.reasons.join("; ") : "no rule triggered"}
+                  </span>
+                </div>
+              ))}
+              <div role="row" className="score-row score-row-total">
+                <span role="rowheader" className="score-dimension"><strong>Net</strong></span>
+                <span role="cell" className="num score-value"><strong>{c.assessment.total > 0 ? "+" : ""}{c.assessment.total}</strong></span>
+                <span role="cell" className="text-muted score-reasons">{c.assessment.rationale} An evidence tally, not a probability.</span>
+              </div>
+            </div>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>

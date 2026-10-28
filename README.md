@@ -153,7 +153,7 @@ the extra cost is O(symbols x dates) set lookups, trivial in practice (~750 x ~3
 
 The homepage leads with a **Market Capitalisation Segments** section (four panels: NIFTY 500, Midcap 150,
 Smallcap 250, Microcap 250 - see section 1), then the existing NIFTY-500-and-sectors Market Overview, then six
-tabs: **Sectors**, **Industries**, **Stock Screener**, **Next-Day Momentum**, **Backtest**, and **History**.
+tabs: **Sectors**, **Industries**, **Stock Screener**, **Daily Movers & Continuation**, **Backtest**, and **History**.
 
 - **Market Capitalisation Segments** (homepage, above the tabs): one card per benchmark with 1D/1W/1M/3M/6M
   index-level returns, % of constituents above their 20/50/200-day moving averages (with eligible/total counts),
@@ -179,7 +179,7 @@ tabs: **Sectors**, **Industries**, **Stock Screener**, **Next-Day Momentum**, **
   every pattern is a disclosed, parameterized heuristic, not a validated chart-pattern recognizer, with the exact
   window/threshold shown. A separate 0-10 stock-level score and full pass/fail reason list is shown per stock.
   The detail view carries an explicit "not a recommendation, no entry/stop/target" disclaimer.
-- **Next-Day Momentum tab**: each session's top gainers, top losers and unusual-volume movers across the NIFTY 500 +
+- **Daily Movers & Continuation tab** (the Next-Day Momentum research feature): each session's top gainers, top losers and unusual-volume movers across the NIFTY 500 +
   Microcap 250 universe (computed from NSE end-of-day data, not Groww's live list). It adds lists of moves with
   continuation characteristics and with exhaustion/reversal risk, and shows price, candle, volume, pattern, sector,
   NIFTY 50/500 and filings evidence as per-dimension component scores with a plain-language explanation. A
@@ -258,7 +258,7 @@ newer one yourself:
 npm run fetch:constituents   # rarely needed - index constituents change a few times a year
 npm run fetch:index-history  # incremental: only fetches missing trading days
 npm run fetch:stocks         # incremental: only fetches missing trading days (requires constituents.json)
-npm run fetch:announcements  # optional: NSE filings for the Next-Day Momentum page
+npm run fetch:announcements  # optional: NSE filings for the Daily Movers & Continuation tab
 npm run build:manifest       # always run last
 ```
 

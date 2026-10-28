@@ -246,8 +246,41 @@ table {
   margin-top: 24px;
 }
 
+/* Momentum detail: component scores. Three columns on wide screens; on phones the
+   explanation wraps beneath its dimension and score instead of being squeezed. */
+.score-table {
+  font-size: 12.5px;
+}
+.score-row {
+  display: grid;
+  grid-template-columns: minmax(150px, max-content) minmax(110px, max-content) minmax(0, 1fr);
+  column-gap: 16px;
+  row-gap: 2px;
+  padding: 5px 8px;
+  border-top: 1px solid var(--color-border);
+}
+.score-row-total {
+  border-top: 2px solid var(--color-border);
+}
+.score-dimension,
+.score-value {
+  white-space: nowrap;
+}
+.score-reasons {
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 640px) {
   .container {
     padding-inline: 12px;
+  }
+  .score-row {
+    grid-template-columns: minmax(0, 1fr) max-content;
+  }
+  .score-dimension {
+    white-space: normal;
+  }
+  .score-reasons {
+    grid-column: 1 / -1;
   }
 }

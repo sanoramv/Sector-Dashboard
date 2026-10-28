@@ -120,7 +120,7 @@ export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPane
   if (!supplements || !universe || !market || !discovery) {
     return (
       <div className="card" style={{ padding: 24, textAlign: "center" }} aria-live="polite">
-        Loading volume and filings data for the Next-Day Momentum research page…
+        Loading volume and filings data for Daily Movers & Continuation…
       </div>
     );
   }
@@ -147,7 +147,7 @@ export function MomentumPanel({ rawDataset, settings, dataStatus }: MomentumPane
   return (
     <div>
       <section className="card" style={{ padding: 14, marginBottom: 16, fontSize: 12.5 }}>
-        <h2 style={{ fontSize: 14, margin: "0 0 6px" }}>Next-Day Momentum research</h2>
+        <h2 style={{ fontSize: 14, margin: "0 0 6px" }}>Daily Movers &amp; Continuation</h2>
         <p style={{ margin: "0 0 8px" }}>
           Top gainers and losers of one NSE session, with the evidence for and against the move continuing into the next
           session, and how similar setups actually did historically. A research tool that describes conditions - it does
