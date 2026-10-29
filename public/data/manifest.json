@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-29T08:42:19.530Z",
-  "latestMarketDate": "2026-10-28",
+  "generatedAt": "2026-10-29T19:44:10.125Z",
+  "latestMarketDate": "2026-10-29",
   "source": {
     "name": "NSE (National Stock Exchange of India) - official archives, fetched by a scheduled pipeline",
     "indexDataUrl": "https://nsearchives.nseindia.com/content/indices/",
@@ -34,23 +34,23 @@
   ],
   "refresh": {
     "outcome": "complete",
-    "evaluatedAt": "2026-10-29T08:42:19.495Z",
-    "lastCompleteRefreshAt": "2026-10-29T08:42:19.495Z",
-    "latestDueDate": "2026-10-28",
+    "evaluatedAt": "2026-10-29T19:44:10.104Z",
+    "lastCompleteRefreshAt": "2026-10-29T19:44:10.104Z",
+    "latestDueDate": "2026-10-29",
     "tradingDaysBehind": 0,
     "reasons": []
   },
   "supplements": {
     "activity": {
-      "latestDate": "2026-10-28",
-      "sessions": 284
+      "latestDate": "2026-10-29",
+      "sessions": 285
     },
     "announcements": {
-      "lastSuccessfulReadAt": "2026-10-29T08:42:18.463Z",
-      "lastAttemptAt": "2026-10-29T08:42:18.463Z",
+      "lastSuccessfulReadAt": "2026-10-29T19:44:09.353Z",
+      "lastAttemptAt": "2026-10-29T19:44:09.353Z",
       "lastAttemptOutcome": "ok",
       "lastAttemptDetail": null,
-      "retainedItems": 317,
+      "retainedItems": 320,
       "retentionDays": 30
     }
   }
