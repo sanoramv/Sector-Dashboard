@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-30T08:48:26.863Z",
-  "latestMarketDate": "2026-10-29",
+  "generatedAt": "2026-10-30T18:38:07.837Z",
+  "latestMarketDate": "2026-10-30",
   "source": {
     "name": "NSE (National Stock Exchange of India) - official archives, fetched by a scheduled pipeline",
     "indexDataUrl": "https://nsearchives.nseindia.com/content/indices/",
@@ -28,29 +28,30 @@
   "benchmark": "nifty500",
   "warnings": [
     "5 of 1376 tracked constituent references have no price history yet (breadth for affected sectors will show reduced eligibility).",
+    "1 stock(s) have no price within 7 days of 2026-10-30; they get no metrics or score and are excluded from breadth and industry averages: ICICIPRULI (last 2026-10-22).",
     "6 gap(s) of missing trading sessions in stock histories; affected stocks use only prices after their latest gap: CCAVENUE 2026-10-12..2026-10-19 (4), EMBDL 2026-04-09..2026-04-13 (1), EMBDL 2026-04-13..2026-04-20 (3), EMBDL 2026-04-20..2026-04-27 (4), EMBDL 2026-04-27..2026-05-04 (3), EMBDL 2026-05-04..2026-05-06 (1).",
     "42 suspected unadjusted corporate-action break(s) (NSE prices are not split/bonus-adjusted); affected stocks use only post-break prices: ADANIPOWER 2025-09-22 x0.24, ANANDRATHI 2026-06-03 x0.50, ANGELONE 2026-02-26 x0.10, AIIL 2026-01-13 x0.22, BEML 2025-11-03 x0.50, CAMS 2025-12-05 x0.20, CUPID 2026-03-09 x0.23, LALPATHLAB 2025-12-19 x0.50, GODFRYPHLP 2025-09-16 x0.36, HDFCAMC 2025-11-26 x0.50, HDFCBANK 2025-08-26 x0.50, IRB 2026-03-30 x0.54, KOTAKBANK 2026-01-14 x0.20, LICI 2026-05-29 x0.50, MCX 2026-01-02 x0.20, NESTLEIND 2025-08-08 x0.49, NUVAMA 2025-12-26 x0.20, PATANJALI 2025-09-11 x0.33, PIDILITIND 2025-09-23 x0.49, TDPOWERSYS 2026-08-24 x0.51, TATAINVEST 2025-10-14 x0.10, VEDL 2026-04-30 x0.35, ZFCVINDIA 2026-06-24 x0.17, ZYDUSWELL 2025-09-18 x0.20, ECLERX 2026-03-13 x0.50, NAZARA 2025-09-26 x0.25, E2E 2026-06-05 x0.10, GOKULAGRO 2025-10-14 x0.45, INDIAGLYCO 2025-08-12 x0.47, INDIAGLYCO 2026-09-02 x0.21, KIRLPNU 2026-08-18 x0.50, KMEW 2025-12-22 x0.55, MBAPL 2026-07-03 x0.21, METROPOLIS 2026-03-20 x0.24, BECTORFOOD 2025-12-12 x0.21, PGIL 2026-09-11 x0.50, SANDUMA 2025-09-22 x0.33, SHILPAMED 2025-10-03 x0.49, THYROCARE 2025-11-28 x0.34, TIMETECHNO 2025-09-23 x0.47, V2RETAIL 2026-03-25 x0.10, WEBELSOLAR 2025-11-14 x0.10.",
     "5 unverified price discontinuity(ies) - a 15%+ gap-down that may be an unadjusted bonus/rights issue or a genuine fall (no official adjustment factors available); affected stocks use only later prices: BRIGADE 2026-06-17 x0.79, CUB 2026-06-12 x0.79, TARIL 2025-11-10 x0.80, TRENT 2026-06-04 x0.67, HCC 2025-12-05 x0.77. Smaller corporate actions are not detected."
   ],
   "refresh": {
     "outcome": "complete",
-    "evaluatedAt": "2026-10-30T08:48:26.838Z",
-    "lastCompleteRefreshAt": "2026-10-30T08:48:26.838Z",
-    "latestDueDate": "2026-10-29",
+    "evaluatedAt": "2026-10-30T18:38:07.801Z",
+    "lastCompleteRefreshAt": "2026-10-30T18:38:07.801Z",
+    "latestDueDate": "2026-10-30",
     "tradingDaysBehind": 0,
     "reasons": []
   },
   "supplements": {
     "activity": {
-      "latestDate": "2026-10-29",
-      "sessions": 285
+      "latestDate": "2026-10-30",
+      "sessions": 286
     },
     "announcements": {
-      "lastSuccessfulReadAt": "2026-10-30T08:48:25.897Z",
-      "lastAttemptAt": "2026-10-30T08:48:25.897Z",
+      "lastSuccessfulReadAt": "2026-10-30T18:38:04.800Z",
+      "lastAttemptAt": "2026-10-30T18:38:04.800Z",
       "lastAttemptOutcome": "ok",
       "lastAttemptDetail": null,
-      "retainedItems": 448,
+      "retainedItems": 982,
       "retentionDays": 30
     }
   }

@@ -2,6 +2,13 @@
  "schemaVersion": 1,
  "archives": {
   "index": {
+   "2026-10-30": {
+    "status": "ok",
+    "checkedAt": "2026-10-30T18:38:01.128Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
+   },
    "2026-10-29": {
     "status": "ok",
     "checkedAt": "2026-10-29T19:44:07.028Z",
@@ -2128,6 +2135,13 @@
    }
   },
   "stocks": {
+   "2026-10-30": {
+    "status": "ok",
+    "checkedAt": "2026-10-30T18:38:03.998Z",
+    "attempts": 1,
+    "symbolSetHash": "b2128cbc3b6b045d",
+    "detail": "753 tracked symbols"
+   },
    "2026-10-29": {
     "status": "ok",
     "checkedAt": "2026-10-29T19:44:08.781Z",
@@ -4308,11 +4322,6 @@
     "symbolSetHash": "bootstrap-pre-refresh-state"
    },
    "2025-08-07": {
-    "status": "ok",
-    "checkedAt": "bootstrap",
-    "symbolSetHash": "bootstrap-pre-refresh-state"
-   },
-   "2025-08-06": {
     "status": "ok",
     "checkedAt": "bootstrap",
     "symbolSetHash": "bootstrap-pre-refresh-state"
