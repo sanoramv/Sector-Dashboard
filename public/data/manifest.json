@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-29T19:44:10.125Z",
+  "generatedAt": "2026-10-30T08:48:26.863Z",
   "latestMarketDate": "2026-10-29",
   "source": {
     "name": "NSE (National Stock Exchange of India) - official archives, fetched by a scheduled pipeline",
@@ -34,8 +34,8 @@
   ],
   "refresh": {
     "outcome": "complete",
-    "evaluatedAt": "2026-10-29T19:44:10.104Z",
-    "lastCompleteRefreshAt": "2026-10-29T19:44:10.104Z",
+    "evaluatedAt": "2026-10-30T08:48:26.838Z",
+    "lastCompleteRefreshAt": "2026-10-30T08:48:26.838Z",
     "latestDueDate": "2026-10-29",
     "tradingDaysBehind": 0,
     "reasons": []
@@ -46,11 +46,11 @@
       "sessions": 285
     },
     "announcements": {
-      "lastSuccessfulReadAt": "2026-10-29T19:44:09.353Z",
-      "lastAttemptAt": "2026-10-29T19:44:09.353Z",
+      "lastSuccessfulReadAt": "2026-10-30T08:48:25.897Z",
+      "lastAttemptAt": "2026-10-30T08:48:25.897Z",
       "lastAttemptOutcome": "ok",
       "lastAttemptDetail": null,
-      "retainedItems": 320,
+      "retainedItems": 448,
       "retentionDays": 30
     }
   }
