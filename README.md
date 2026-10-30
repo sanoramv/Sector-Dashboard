@@ -10,6 +10,14 @@ and nothing in it should be read as investment advice.
 It is a static site (Vite + React + TypeScript) designed to run locally and deploy to GitHub Pages with no
 backend server.
 
+> ### 📖 Documentation for users
+>
+> - **[Quick Start (5 minutes)](docs/QUICK_START.md)** — what to look at first, and how to read the main tables.
+> - **[Complete User Guide](docs/USER_GUIDE.md)** — every tab, column, score and label explained, with a research
+>   workflow, data sources and limitations.
+>
+> Live site: <https://sanoramv.github.io/Sector-Dashboard/>
+
 ---
 
 ## 1. How data gets into this app (read this first)
