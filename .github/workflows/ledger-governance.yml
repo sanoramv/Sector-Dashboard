@@ -1,0 +1,100 @@
+name: Ledger governance tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/ledger/**"
+      - "scripts/ledger-*"
+      - "scripts/lib/refresh-state.mts"
+      - "tests/ledger/**"
+      - "src/lib/ledger/**"
+      - "src/config/marketIndices.ts"
+      - "src/config/sectorUniverse.ts"
+      - "src/lib/activity.ts"
+      - "src/lib/calculations/breadth.ts"
+      - "src/lib/calculations/distanceFromHigh.ts"
+      - "src/lib/calculations/patterns.ts"
+      - "src/lib/calculations/regime.ts"
+      - "src/lib/calculations/relativeStrength.ts"
+      - "src/lib/calculations/returns.ts"
+      - "src/lib/calculations/validation.ts"
+      - "src/lib/momentum/assess.ts"
+      - "src/lib/momentum/classify.ts"
+      - "src/lib/momentum/discovery.ts"
+      - "src/lib/momentum/features.ts"
+      - "src/lib/momentum/market.ts"
+      - "src/lib/momentum/universe.ts"
+      - "src/types/metrics.ts"
+      - "src/types/activity.ts"
+      - "src/types/config.ts"
+      - "src/types/dataset.ts"
+      - "src/types/market.ts"
+      - "src/types/momentum.ts"
+      - "public/data/ledger/protocol/**"
+      - "public/data/ledger/holdout.json"
+      - "public/data/ledger/exemptions/**"
+      - "vitest.ledger.config.ts"
+      - "package.json"
+      - ".github/workflows/update-data.yml"
+      - ".github/workflows/ledger-*.yml"
+  pull_request:
+    paths:
+      - "scripts/ledger/**"
+      - "scripts/ledger-*"
+      - "scripts/lib/refresh-state.mts"
+      - "tests/ledger/**"
+      - "src/lib/ledger/**"
+      - "src/config/marketIndices.ts"
+      - "src/config/sectorUniverse.ts"
+      - "src/lib/activity.ts"
+      - "src/lib/calculations/breadth.ts"
+      - "src/lib/calculations/distanceFromHigh.ts"
+      - "src/lib/calculations/patterns.ts"
+      - "src/lib/calculations/regime.ts"
+      - "src/lib/calculations/relativeStrength.ts"
+      - "src/lib/calculations/returns.ts"
+      - "src/lib/calculations/validation.ts"
+      - "src/lib/momentum/assess.ts"
+      - "src/lib/momentum/classify.ts"
+      - "src/lib/momentum/discovery.ts"
+      - "src/lib/momentum/features.ts"
+      - "src/lib/momentum/market.ts"
+      - "src/lib/momentum/universe.ts"
+      - "src/types/metrics.ts"
+      - "src/types/activity.ts"
+      - "src/types/config.ts"
+      - "src/types/dataset.ts"
+      - "src/types/market.ts"
+      - "src/types/momentum.ts"
+      - "public/data/ledger/protocol/**"
+      - "public/data/ledger/holdout.json"
+      - "public/data/ledger/exemptions/**"
+      - "vitest.ledger.config.ts"
+      - "package.json"
+      - ".github/workflows/update-data.yml"
+      - ".github/workflows/ledger-*.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ledger-governance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Ledger governance and immutability tests
+        run: npm run test:ledger

@@ -20,3 +20,7 @@ yarn-error.log*
 # Env
 .env
 .env.local
+
+# Interrupted ledger writes (never committed)
+public/data/ledger/**/*.partial
+*.partial

@@ -1,0 +1,18 @@
+{
+ "kind": "momentum-ledger.holdout",
+ "schemaVersion": 1,
+ "status": "sealed",
+ "protocol": {
+  "id": "od1",
+  "file": "protocol/od1.json",
+  "definitionsSha256": "51d922950f98c063d86a4c36ecf20f57d740bdcd263e46a8e753ca125535789d"
+ },
+ "gate": {
+  "minCompletedLiveSessions": 250,
+  "completedLiveSession": "A live session (valid daily file with a receipt of class live) whose every prediction has OD1 outcomes for both h=1 and h=5 with status complete or unavailable (with a reason), none pending, and no anomaly flag. A missing or incomplete capture never counts.",
+  "note": "250 is a minimum review gate, not a guarantee of statistical significance. The system never unblinds on its own; unblinding needs the user's explicit authorisation."
+ },
+ "startDate": null,
+ "unblinded": null,
+ "note": "A governance control. The repository and market prices are public, so this seal does not make results unknowable; it prevents the system from computing or displaying live performance before authorisation."
+}

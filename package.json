@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "vitest run --exclude \"tests/ledger/**\"",
     "test:watch": "vitest",
     "typecheck": "tsc -b --noEmit",
     "fetch:constituents": "tsx scripts/fetch-constituents.mts",
@@ -16,7 +16,15 @@
     "fetch:announcements": "tsx scripts/fetch-announcements.mts",
     "fetch:all": "npm run fetch:index-history && npm run fetch:stocks && npm run build:manifest",
     "build:manifest": "tsx scripts/build-manifest.mts",
-    "check:refresh": "tsx scripts/check-refresh.mts"
+    "check:refresh": "tsx scripts/check-refresh.mts",
+    "ledger:capture": "tsx scripts/ledger-capture.mts",
+    "ledger:verify": "tsx scripts/ledger-verify.mts",
+    "ledger:precommit": "tsx scripts/ledger-precommit.mts",
+    "ledger:gate": "tsx scripts/ledger-gate.mts",
+    "ledger:guard": "tsx scripts/ledger-guard.mts",
+    "ledger:protocol": "tsx scripts/ledger-protocol.mts",
+    "ledger:enable": "tsx scripts/ledger-protocol.mts",
+    "test:ledger": "vitest run --config vitest.ledger.config.ts"
   },
   "dependencies": {
     "lightweight-charts": "^5.0.9",

@@ -1,0 +1,171 @@
+{
+ "kind": "momentum-ledger.protocol.od1",
+ "schemaVersion": 1,
+ "definitions": {
+  "id": "od1",
+  "horizons": {
+   "stored": [
+    1,
+    2,
+    5,
+    10
+   ],
+   "headline": [
+    1,
+    5
+   ],
+   "unit": "NIFTY 500 trading sessions after the prediction date"
+  },
+  "sigma": {
+   "measure": "population standard deviation (divisor N)",
+   "window": 20,
+   "input": "daily simple percentage changes (close_i / close_{i-1} - 1) x 100",
+   "sessions": "the 20 sessions ending at t-1; day t excluded; comparable bars only",
+   "source": "volatility20, frozen in the prediction record",
+   "minComparableBars": 22,
+   "outcomeWindowVolatilityUsedForClassification": false
+  },
+  "epsilon": {
+   "formula": "max(k * sigma * sqrt(h), floorPct)",
+   "k": 0.5,
+   "floorPct": 0.2,
+   "floorIsIndependentOfCostAssumption": true
+  },
+  "quantities": {
+   "R_h": "(C(t+h) / C(t) - 1) x 100",
+   "X_h": "R_h - (NIFTY500 close(t+h) / NIFTY500 close(t) - 1) x 100",
+   "H*": "highest high over sessions t+1..t+h",
+   "L*": "lowest low over sessions t+1..t+h",
+   "H_t": "high of the prediction day",
+   "L_t": "low of the prediction day"
+  },
+  "gainers": {
+   "conditions": {
+    "P": "R_h >= +eps_h",
+    "E": "X_h > 0",
+    "N": "H* > H_t",
+    "D": "R_h <= -eps_h",
+    "B": "L* < L_t"
+   },
+   "firstMatchWins": [
+    {
+     "id": "inconclusive",
+     "rule": "window invalid"
+    },
+    {
+     "id": "reversal",
+     "rule": "D and B"
+    },
+    {
+     "id": "failed",
+     "rule": "D and not B"
+    },
+    {
+     "id": "confirmed",
+     "rule": "P and E and N"
+    },
+    {
+     "id": "partial",
+     "rule": "not D, and at least one of P, E, N but not all three"
+    },
+    {
+     "id": "sideways",
+     "rule": "none of the above"
+    }
+   ]
+  },
+  "losers": {
+   "conditions": {
+    "P": "R_h <= -eps_h",
+    "E": "X_h < 0",
+    "N": "L* < L_t",
+    "D": "R_h >= +eps_h",
+    "B": "H* > H_t"
+   },
+   "firstMatchWins": [
+    {
+     "id": "inconclusive",
+     "rule": "window invalid"
+    },
+    {
+     "id": "reversal",
+     "rule": "D and B"
+    },
+    {
+     "id": "failed",
+     "rule": "D and not B"
+    },
+    {
+     "id": "confirmed",
+     "rule": "P and E and N"
+    },
+    {
+     "id": "partial",
+     "rule": "not D, and at least one of P, E, N but not all three"
+    },
+    {
+     "id": "sideways",
+     "rule": "none of the above"
+    }
+   ]
+  },
+  "group": "sign of the day-t change; unchanged stocks are not in the pool",
+  "invalidWindow": [
+   "sigma unavailable (insufficient-history)",
+   "a bar missing in t+1..t+h (no-bar)",
+   "any bar in t+1..t+h in a different comparable price segment than bar t (discontinuity); the raw unadjusted return is stored",
+   "pending until the calendar has passed t+h and the archives are ok"
+  ],
+  "flags": {
+   "abnormalGap": "|O(t+1)/C(t) - 1| >= 3 sigma",
+   "volWindowOutlier": "max |daily change| in the sigma window >= 3.5 sigma"
+  },
+  "separateFromClassification": [
+   "tradable return C(t+h)/O(t+1) - 1 minus cost",
+   "MFE/MAE",
+   "industry-relative return"
+  ],
+  "headline": {
+   "measures": [
+    "confirmedShare",
+    "adverseShare"
+   ],
+   "adverse": [
+    "failed",
+    "reversal"
+   ],
+   "descriptive": [
+    "partial",
+    "sideways"
+   ],
+   "perHorizon": "each horizon on its own; 1-session and 5-session results are never combined",
+   "directions": "gainers and losers reported side by side; no pooled headline",
+   "denominator": {
+    "completedOutcomes": "stock-days whose outcome status for the horizon is complete (class in confirmed, partial, failed, reversal, sideways)",
+    "confirmedShare": "N_confirmed / N_complete",
+    "adverseShare": "(N_failed + N_reversal) / N_complete",
+    "unavailableAndPendingExcluded": true,
+    "reportedBesideEveryPercentage": [
+     "numerator",
+     "N_complete",
+     "coverage",
+     "N_unavailable",
+     "N_pending"
+    ],
+    "coverage": "N_complete / (N_complete + N_unavailable)",
+    "identity": "N_stock_days = N_complete + N_unavailable + N_pending",
+    "uniqueStockDay": "one stock on several lists on one date is one stock-day; list memberships and ranks stay in the record"
+   }
+  },
+  "meaning": "A deterministic, versioned description of what a price did over 1 or 5 sessions after a classification date, measured against a volatility-scaled materiality band fixed from information available at the classification date. Confirmed is not a probability, a predictive confidence or a profitable trading signal."
+ },
+ "labels": {
+  "inconclusive": "Inconclusive",
+  "reversal": "Reversal (losers: Rebound / reversal)",
+  "failed": "Failed continuation (losers: Failed downside continuation)",
+  "confirmed": "Confirmed continuation (losers: Confirmed downside continuation)",
+  "partial": "Partial continuation (losers: Partial downside continuation)",
+  "sideways": "Sideways"
+ },
+ "definitionsSha256": "51d922950f98c063d86a4c36ecf20f57d740bdcd263e46a8e753ca125535789d"
+}

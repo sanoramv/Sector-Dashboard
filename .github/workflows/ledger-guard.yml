@@ -1,0 +1,40 @@
+name: Ledger immutability guard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "public/data/ledger/**"
+      - "scripts/ledger/**"
+      - "scripts/ledger-*"
+  workflow_run:
+    workflows: ["Update NSE sector data"]
+    types: [completed]
+  pull_request:
+    paths:
+      - "public/data/ledger/**"
+  workflow_dispatch:
+
+# Read-only by construction: the guard reports; it never writes to the repository.
+permissions:
+  contents: read
+
+concurrency:
+  group: ledger-guard-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Check ledger history and tree
+        run: npm run -s ledger:guard

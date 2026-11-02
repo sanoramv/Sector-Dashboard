@@ -1,0 +1,41 @@
+name: Ledger watchdog
+
+# Revision 4 section 13: 03:15 UTC and 19:30 UTC daily. Unchanged issues cause no activity, so a daily run is quiet.
+on:
+  schedule:
+    # 03:15 UTC (08:45 IST) is just before the earliest 09:00 IST cut-off, including Monday for a Friday session.
+    - cron: "15 3 * * *"
+    - cron: "30 19 * * *"
+  workflow_dispatch:
+
+# No workflow-wide permissions; the job asks for exactly two.
+permissions: {}
+
+concurrency:
+  group: ledger-watchdog
+  cancel-in-progress: false
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read # read ledger-state.json
+      issues: write # open / update / close ledger issues, nothing else
+    steps:
+      # Deviation from Revision 4 (no checkout): only the two watchdog files are fetched, with credentials NOT
+      # persisted, so the script is testable. No dependencies are installed and nothing is built.
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          sparse-checkout: |
+            scripts/ledger/watchdog-core.mjs
+            scripts/ledger-watchdog.mjs
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: Evaluate ledger state and reconcile issues
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/ledger-watchdog.mjs
