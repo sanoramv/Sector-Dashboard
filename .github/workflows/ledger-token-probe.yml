@@ -1,0 +1,147 @@
+name: Ledger token probe (read-only, manual)
+
+# Proves whether the GitHub Actions token can read, from the repository-activity endpoint, the push events that
+# publication receipts (scripts/ledger/receipt.mts) rely on - and that those events carry the exact fields the receipt
+# protocol uses. A bare HTTP 200 is NOT treated as a pass.
+# Manual only. Checks out nothing, runs no repository code, writes nothing to the repository, needs no write permission.
+# Three jobs with different token permissions, so each result is meaningful on its own. `actions: read` is NOT assumed.
+# Result per job: PASS (exit 0) | FAIL (job fails) | INCONCLUSIVE (exit 0 with a warning annotation).
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+env:
+  # Exactly the request made by scripts/ledger/receipt.mts (ACTIVITY_QUERY).
+  ACTIVITY_URL: https://api.github.com/repos/${{ github.repository }}/activity?ref=refs/heads/main&activity_type=push&per_page=100
+  # The validator is shared by the three jobs. The token is read from GH_TOKEN, used only as a request header and never printed.
+  PROBE_JS: |
+    const url = process.env.ACTIVITY_URL;
+    const token = process.env.GH_TOKEN || "";
+    const sha = (process.env.GITHUB_SHA || "").toLowerCase();
+    const lines = [];
+    const say = (m) => { console.log(m); lines.push(m); };
+    const finish = (verdict, why) => {
+      say("");
+      say("RESULT: " + verdict + " - " + why);
+      if (process.env.GITHUB_STEP_SUMMARY) require("fs").appendFileSync(process.env.GITHUB_STEP_SUMMARY, "### " + (process.env.PROBE_NAME || "probe") + ": " + verdict + "\n\n```\n" + lines.join("\n") + "\n```\n");
+      if (verdict === "INCONCLUSIVE") console.log("::warning::" + (process.env.PROBE_NAME || "probe") + " INCONCLUSIVE - " + why);
+      if (verdict === "FAIL") console.log("::error::" + (process.env.PROBE_NAME || "probe") + " FAIL - " + why);
+      process.exit(verdict === "FAIL" ? 1 : 0);
+    };
+    const headers = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
+    if (token) headers.Authorization = "Bearer " + token;
+    const get = async (u) => {
+      const res = await fetch(u, { headers });
+      let body = null;
+      try { body = await res.json(); } catch { body = null; }
+      return { res, body };
+    };
+    const HEX40 = /^[0-9a-f]{40}$/;
+    const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
+    // The fields scripts/ledger/receipt.mts reads: ref, activity_type, before, after, timestamp, id (required); node_id, actor.login (recorded if present).
+    const check = (e) => {
+      const p = [];
+      if (!e || typeof e !== "object") return ["not an object"];
+      if (e.id === undefined || e.id === null || e.id === "") p.push("id missing");
+      if (e.activity_type !== "push") p.push("activity_type is " + JSON.stringify(e.activity_type));
+      if (e.ref !== "refs/heads/main") p.push("ref is " + JSON.stringify(e.ref));
+      if (typeof e.before !== "string" || !HEX40.test(e.before)) p.push("before is not a 40-hex sha");
+      if (typeof e.after !== "string" || !HEX40.test(e.after)) p.push("after is not a 40-hex sha");
+      if (typeof e.timestamp !== "string" || !ISO.test(e.timestamp) || !Number.isFinite(Date.parse(e.timestamp))) p.push("timestamp is not a parseable ISO-8601 instant: " + JSON.stringify(e.timestamp));
+      else if (Date.parse(e.timestamp) > Date.now() + 5 * 60 * 1000) p.push("timestamp is in the future: " + e.timestamp);
+      return p;
+    };
+    (async () => {
+      say("endpoint: " + url.replace(/^https:\/\/api\.github\.com/, ""));
+      say("token supplied: " + (token ? "yes (value never printed)" : "NO"));
+      let r;
+      try { r = await get(url); } catch (err) { return finish("INCONCLUSIVE", "request failed before any HTTP answer: " + (err && err.message)); }
+      const h = (n) => r.res.headers.get(n);
+      say("HTTP " + r.res.status);
+      say("x-accepted-github-permissions: " + (h("x-accepted-github-permissions") || "(none)"));
+      say("x-ratelimit-resource/remaining: " + (h("x-ratelimit-resource") || "?") + "/" + (h("x-ratelimit-remaining") || "?"));
+      const s = r.res.status;
+      if (s !== 200) {
+        say("message: " + (r.body && r.body.message));
+        if (s === 429 || s >= 500 || (s === 403 && h("x-ratelimit-remaining") === "0")) return finish("INCONCLUSIVE", "HTTP " + s + " (rate limit or server error); this says nothing about access - re-run");
+        return finish("FAIL", "HTTP " + s + ": the token cannot read the activity endpoint, so every receipt would be 'unverified'");
+      }
+      if (!Array.isArray(r.body)) return finish("FAIL", "HTTP 200 but the body is not an array of events");
+      const ev = r.body;
+      say("events returned: " + ev.length);
+      if (ev.length === 0) return finish("FAIL", "HTTP 200 but no push events for refs/heads/main (insufficient access or retention): receipts would be 'unverified'");
+      for (const e of ev.slice(0, 3)) say("  " + e.activity_type + " " + e.ref + " " + e.timestamp + " after=" + String(e.after).slice(0, 10) + " actor=" + (e.actor && e.actor.login));
+      let bad = 0;
+      let noOptional = 0;
+      for (const e of ev) {
+        const p = check(e);
+        if (p.length) { bad++; if (bad <= 3) say("  INVALID event id=" + (e && e.id) + ": " + p.join("; ")); }
+        if (e && (!e.node_id || !e.actor || !e.actor.login)) noOptional++;
+      }
+      if (bad) return finish("FAIL", bad + " of " + ev.length + " events lack a field the receipt protocol needs");
+      say("all " + ev.length + " events: id, activity_type=push, ref=refs/heads/main, before/after (40-hex), timestamp (parseable, not in the future) OK");
+      if (noOptional) say("note: " + noOptional + " events lack node_id or actor.login (optional; recorded as null)");
+      const ts = ev.map((e) => Date.parse(e.timestamp));
+      say("newest first: " + ts.every((t, i) => i === 0 || ts[i - 1] >= t));
+      say("oldest event on this page: " + ev[ev.length - 1].timestamp);
+      // Pagination is followed by the receipt code (Link rel=next): exercise it with one event per page.
+      try {
+        const p1 = await get(url.replace("per_page=100", "per_page=1"));
+        const m = (p1.res.headers.get("link") || "").match(/<([^>]+)>;\s*rel="next"/);
+        if (p1.res.status !== 200 || !Array.isArray(p1.body) || p1.body.length !== 1) say("pagination: first page unusable (HTTP " + p1.res.status + ")");
+        else if (!m) say("pagination: no Link rel=next with per_page=1 (the repository has a single push event?)");
+        else {
+          const p2 = await get(m[1]);
+          const ok2 = p2.res.status === 200 && Array.isArray(p2.body) && p2.body.length === 1 && check(p2.body[0]).length === 0 && p2.body[0].id !== p1.body[0].id;
+          say("pagination: Link rel=next followed -> HTTP " + p2.res.status + ", " + (ok2 ? "valid second event" : "NOT a valid second event"));
+        }
+      } catch (err) { say("pagination: request failed (" + (err && err.message) + ")"); }
+      // The real requirement: an event for a commit we know was pushed to main (this run's own commit, github.sha).
+      if (!HEX40.test(sha)) return finish("INCONCLUSIVE", "GITHUB_SHA unavailable, so the push of a known commit could not be matched");
+      const own = ev.filter((e) => e.after.toLowerCase() === sha);
+      if (own.length === 0) return finish("INCONCLUSIVE", "events are accessible and well formed, but none has after=" + sha.slice(0, 10) + " (this run's commit): a later push may have happened, or the commit was not pushed to main. Re-run after a quiet period, dispatching from main.");
+      const t = Date.parse(own[0].timestamp);
+      say("event for this run's commit " + sha.slice(0, 10) + ": id=" + own[0].id + " timestamp=" + own[0].timestamp + " (" + Math.round((Date.now() - t) / 1000) + " s ago)");
+      return finish("PASS", "the token can read well-formed push events from the activity endpoint, including the push that published this run's commit");
+    })().catch((err) => finish("INCONCLUSIVE", "unexpected error: " + (err && err.message)));
+
+jobs:
+  probe-none:
+    name: "permissions: {}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Query and validate the activity endpoint
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROBE_NAME: "permissions {}"
+        run: node -e "$PROBE_JS"
+
+  probe-contents-read:
+    name: "permissions: contents: read"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Query and validate the activity endpoint
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROBE_NAME: "permissions contents read"
+        run: node -e "$PROBE_JS"
+
+  probe-contents-read-actions-read:
+    name: "permissions: contents: read + actions: read"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Query and validate the activity endpoint
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROBE_NAME: "permissions contents read + actions read"
+        run: node -e "$PROBE_JS"
