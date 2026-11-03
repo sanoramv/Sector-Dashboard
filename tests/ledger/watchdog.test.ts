@@ -134,7 +134,7 @@ describe("watchdog script: every GitHub API call it makes (real process, stubbed
     `);
     const core = await import("../../scripts/ledger/watchdog-core.mjs");
     const today = new Date().toISOString();
-    const state = { kind: "momentum-ledger.state", updatedAt: today, enabledFrom: null, dates: { "2020-01-06": { status: "review-required", reasons: [], publicationClass: "live" }, "2020-01-07": { status: "blocked", reasons: ["R3"], publicationClass: null } }, calendar: { "2020-01-07": "trading" }, metrics: {} };
+    const state = { kind: "momentum-ledger.state", updatedAt: today, enabledFrom: "2020-01-06", dates: { "2020-01-06": { status: "review-required", reasons: [], publicationClass: "live" }, "2020-01-07": { status: "blocked", reasons: ["R3"], publicationClass: null } }, calendar: { "2020-01-07": "trading" }, metrics: {} };
     const sameBody = core.evaluate({ now: new Date(), state }).wanted.find((w: { key: string }) => w.key === "missing:2020-01-07")!;
     const { createHash } = await import("node:crypto");
     const h = createHash("sha256").update(sameBody.body).digest("hex").slice(0, 16);
@@ -162,4 +162,73 @@ describe("watchdog script: every GitHub API call it makes (real process, stubbed
     expect(touched).toEqual(expect.arrayContaining(["POST /issues/11/comments", "PATCH /issues/11"])); // the resolved review issue is closed
     expect(calls.filter((c) => c.method === "PUT" || c.method === "DELETE")).toEqual([]);
   }, 60_000);
+});
+
+describe("never-enabled ledger: no missing-capture alerts (defect: 94 false issues on 2026-11-03)", () => {
+  // every weekday from 2025-08-18 to 2026-10-30, all "trading" - the shape of the real ledger-state.json calendar
+  const calendar: Record<string, string> = {};
+  for (let d = "2025-08-18"; d <= "2026-10-30"; d = W.addDays(d, 1)) if (!W.isWeekend(d)) calendar[d] = "trading";
+  const now = new Date("2026-11-03T01:42:00Z");
+  const hash = (s: string) => createHash("sha256").update(s).digest("hex").slice(0, 16);
+  const titleOf = (key: string) => (key.startsWith("missing:") ? W.TITLES.missing(key.slice(8)) : key === "stale" ? W.TITLES.stale() : null);
+  const fresh = { updatedAt: "2026-11-03T01:26:08Z" };
+
+  it("A. enabledFrom null, dates empty, historical calendar: nothing at all is wanted", () => {
+    expect(Object.keys(calendar).length).toBeGreaterThan(300);
+    const r = W.evaluate({ now, state: st({ ...fresh, enabledFrom: null, dates: {}, calendar }) });
+    expect(r.wanted).toEqual([]);
+    expect(r.wanted.filter((w) => w.key.startsWith("missing:"))).toEqual([]);
+  });
+  it("A. the same when enabledFrom is absent, malformed or an impossible date (never treated as 'evaluate everything')", () => {
+    for (const enabledFrom of [undefined, "", "soon", 20261028, "2026-02-30", "2026-13-45", "2026-00-10", "2026-04-31", "2026-10-28T00:00:00Z", " 2026-10-28"]) {
+      const state = { ...st({ ...fresh, dates: {}, calendar }), enabledFrom } as object;
+      expect(W.evaluate({ now, state }).wanted, String(enabledFrom)).toEqual([]);
+    }
+  });
+  it("A. with open 'Ledger snapshot missing' issues already present, no action is planned (nothing is created, updated or closed)", () => {
+    const r = W.evaluate({ now, state: st({ ...fresh, enabledFrom: null, dates: {}, calendar }) });
+    const open = [{ number: 94, title: W.TITLES.missing("2026-10-30"), body: "x" }];
+    expect(W.planIssueActions({ wanted: r.wanted, resolvable: r.resolvable, open, hash, titleOf })).toEqual([]);
+  });
+  it("A. protections still apply to records that exist: anomaly / source-revised / review / unverified are raised even when never enabled", () => {
+    const dates = { "2026-10-26": rec("anomaly"), "2026-10-27": rec("source-revised"), "2026-10-28": rec("review-required"), "2026-10-23": rec("unverified") };
+    const r = W.evaluate({ now: new Date("2026-10-30T12:00:00Z"), state: st({ enabledFrom: null, updatedAt: "2026-10-30T00:00:00Z", dates, calendar: {} }) });
+    expect(keys(r)).toEqual(expect.arrayContaining(["anomaly:2026-10-26", "source-revised:2026-10-27", "review:2026-10-28", "unverified:2026-10-23"]));
+  });
+  it("A. stale-state and capacity checks still apply when never enabled", () => {
+    const r = W.evaluate({ now: new Date("2026-10-30T12:00:00Z"), state: st({ enabledFrom: null, updatedAt: "2026-10-27T00:00:00Z", metrics: { publicDataBytes: 600e6 }, calendar }) });
+    expect(keys(r)).toEqual(expect.arrayContaining(["stale", "capacity:publicDataBytes"]));
+    expect(keys(r).filter((k) => k.startsWith("missing:"))).toEqual([]);
+  });
+
+  it("B. a valid calendar date activates monitoring (including a real leap day), and does not throw", () => {
+    const cal = { "2026-10-28": "trading", "2026-10-29": "trading" };
+    expect(keys(W.evaluate({ now, state: st({ ...fresh, enabledFrom: "2026-10-28", dates: {}, calendar: cal }) }))).toContain("missing:2026-10-28");
+    expect(() => W.evaluate({ now, state: st({ ...fresh, enabledFrom: "2028-02-29", dates: {}, calendar: cal }) })).not.toThrow();
+    for (const bad of ["2026-13-45", "2026-02-30", "9999-99-99", "0000-00-00"]) expect(() => W.evaluate({ now, state: st({ ...fresh, enabledFrom: bad, dates: {}, calendar: cal }) }), bad).not.toThrow();
+  });
+  it("B. enabled: sessions before enabledFrom are ignored; from enabledFrom onwards a missing capture past its cut-off is detected", () => {
+    const cal = { "2026-10-23": "trading", "2026-10-26": "trading", "2026-10-27": "trading", "2026-10-28": "trading", "2026-10-29": "trading", "2026-10-30": "trading" };
+    const r = W.evaluate({ now, state: st({ ...fresh, enabledFrom: "2026-10-28", dates: {}, calendar: cal }) });
+    expect(keys(r).filter((k) => k.startsWith("missing:")).sort()).toEqual(["missing:2026-10-28", "missing:2026-10-29", "missing:2026-10-30"]);
+    for (const old of ["2026-10-23", "2026-10-26", "2026-10-27"]) expect(keys(r)).not.toContain(`missing:${old}`);
+    // the enabled date itself counts (>=), and a lost session is a permanent (non-auto-closing) alert
+    expect(r.wanted.find((w) => w.key === "missing:2026-10-28")!.autoClose).toBe(false);
+  });
+  it("B. enabled: a captured session is not missing, and a session whose cut-off has not passed is not yet a lost session", () => {
+    const cal = { "2026-10-28": "trading", "2026-10-29": "trading", "2026-10-30": "trading" };
+    const dates = { "2026-10-29": rec("recorded", { publicationClass: "live" }) };
+    const r = W.evaluate({ now: new Date("2026-10-30T12:00:00Z"), state: st({ updatedAt: "2026-10-30T00:00:00Z", enabledFrom: "2026-10-28", dates, calendar: cal }) });
+    expect(keys(r)).toContain("missing:2026-10-28"); // cut-off 2026-10-29 03:30Z passed, nothing captured
+    expect(keys(r)).not.toContain("missing:2026-10-29"); // live
+    expect(keys(r)).not.toContain("missing:2026-10-30"); // earliest cut-off is Monday 2026-11-02 03:30Z
+    expect(r.resolvable).toContain("missing:2026-10-29");
+  });
+  it("C. evaluation is deterministic, so an unchanged state produces no new issue actions on a repeat run", () => {
+    const state = st({ ...fresh, enabledFrom: "2026-10-28", dates: {}, calendar: { "2026-10-28": "trading", "2026-10-29": "trading" } });
+    const first = W.evaluate({ now, state });
+    const open = first.wanted.map((w, i) => ({ number: i + 1, title: w.title, body: W.withMarker(w.body, hash(w.body)) }));
+    expect(first.wanted.length).toBeGreaterThan(0);
+    expect(W.planIssueActions({ ...W.evaluate({ now, state }), open, hash, titleOf })).toEqual([]);
+  });
 });

@@ -41,13 +41,21 @@ export function evaluate({ now, state, thresholds = {} }) {
   const dates = state?.dates ?? {};
   const calendar = state?.calendar ?? {};
   const enabledFrom = state?.enabledFrom ?? null;
+  // A capture can only be MISSING once a rule version has been enabled, and only from the enabled date onwards. A never-enabled
+  // ledger (enabledFrom null, missing or not a real calendar date) owes no capture for any date, so no missing-capture alert may be raised for it.
+  const isRealDate = (value) => {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const timestamp = Date.parse(`${value}T00:00:00.000Z`);
+    return Number.isFinite(timestamp) && new Date(timestamp).toISOString().slice(0, 10) === value; // rejects 2026-02-30 and 2026-13-45
+  };
+  const enabled = isRealDate(enabledFrom);
   if (!state) {
     return { wanted: [{ key: "state-missing", title: TITLES.stale(), body: "ledger-state.json could not be read from main.", labels: ["ledger"], autoClose: true }], resolvable };
   }
 
   const considered = new Set([...Object.keys(dates), ...Object.keys(calendar).filter((d) => calendar[d] === "trading")]);
   for (const date of [...considered].sort()) {
-    if (enabledFrom && date < enabledFrom) continue;
+    if (enabled && date < enabledFrom) continue;
     if (calendar[date] && calendar[date] !== "trading" && !dates[date]) continue; // exchange holiday or unresolved: never a ledger alert
     const rec = dates[date];
     const earliest = rec?.earliestCutoffUtc ? Date.parse(rec.earliestCutoffUtc) : earliestCutoffMs(date);
@@ -68,6 +76,11 @@ export function evaluate({ now, state, thresholds = {} }) {
       continue;
     }
     const capturedAtAll = ["recorded", "recorded-late", "review-required", "unverified", "source-revised"].includes(status);
+    if (!enabled) {
+      // Never enabled: nothing is owed. (Review / anomaly / source-revision / unverified checks above still apply to any record that exists.)
+      if (capturedAtAll) resolvable.push(`missing:${date}`);
+      continue;
+    }
     if (nowMs > cutoff) {
       // The cut-off has passed and there is no live capture: the live opportunity for this session is gone.
       if (!capturedAtAll) {
