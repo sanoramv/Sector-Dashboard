@@ -1,8 +1,8 @@
 {
  "kind": "momentum-ledger.state",
  "schemaVersion": 1,
- "updatedAt": "2026-11-05T21:08:54.843Z",
- "lastAttemptAt": "2026-11-05T21:08:53.131Z",
+ "updatedAt": "2026-11-05T21:40:35.514Z",
+ "lastAttemptAt": "2026-11-05T21:40:33.536Z",
  "lastSuccessfulCaptureAt": null,
  "lastSuccessfulSessionDate": null,
  "runStatus": "not-enabled",
@@ -338,6 +338,11 @@
  },
  "runs": [
   {
+   "startedAt": "2026-11-05T21:40:33.536Z",
+   "slot": "0 16 * * 1-5",
+   "status": "not-enabled"
+  },
+  {
    "startedAt": "2026-11-05T21:08:53.131Z",
    "slot": "30 14 * * 1-5",
    "status": "not-enabled"
@@ -410,8 +415,8 @@
  ],
  "metrics": {
   "dailyFileBytes": null,
-  "ledgerBytes": 16600,
-  "publicDataBytes": 24411436,
-  "captureSeconds": 0.656
+  "ledgerBytes": 16736,
+  "publicDataBytes": 24411748,
+  "captureSeconds": 0.842
  }
 }
