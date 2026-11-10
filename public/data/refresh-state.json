@@ -4,7 +4,7 @@
   "index": {
    "2026-11-10": {
     "status": "missing",
-    "checkedAt": "2026-11-10T20:55:42.889Z",
+    "checkedAt": "2026-11-10T21:33:30.722Z",
     "attempts": 1
    },
    "2026-11-09": {
@@ -2184,7 +2184,7 @@
   "stocks": {
    "2026-11-10": {
     "status": "earlier-session",
-    "checkedAt": "2026-11-10T20:55:43.509Z",
+    "checkedAt": "2026-11-10T21:33:31.580Z",
     "attempts": 1,
     "detail": "file is for 2026-11-09"
    },
