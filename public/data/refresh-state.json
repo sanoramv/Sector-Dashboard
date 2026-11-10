@@ -2,6 +2,11 @@
  "schemaVersion": 1,
  "archives": {
   "index": {
+   "2026-11-10": {
+    "status": "missing",
+    "checkedAt": "2026-11-10T20:55:42.889Z",
+    "attempts": 1
+   },
    "2026-11-09": {
     "status": "ok",
     "checkedAt": "2026-11-09T23:29:17.889Z",
@@ -2177,6 +2182,12 @@
    }
   },
   "stocks": {
+   "2026-11-10": {
+    "status": "earlier-session",
+    "checkedAt": "2026-11-10T20:55:43.509Z",
+    "attempts": 1,
+    "detail": "file is for 2026-11-09"
+   },
    "2026-11-09": {
     "status": "ok",
     "checkedAt": "2026-11-09T23:29:19.247Z",
