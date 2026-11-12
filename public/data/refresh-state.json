@@ -18,7 +18,7 @@
    },
    "2026-11-10": {
     "status": "missing",
-    "checkedAt": "2026-11-12T22:49:15.972Z",
+    "checkedAt": "2026-11-12T23:56:43.246Z",
     "attempts": 1
    },
    "2026-11-09": {
@@ -2204,7 +2204,7 @@
    },
    "2026-11-10": {
     "status": "earlier-session",
-    "checkedAt": "2026-11-12T22:49:16.747Z",
+    "checkedAt": "2026-11-12T23:56:44.244Z",
     "attempts": 1,
     "detail": "file is for 2026-11-09"
    },
