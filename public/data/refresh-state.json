@@ -2,6 +2,13 @@
  "schemaVersion": 1,
  "archives": {
   "index": {
+   "2026-11-12": {
+    "status": "ok",
+    "checkedAt": "2026-11-12T21:30:37.540Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
+   },
    "2026-11-11": {
     "status": "ok",
     "checkedAt": "2026-11-11T21:28:39.171Z",
@@ -11,7 +18,7 @@
    },
    "2026-11-10": {
     "status": "missing",
-    "checkedAt": "2026-11-12T09:58:50.664Z",
+    "checkedAt": "2026-11-12T21:30:37.973Z",
     "attempts": 1
    },
    "2026-11-09": {
@@ -2178,13 +2185,16 @@
    "2025-08-20": {
     "status": "ok",
     "checkedAt": "bootstrap"
-   },
-   "2025-08-19": {
-    "status": "ok",
-    "checkedAt": "bootstrap"
    }
   },
   "stocks": {
+   "2026-11-12": {
+    "status": "ok",
+    "checkedAt": "2026-11-12T21:30:39.036Z",
+    "attempts": 1,
+    "symbolSetHash": "b2128cbc3b6b045d",
+    "detail": "753 tracked symbols"
+   },
    "2026-11-11": {
     "status": "ok",
     "checkedAt": "2026-11-11T21:28:40.269Z",
@@ -2194,7 +2204,7 @@
    },
    "2026-11-10": {
     "status": "earlier-session",
-    "checkedAt": "2026-11-12T09:58:51.751Z",
+    "checkedAt": "2026-11-12T21:30:39.415Z",
     "attempts": 1,
     "detail": "file is for 2026-11-09"
    },
@@ -4387,11 +4397,6 @@
     "symbolSetHash": "bootstrap-pre-refresh-state"
    },
    "2025-08-20": {
-    "status": "ok",
-    "checkedAt": "bootstrap",
-    "symbolSetHash": "bootstrap-pre-refresh-state"
-   },
-   "2025-08-19": {
     "status": "ok",
     "checkedAt": "bootstrap",
     "symbolSetHash": "bootstrap-pre-refresh-state"
