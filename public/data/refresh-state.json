@@ -32,7 +32,7 @@
    },
    "2026-11-10": {
     "status": "missing",
-    "checkedAt": "2026-11-16T23:26:52.783Z",
+    "checkedAt": "2026-11-16T23:54:36.939Z",
     "attempts": 1
    },
    "2026-11-09": {
@@ -2220,7 +2220,7 @@
    },
    "2026-11-10": {
     "status": "earlier-session",
-    "checkedAt": "2026-11-16T23:26:54.052Z",
+    "checkedAt": "2026-11-16T23:54:37.920Z",
     "attempts": 1,
     "detail": "file is for 2026-11-09"
    },
