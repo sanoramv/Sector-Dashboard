@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-17T00:56:20.343Z",
+  "generatedAt": "2026-11-17T02:15:24.984Z",
   "latestMarketDate": "2026-11-16",
   "source": {
     "name": "NSE (National Stock Exchange of India) - official archives, fetched by a scheduled pipeline",
@@ -35,8 +35,8 @@
   ],
   "refresh": {
     "outcome": "complete",
-    "evaluatedAt": "2026-11-17T00:56:20.303Z",
-    "lastCompleteRefreshAt": "2026-11-17T00:56:20.303Z",
+    "evaluatedAt": "2026-11-17T02:15:24.950Z",
+    "lastCompleteRefreshAt": "2026-11-17T02:15:24.950Z",
     "latestDueDate": "2026-11-16",
     "tradingDaysBehind": 0,
     "reasons": []
@@ -47,22 +47,22 @@
       "sessions": 296
     },
     "announcements": {
-      "lastSuccessfulReadAt": "2026-11-17T00:56:19.367Z",
-      "lastAttemptAt": "2026-11-17T00:56:19.367Z",
+      "lastSuccessfulReadAt": "2026-11-17T02:15:24.193Z",
+      "lastAttemptAt": "2026-11-17T02:15:24.193Z",
       "lastAttemptOutcome": "ok",
       "lastAttemptDetail": null,
-      "retainedItems": 2714,
+      "retainedItems": 2715,
       "retentionDays": 30
     },
     "ledger": {
       "status": "not-enabled",
       "lastSuccessfulSessionDate": null,
-      "lastAttemptAt": "2026-11-17T00:56:21.615Z",
+      "lastAttemptAt": "2026-11-17T02:15:25.911Z",
       "recoveryRequired": 0,
       "capturedSessions": 0,
       "liveReceipts": 0,
       "liveLateReceipts": 0,
-      "updatedAt": "2026-11-17T00:56:23.634Z"
+      "updatedAt": "2026-11-17T02:15:27.303Z"
     }
   }
 }
