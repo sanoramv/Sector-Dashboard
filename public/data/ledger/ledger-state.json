@@ -1,8 +1,8 @@
 {
  "kind": "momentum-ledger.state",
  "schemaVersion": 1,
- "updatedAt": "2026-11-17T10:53:13.102Z",
- "lastAttemptAt": "2026-11-17T10:53:11.487Z",
+ "updatedAt": "2026-11-17T22:30:42.799Z",
+ "lastAttemptAt": "2026-11-17T22:30:41.236Z",
  "lastSuccessfulCaptureAt": null,
  "lastSuccessfulSessionDate": null,
  "runStatus": "not-enabled",
@@ -341,9 +341,15 @@
   "2026-11-11": "trading",
   "2026-11-12": "trading",
   "2026-11-13": "trading",
-  "2026-11-16": "trading"
+  "2026-11-16": "trading",
+  "2026-11-17": "trading"
  },
  "runs": [
+  {
+   "startedAt": "2026-11-17T22:30:41.236Z",
+   "slot": "30 14 * * 1-5",
+   "status": "not-enabled"
+  },
   {
    "startedAt": "2026-11-17T10:53:11.487Z",
    "slot": "30 2 * * 2-6",
@@ -438,17 +444,12 @@
    "startedAt": "2026-11-11T22:22:09.575Z",
    "slot": "0 16 * * 1-5",
    "status": "not-enabled"
-  },
-  {
-   "startedAt": "2026-11-11T21:28:42.805Z",
-   "slot": "30 14 * * 1-5",
-   "status": "not-enabled"
   }
  ],
  "metrics": {
   "dailyFileBytes": null,
   "ledgerBytes": 17573,
-  "publicDataBytes": 25207063,
-  "captureSeconds": 0.645
+  "publicDataBytes": 25286071,
+  "captureSeconds": 0.61
  }
 }
