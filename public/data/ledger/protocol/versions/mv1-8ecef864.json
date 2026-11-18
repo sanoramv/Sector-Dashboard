@@ -1,0 +1,8 @@
+{
+ "kind": "momentum-ledger.version",
+ "schemaVersion": 1,
+ "ruleVersion": "mv1-8ecef864",
+ "enabledFrom": "2026-11-18",
+ "latestMarketDateAtEnable": "2026-11-17",
+ "reason": "Phase A1 initial enablement"
+}
