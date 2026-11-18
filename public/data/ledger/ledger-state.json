@@ -1,17 +1,99 @@
 {
  "kind": "momentum-ledger.state",
  "schemaVersion": 1,
- "updatedAt": "2026-11-18T10:24:57.090Z",
- "lastAttemptAt": "2026-11-18T10:24:55.687Z",
- "lastSuccessfulCaptureAt": null,
- "lastSuccessfulSessionDate": null,
- "runStatus": "idle",
+ "updatedAt": "2026-11-18T22:11:21.362Z",
+ "lastAttemptAt": "2026-11-18T22:11:19.118Z",
+ "lastSuccessfulCaptureAt": "2026-11-18T22:11:20.214Z",
+ "lastSuccessfulSessionDate": "2026-11-18",
+ "runStatus": "ok",
  "lastFailure": null,
- "recoveryRequired": [],
+ "recoveryRequired": [
+  "2026-11-18"
+ ],
  "ruleVersion": "mv1-8ecef864",
  "enabledVersion": "mv1-8ecef864",
  "enabledFrom": "2026-11-18",
- "dates": {},
+ "dates": {
+  "2026-11-18": {
+   "status": "recorded",
+   "reasons": [],
+   "generatedAt": "2026-11-18T22:11:20.214Z",
+   "publicationClass": "pending",
+   "cutoffUtc": null,
+   "readiness": [
+    {
+     "id": "R1",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R2",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R3",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R4",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R5",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R7",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R9",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R8",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R11",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R10",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R6",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R6",
+     "status": "pass",
+     "disposition": "ok"
+    }
+   ],
+   "r6": {
+    "status": "pass",
+    "checkedAt": "2026-11-18T22:11:20.214Z",
+    "existingPredictionsSha256": null,
+    "candidatePredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
+    "detail": "No existing record for this date and rule version."
+   },
+   "sourceDataDate": "2026-11-18",
+   "updatedAt": "2026-11-18T22:11:21.362Z",
+   "earliestCutoffUtc": "2026-11-19T03:30:00.000Z"
+  }
+ },
  "calendar": {
   "2026-11-02": "trading",
   "2026-10-30": "trading",
@@ -342,9 +424,15 @@
   "2026-11-12": "trading",
   "2026-11-13": "trading",
   "2026-11-16": "trading",
-  "2026-11-17": "trading"
+  "2026-11-17": "trading",
+  "2026-11-18": "trading"
  },
  "runs": [
+  {
+   "startedAt": "2026-11-18T22:11:19.118Z",
+   "slot": "30 14 * * 1-5",
+   "status": "ok"
+  },
   {
    "startedAt": "2026-11-18T10:24:55.687Z",
    "slot": "30 2 * * 2-6",
@@ -439,17 +527,12 @@
    "startedAt": "2026-11-12T21:57:50.744Z",
    "slot": "0 16 * * 1-5",
    "status": "not-enabled"
-  },
-  {
-   "startedAt": "2026-11-12T21:30:42.341Z",
-   "slot": "30 14 * * 1-5",
-   "status": "not-enabled"
   }
  ],
  "metrics": {
-  "dailyFileBytes": null,
-  "ledgerBytes": 17806,
-  "publicDataBytes": 25358832,
-  "captureSeconds": 0.536
+  "dailyFileBytes": 569283,
+  "ledgerBytes": 587094,
+  "publicDataBytes": 25955380,
+  "captureSeconds": 1.098
  }
 }
