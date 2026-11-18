@@ -1,16 +1,16 @@
 {
  "kind": "momentum-ledger.state",
  "schemaVersion": 1,
- "updatedAt": "2026-11-18T01:28:19.127Z",
- "lastAttemptAt": "2026-11-18T01:28:17.233Z",
+ "updatedAt": "2026-11-18T10:24:57.090Z",
+ "lastAttemptAt": "2026-11-18T10:24:55.687Z",
  "lastSuccessfulCaptureAt": null,
  "lastSuccessfulSessionDate": null,
- "runStatus": "not-enabled",
+ "runStatus": "idle",
  "lastFailure": null,
  "recoveryRequired": [],
  "ruleVersion": "mv1-8ecef864",
- "enabledVersion": null,
- "enabledFrom": null,
+ "enabledVersion": "mv1-8ecef864",
+ "enabledFrom": "2026-11-18",
  "dates": {},
  "calendar": {
   "2026-11-02": "trading",
@@ -346,6 +346,11 @@
  },
  "runs": [
   {
+   "startedAt": "2026-11-18T10:24:55.687Z",
+   "slot": "30 2 * * 2-6",
+   "status": "idle"
+  },
+  {
    "startedAt": "2026-11-18T01:28:17.233Z",
    "slot": "0 19 * * 1-5",
    "status": "not-enabled"
@@ -439,17 +444,12 @@
    "startedAt": "2026-11-12T21:30:42.341Z",
    "slot": "30 14 * * 1-5",
    "status": "not-enabled"
-  },
-  {
-   "startedAt": "2026-11-12T09:58:54.835Z",
-   "slot": "30 2 * * 2-6",
-   "status": "not-enabled"
   }
  ],
  "metrics": {
   "dailyFileBytes": null,
-  "ledgerBytes": 17600,
-  "publicDataBytes": 25285895,
-  "captureSeconds": 0.76
+  "ledgerBytes": 17806,
+  "publicDataBytes": 25358832,
+  "captureSeconds": 0.536
  }
 }
