@@ -166,9 +166,12 @@ describe("BL1 on the real project data (the 2026-10-28 session that exposed it)"
   it("removing APOLLOHOSP from the real healthcare list is now existing-uncompared / constituent-lists-refreshed, not an anomaly", async () => {
     const cal = source.dataset.indexSeries["nifty500"].bars.map((b) => b.date);
     const date = cal.includes("2026-10-28") ? "2026-10-28" : cal[cal.length - 2];
+    // runCapture only looks at the last ten sessions by default; as the real data grows past the pinned session it would
+    // fall outside that window. Size the window from the data so it always reaches back to `date`.
+    const opts = { sessionsWindow: cal.length - cal.indexOf(date) };
     const r = root("bl1-real");
     const env = await makeEnv(r, { enabledFrom: date });
-    const first = (await runCapture(source, env)).sessions.find((s) => s.date === date)!;
+    const first = (await runCapture(source, env, opts)).sessions.find((s) => s.date === date)!;
     expect(first.outcome).toBe("recorded");
     const file = ledgerPaths(r).dailyFile(env.ruleVersion, date);
     const before = await readFile(file, "utf-8");
@@ -181,14 +184,14 @@ describe("BL1 on the real project data (the 2026-10-28 session that exposed it)"
     list.constituents = list.constituents.filter((c) => c.symbol !== victim.symbol);
     list.fetchedAt = "2030-01-01T00:00:00Z";
     expect(list.constituents.length).toBe(before20 - 1);
-    const s = (await runCapture(changed, await makeEnv(r, { enabledFrom: date, now: new Date(Date.now() + 1000) }))).sessions.find((x) => x.date === date)!;
+    const s = (await runCapture(changed, await makeEnv(r, { enabledFrom: date, now: new Date(Date.now() + 1000) }), opts)).sessions.find((x) => x.date === date)!;
     expect(s.outcome, `${victim.symbol} removed from ${slug}`).toBe("exists");
     expect(s.r6).toMatchObject({ status: "existing-uncompared", reasonCode: "constituent-lists-refreshed" });
     expect(s.r6!.universe!.changedLists).toEqual([slug]);
     expect(s.r6!.universe!.symbolSetChangedLists).toEqual([slug]);
     expect(await readFile(file, "utf-8")).toBe(before); // the stored prediction is untouched
     // and with the real lists unchanged it is a normal successful comparison
-    const same = (await runCapture(source, await makeEnv(r, { enabledFrom: date, now: new Date(Date.now() + 2000) }))).sessions.find((x) => x.date === date)!;
+    const same = (await runCapture(source, await makeEnv(r, { enabledFrom: date, now: new Date(Date.now() + 2000) }), opts)).sessions.find((x) => x.date === date)!;
     expect(same.r6).toMatchObject({ status: "existing" });
   }, 280_000);
 });
