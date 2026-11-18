@@ -1,8 +1,8 @@
 {
  "kind": "momentum-ledger.state",
  "schemaVersion": 1,
- "updatedAt": "2026-11-18T22:45:25.301Z",
- "lastAttemptAt": "2026-11-18T22:45:23.059Z",
+ "updatedAt": "2026-11-18T23:28:48.972Z",
+ "lastAttemptAt": "2026-11-18T23:28:46.807Z",
  "lastSuccessfulCaptureAt": "2026-11-18T22:11:20.214Z",
  "lastSuccessfulSessionDate": "2026-11-18",
  "runStatus": "ok",
@@ -82,7 +82,7 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-18T22:45:24.245Z",
+    "checkedAt": "2026-11-18T23:28:47.991Z",
     "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
     "candidatePredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
     "detail": "Existing record has an identical prediction digest; nothing written.",
@@ -363,7 +363,7 @@
     }
    },
    "sourceDataDate": "2026-11-18",
-   "updatedAt": "2026-11-18T22:45:25.301Z",
+   "updatedAt": "2026-11-18T23:28:48.972Z",
    "earliestCutoffUtc": "2026-11-19T03:30:00.000Z",
    "r6Events": [
     {
@@ -711,6 +711,11 @@
  },
  "runs": [
   {
+   "startedAt": "2026-11-18T23:28:46.807Z",
+   "slot": "30 17 * * 1-5",
+   "status": "ok"
+  },
+  {
    "startedAt": "2026-11-18T22:45:23.059Z",
    "slot": "0 16 * * 1-5",
    "status": "ok"
@@ -804,17 +809,12 @@
    "startedAt": "2026-11-12T23:56:47.384Z",
    "slot": "0 19 * * 1-5",
    "status": "not-enabled"
-  },
-  {
-   "startedAt": "2026-11-12T22:49:19.066Z",
-   "slot": "30 17 * * 1-5",
-   "status": "not-enabled"
   }
  ],
  "metrics": {
   "dailyFileBytes": 569283,
-  "ledgerBytes": 588712,
-  "publicDataBytes": 25956995,
-  "captureSeconds": 1.188
+  "ledgerBytes": 601256,
+  "publicDataBytes": 25969538,
+  "captureSeconds": 1.185
  }
 }
