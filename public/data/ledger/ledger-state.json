@@ -1,20 +1,31 @@
 {
  "kind": "momentum-ledger.state",
  "schemaVersion": 1,
- "updatedAt": "2026-11-19T10:32:08.060Z",
- "lastAttemptAt": "2026-11-19T10:32:05.360Z",
- "lastSuccessfulCaptureAt": "2026-11-18T22:11:20.214Z",
- "lastSuccessfulSessionDate": "2026-11-18",
- "runStatus": "ok",
- "lastFailure": null,
- "recoveryRequired": [],
+ "updatedAt": "2026-11-19T22:20:20.671Z",
+ "lastAttemptAt": "2026-11-19T22:20:17.575Z",
+ "lastSuccessfulCaptureAt": "2026-11-19T22:20:19.482Z",
+ "lastSuccessfulSessionDate": "2026-11-19",
+ "runStatus": "anomaly",
+ "lastFailure": {
+  "at": "2026-11-19T22:20:19.482Z",
+  "date": "2026-11-18",
+  "reasons": [
+   "R6: A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched.",
+   "Unresolved anomaly on 2026-11-18: the immutable record was left untouched; see dates.<date>.r6Events in ledger-state.json"
+  ]
+ },
+ "recoveryRequired": [
+  "2026-11-19"
+ ],
  "ruleVersion": "mv1-8ecef864",
  "enabledVersion": "mv1-8ecef864",
  "enabledFrom": "2026-11-18",
  "dates": {
   "2026-11-18": {
-   "status": "recorded",
-   "reasons": [],
+   "status": "anomaly",
+   "reasons": [
+    "R6: A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched."
+   ],
    "generatedAt": "2026-11-18T22:11:20.214Z",
    "publicationClass": "live",
    "cutoffUtc": null,
@@ -81,11 +92,11 @@
     }
    ],
    "r6": {
-    "status": "existing",
-    "checkedAt": "2026-11-19T10:32:06.863Z",
+    "status": "anomaly",
+    "checkedAt": "2026-11-19T22:20:19.482Z",
     "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
-    "candidatePredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
-    "detail": "Existing record has an identical prediction digest; nothing written.",
+    "candidatePredictionsSha256": "601c4d671603eaa0830721534475ba50599011813a1a6d7363528f13adbfb71f",
+    "detail": "A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched.",
     "universe": {
      "stored": [
       {
@@ -360,10 +371,11 @@
      "changedLists": [],
      "symbolSetChangedLists": [],
      "fetchedAtChanged": false
-    }
+    },
+    "firstAnomalyAt": "2026-11-19T22:20:19.482Z"
    },
    "sourceDataDate": "2026-11-18",
-   "updatedAt": "2026-11-19T10:32:08.060Z",
+   "updatedAt": "2026-11-19T22:20:20.671Z",
    "earliestCutoffUtc": "2026-11-19T03:30:00.000Z",
    "r6Events": [
     {
@@ -372,8 +384,94 @@
      "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
      "candidatePredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
      "detail": "Existing record has an identical prediction digest; nothing written."
+    },
+    {
+     "at": "2026-11-19T22:20:19.482Z",
+     "status": "anomaly",
+     "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
+     "candidatePredictionsSha256": "601c4d671603eaa0830721534475ba50599011813a1a6d7363528f13adbfb71f",
+     "detail": "A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched."
     }
    ]
+  },
+  "2026-11-19": {
+   "status": "recorded",
+   "reasons": [],
+   "generatedAt": "2026-11-19T22:20:19.482Z",
+   "publicationClass": "pending",
+   "cutoffUtc": null,
+   "readiness": [
+    {
+     "id": "R1",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R2",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R3",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R4",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R5",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R7",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R9",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R8",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R11",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R10",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R6",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R6",
+     "status": "pass",
+     "disposition": "ok"
+    }
+   ],
+   "r6": {
+    "status": "pass",
+    "checkedAt": "2026-11-19T22:20:19.482Z",
+    "existingPredictionsSha256": null,
+    "candidatePredictionsSha256": "fbc384ee3938dab3b783251523b3639c8648932caadb2283bf3c65f23adb794e",
+    "detail": "No existing record for this date and rule version."
+   },
+   "sourceDataDate": "2026-11-19",
+   "updatedAt": "2026-11-19T22:20:20.671Z",
+   "earliestCutoffUtc": "2026-11-20T03:30:00.000Z"
   }
  },
  "calendar": {
@@ -707,9 +805,15 @@
   "2026-11-13": "trading",
   "2026-11-16": "trading",
   "2026-11-17": "trading",
-  "2026-11-18": "trading"
+  "2026-11-18": "trading",
+  "2026-11-19": "trading"
  },
  "runs": [
+  {
+   "startedAt": "2026-11-19T22:20:17.575Z",
+   "slot": "30 14 * * 1-5",
+   "status": "anomaly"
+  },
   {
    "startedAt": "2026-11-19T10:32:05.360Z",
    "slot": "30 2 * * 2-6",
@@ -804,17 +908,12 @@
    "startedAt": "2026-11-13T21:43:26.145Z",
    "slot": "0 16 * * 1-5",
    "status": "not-enabled"
-  },
-  {
-   "startedAt": "2026-11-13T20:56:18.192Z",
-   "slot": "30 14 * * 1-5",
-   "status": "not-enabled"
   }
  ],
  "metrics": {
-  "dailyFileBytes": 569283,
-  "ledgerBytes": 601238,
-  "publicDataBytes": 26081133,
-  "captureSeconds": 1.505
+  "dailyFileBytes": 556944,
+  "ledgerBytes": 1158173,
+  "publicDataBytes": 26667878,
+  "captureSeconds": 1.909
  }
 }
