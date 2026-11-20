@@ -330,7 +330,7 @@ describe("R6 retention-window exception: final safety audit", () => {
     expect(state.dates[D18].r6Events!.find((e) => e.status === "anomaly")).toEqual(first18); // the ORIGINAL anomaly, verbatim
     expect(validateState(state)).toEqual([]);
     await writeFile(p.state, JSON.stringify(state, null, 1) + "\n");
-    const h = await computeLiveHoldout({ log: async () => "", show: async () => null, revParse: async () => null }, root);
+    const h = await computeLiveHoldout({ log: async () => "", show: async () => null, revParse: async () => null, isShallow: async () => false }, root);
     expect(h.eligible).toEqual([]);
     for (const d of [D18, D19]) expect(h.sessions.find((s) => s.date === d)!.reasons.join(" ")).toContain("R6 anomaly");
   });
@@ -362,7 +362,7 @@ describe("R6 retention-window exception: evidence, holdout and rule version", ()
     expect(validateState(state)).toEqual([]);
     await writeFile(p.state, JSON.stringify(state, null, 1) + "\n");
     // 17. eligibility: 2026-11-18 stays excluded (no automatic restoration); 2026-11-19 had no anomaly
-    const noHistory: GuardGit = { log: async () => "", show: async () => null, revParse: async () => null };
+    const noHistory: GuardGit = { log: async () => "", show: async () => null, revParse: async () => null, isShallow: async () => false };
     const h = await computeLiveHoldout(noHistory, root);
     expect(h.sessions.find((s) => s.date === D18)).toMatchObject({ eligible: false });
     expect(h.sessions.find((s) => s.date === D18)!.reasons.join(" ")).toContain("R6 anomaly");

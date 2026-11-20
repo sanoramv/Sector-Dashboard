@@ -10,11 +10,11 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { ledgerPaths } from "./constants.mts";
 import { exemptionTypeOf, validateDaily, validateExemption, validateReceipt, validateVersionRecord } from "./validate.mts";
-import { checkReceiptStateConsistency, validateState } from "./state.mts";
+import { checkReceiptStateConsistency, validateState, type DateRecord, type R6Event } from "./state.mts";
 import { checkHoldoutTransition, checkProtocolIntegrity, type HoldoutFile, buildOd1File } from "./protocol.mts";
 
 export interface Violation {
-  kind: "history" | "file" | "holdout" | "protocol" | "partial" | "receipt" | "state" | "exemption" | "version";
+  kind: "history" | "file" | "holdout" | "protocol" | "partial" | "receipt" | "state" | "exemption" | "version" | "exclusion";
   path: string;
   commit?: string;
   detail: string;
@@ -29,9 +29,16 @@ export interface GuardGit {
   show(rev: string, file: string): Promise<string | null>;
   /** Resolves a revision expression such as `HEAD:path` to an object id, or null. */
   revParse(spec: string): Promise<string | null>;
+  /**
+   * true when the visible history may be incomplete: a shallow clone or a legacy `info/grafts` file. An error must also
+   * be reported as true (fail closed). Replacement objects (`git replace --graft`) are ignored by `realGuardGit`.
+   */
+  isShallow(): Promise<boolean>;
 }
 
-const run = promisify(execFile);
+const execFileAsync = promisify(execFile);
+/** Every guard git call ignores replacement objects, so `git replace --graft` cannot hide or rewrite history. */
+const run = (cmd: string, args: string[], opts: { cwd: string; maxBuffer?: number }) => execFileAsync(cmd, args, { ...opts, env: { ...process.env, GIT_NO_REPLACE_OBJECTS: "1" } });
 export function realGuardGit(cwd: string): GuardGit {
   return {
     async log(args) {
@@ -50,6 +57,15 @@ export function realGuardGit(cwd: string): GuardGit {
         return (await run("git", ["rev-parse", "--verify", "--quiet", spec], { cwd })).stdout.trim() || null;
       } catch {
         return null;
+      }
+    },
+    async isShallow() {
+      try {
+        if ((await run("git", ["rev-parse", "--is-shallow-repository"], { cwd })).stdout.trim() !== "false") return true;
+        const grafts = path.resolve(cwd, (await run("git", ["rev-parse", "--git-path", "info/grafts"], { cwd })).stdout.trim());
+        return await exists(grafts); // a legacy grafts file can cut history and cannot be disabled per command
+      } catch {
+        return true; // cannot tell: fail closed
       }
     },
   };
@@ -359,8 +375,9 @@ export interface SessionEligibility {
  *    unless a valid source-revision acceptance is bound to the record.
  * Acknowledging a violation or reviewing an anomaly changes how loudly it is reported, never eligibility.
  */
-export async function computeLiveHoldout(git: GuardGit, ledgerRoot: string): Promise<{ sessions: SessionEligibility[]; eligible: string[] }> {
+export async function computeLiveHoldout(git: GuardGit, ledgerRoot: string, history?: ExclusionHistory): Promise<{ sessions: SessionEligibility[]; eligible: string[] }> {
   const paths = ledgerPaths(ledgerRoot);
+  const hist = history ?? (await loadExclusionHistory(git, ledgerRoot));
   const touched = new Set((await scanHistory(git, ledgerRoot)).map((h) => sessionOfPath(h.path.split(" -> ")[0])).filter((x): x is string => !!x));
   const ex = await loadExemptions(ledgerRoot);
   let state: { dates?: Record<string, { status?: string; r6Events?: { status: string }[] }> } = {};
@@ -389,6 +406,10 @@ export async function computeLiveHoldout(git: GuardGit, ledgerRoot: string): Pro
     if (touched.has(date)) reasons.push("an immutable record of this session was modified, deleted or renamed (acknowledged or not)");
     const rec = state.dates?.[date];
     if (rec?.status === "anomaly" || rec?.r6Events?.some((e) => e.status === "anomaly")) reasons.push("the session has an R6 anomaly (a review decision does not restore it)");
+    // Durable exclusion (erratum 20): an anomaly in ANY committed ledger-state.json excludes the session for good, even
+    // if the current file no longer shows it. Without complete history no exclusion can be ruled out: nothing is eligible.
+    if (hist.anomalies.has(date)) reasons.push("the session was recorded as an anomaly in the committed history of ledger-state.json (permanent)");
+    if (!hist.complete) reasons.push("the committed history of ledger-state.json is incomplete or invalid, so historical exclusions cannot be ruled out");
     if (rec?.status === "source-revised") {
       const sha = (() => {
         try {
@@ -403,6 +424,130 @@ export async function computeLiveHoldout(git: GuardGit, ledgerRoot: string): Pro
   }
   sessions.sort((a, b) => a.date.localeCompare(b.date) || a.ruleVersion.localeCompare(b.ruleVersion));
   return { sessions, eligible: sessions.filter((s) => s.eligible).map((s) => s.date) };
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Durable exclusions (design erratum 20). ledger-state.json is mutable, so the guard does not trust its CURRENT content
+// alone: it reads EVERY committed version of the file (path-limited history, merges included), validates each one
+// structurally and collects every date that was ever anomalous. The current file must still show each of those dates as
+// anomalous, with its first anomaly event unchanged. Shallow, missing, unreadable or invalid history fails closed.
+// ---------------------------------------------------------------------------------------------------------------
+
+export interface HistoricalAnomaly {
+  date: string;
+  /** first commit (in history order) whose ledger-state.json shows the date as anomalous */
+  firstSeenCommit: string;
+  /** the earliest anomaly event recorded for the date in any committed version (null when only the status says anomaly) */
+  firstAnomalyEvent: R6Event | null;
+}
+
+export interface ExclusionHistory {
+  /** false when the history could not be read completely and validly: no exclusion can then be ruled out */
+  complete: boolean;
+  problems: Violation[];
+  anomalies: Map<string, HistoricalAnomaly>;
+  versionsChecked: number;
+}
+
+type StateDates = Record<string, Partial<DateRecord>>;
+const isAnomalous = (r: Partial<DateRecord> | undefined): boolean => !!r && (r.status === "anomaly" || r.r6?.status === "anomaly" || (r.r6Events ?? []).some((e) => e.status === "anomaly"));
+const firstAnomalyEventOf = (r: Partial<DateRecord> | undefined): R6Event | null => (r?.r6Events ?? []).find((e) => e.status === "anomaly") ?? null;
+const sameEvent = (a: R6Event, b: R6Event) => canonicalEvent(a) === canonicalEvent(b);
+const canonicalEvent = (e: R6Event) => JSON.stringify([e.at, e.status, e.reasonCode ?? null, e.existingPredictionsSha256, e.candidatePredictionsSha256, e.detail]);
+
+/** Reads and validates every committed version of ledger-state.json and collects every date that was ever anomalous. */
+export async function loadExclusionHistory(git: GuardGit, ledgerRoot: string): Promise<ExclusionHistory> {
+  const paths = ledgerPaths(ledgerRoot);
+  const problems: Violation[] = [];
+  const anomalies = new Map<string, HistoricalAnomaly>();
+  const fail = (detail: string, commit?: string) => problems.push({ kind: "exclusion", path: paths.state, ...(commit ? { commit } : {}), detail });
+  let shallow = true;
+  try {
+    shallow = await git.isShallow();
+  } catch {
+    shallow = true;
+  }
+  if (shallow) fail("the Git history is shallow (or its depth cannot be determined): committed ledger states cannot all be checked, so historical exclusions cannot be ruled out");
+  // Every version, oldest first. -m lists a merge once per parent (deduplicated below); --full-history keeps all of them.
+  let log = "";
+  try {
+    log = await git.log(["--format=@@%H", "-m", "--full-history", "--reverse", "--", paths.state]);
+  } catch (err) {
+    fail(`the history of ledger-state.json cannot be read: ${String(err).slice(0, 160)}`);
+  }
+  const shas = [...new Set(log.split("\n").filter((l) => l.startsWith("@@")).map((l) => l.slice(2).trim()))];
+  for (const sha of shas) {
+    const text = await git.show(sha, paths.state);
+    if (text === null) {
+      fail("a committed version of ledger-state.json is missing or was deleted; the history is incomplete", sha);
+      continue;
+    }
+    let obj: { dates?: StateDates };
+    try {
+      obj = JSON.parse(text);
+    } catch (err) {
+      fail(`a committed version of ledger-state.json is not valid JSON: ${String(err).slice(0, 120)}`, sha);
+      continue;
+    }
+    const invalid = validateState(obj, Buffer.byteLength(text));
+    if (invalid.length) {
+      fail(`a committed version of ledger-state.json is invalid: ${invalid.slice(0, 3).join("; ")}`, sha);
+      continue;
+    }
+    for (const [date, rec] of Object.entries(obj.dates ?? {})) {
+      if (!isAnomalous(rec)) continue;
+      const ev = firstAnomalyEventOf(rec);
+      const known = anomalies.get(date);
+      if (!known) anomalies.set(date, { date, firstSeenCommit: sha, firstAnomalyEvent: ev });
+      else if (ev && (!known.firstAnomalyEvent || ev.at < known.firstAnomalyEvent.at)) known.firstAnomalyEvent = ev;
+    }
+  }
+  // The history must reach back past every enabling record (a truncated or grafted history would not).
+  let versionFiles: string[] = [];
+  try {
+    versionFiles = (await readdir(paths.versionsDir)).filter((n) => n.endsWith(".json"));
+  } catch {
+    versionFiles = [];
+  }
+  for (const name of versionFiles) {
+    const file = path.join(paths.versionsDir, name);
+    let added = "";
+    try {
+      added = (await git.log(["--diff-filter=A", "--format=%H", "--", file])).trim();
+    } catch {
+      added = "";
+    }
+    if (!added) fail(`the Git history does not contain the commit that added the enabling record ${name}; the history is truncated or unavailable`);
+  }
+  if (versionFiles.length > 0 && shas.length === 0 && (await exists(paths.state))) fail("a rule version is enabled and ledger-state.json exists, but it has no committed history");
+  return { complete: problems.length === 0, problems, anomalies, versionsChecked: shas.length };
+}
+
+/** Compares a ledger-state.json (the current file, or a pending one) with the anomalies recorded in committed history. */
+export function compareWithExclusionHistory(hist: ExclusionHistory, current: { dates?: StateDates } | null, file: string): Violation[] {
+  const v: Violation[] = [];
+  if (hist.anomalies.size === 0) return v;
+  if (!current) return [{ kind: "exclusion", path: file, detail: `ledger-state.json is missing or unreadable although committed history records anomalies for ${[...hist.anomalies.keys()].sort().join(", ")}; a reset cannot restore eligibility` }];
+  for (const a of [...hist.anomalies.values()].sort((x, y) => x.date.localeCompare(y.date))) {
+    const rec = current.dates?.[a.date];
+    if (!rec) v.push({ kind: "exclusion", path: file, detail: `${a.date}: the date was anomalous in committed history (${a.firstSeenCommit.slice(0, 10)}) but is missing from ledger-state.json` });
+    else if (rec.status !== "anomaly") v.push({ kind: "exclusion", path: file, detail: `${a.date}: the date was anomalous in committed history (${a.firstSeenCommit.slice(0, 10)}) but its status is now "${String(rec.status)}"; an anomaly can never be downgraded` });
+    if (rec && a.firstAnomalyEvent && !(rec.r6Events ?? []).some((e) => sameEvent(e, a.firstAnomalyEvent!))) v.push({ kind: "exclusion", path: file, detail: `${a.date}: the first anomaly event (${a.firstAnomalyEvent.at}) recorded in committed history is missing or was rewritten in r6Events` });
+  }
+  return v;
+}
+
+/** Guard check: the committed history is complete and the current state still shows every historical anomaly. */
+export async function checkExclusionHistory(git: GuardGit, ledgerRoot: string, history?: ExclusionHistory): Promise<Violation[]> {
+  const hist = history ?? (await loadExclusionHistory(git, ledgerRoot));
+  const file = ledgerPaths(ledgerRoot).state;
+  let current: { dates?: StateDates } | null = null;
+  try {
+    current = JSON.parse(await readFile(file, "utf-8"));
+  } catch {
+    current = null;
+  }
+  return [...hist.problems, ...compareWithExclusionHistory(hist, current, file)];
 }
 
 export interface GuardResult {
@@ -440,7 +585,8 @@ export async function runGuard(git: GuardGit, ledgerRoot: string): Promise<Guard
     else accepted.push(`${a.sessionDate}:${a.ruleVersion}`);
   }
   const reviews = await loadValidR6Reviews(ledgerRoot);
-  const holdout = await computeLiveHoldout(git, ledgerRoot);
+  const exclusionHistory = await loadExclusionHistory(git, ledgerRoot);
+  const holdout = await computeLiveHoldout(git, ledgerRoot, exclusionHistory);
   const holdoutProblems: Violation[] = [];
   try {
     const h = JSON.parse(await readFile(ledgerPaths(ledgerRoot).holdout, "utf-8")) as { status?: string; unblinded?: { completedLiveSessions?: number } | null };
@@ -448,7 +594,7 @@ export async function runGuard(git: GuardGit, ledgerRoot: string): Promise<Guard
   } catch {
     /* holdout.json problems are reported by validateTree / checkHoldoutHistory */
   }
-  const rest = [...ex.problems, ...srProblems, ...reviews.problems, ...holdoutProblems, ...(await validateTree(ledgerRoot)), ...(await validateVersionRecords(git, ledgerRoot)), ...(await checkHoldoutHistory(git, ledgerRoot))];
+  const rest = [...ex.problems, ...srProblems, ...reviews.problems, ...holdoutProblems, ...(await validateTree(ledgerRoot)), ...(await validateVersionRecords(git, ledgerRoot)), ...(await checkHoldoutHistory(git, ledgerRoot)), ...(await checkExclusionHistory(git, ledgerRoot, exclusionHistory))];
   return {
     violations: [...history.filter((h) => !h.acknowledged), ...rest],
     acknowledged: history.filter((h) => h.acknowledged),

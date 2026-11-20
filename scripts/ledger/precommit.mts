@@ -7,7 +7,8 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import path from "node:path";
 import { ledgerPaths } from "./constants.mts";
-import { validateDailyFile, validateReceiptFile, validateStateFile, validateVersionRecords, type GuardGit, type Violation } from "./guard.mts";
+import { compareWithExclusionHistory, loadExclusionHistory, validateDailyFile, validateReceiptFile, validateStateFile, validateVersionRecords, type GuardGit, type Violation } from "./guard.mts";
+import { readFile } from "node:fs/promises";
 import { emptyState, loadLedgerState, saveLedgerState, type LedgerState } from "./state.mts";
 
 const run = promisify(execFile);
@@ -88,6 +89,18 @@ export async function validatePending(git: PrecommitGit, repoRoot: string, ledge
     if (p === paths.state) {
       if (c.code === "D" || c.code === "R" || c.code === "T") v.push({ kind: "state", path: p, detail: "ledger-state.json may be changed but not deleted, renamed or retyped" });
       else v.push(...(await validateStateFile(abs)));
+      if (guardGit) {
+        // Durable exclusions (erratum 20): the pending state must keep every anomaly found in committed history
+        // (no removal, no downgrade, no rewritten first anomaly event). Incomplete history fails closed.
+        const hist = await loadExclusionHistory(guardGit, path.join(repoRoot, root));
+        let pending: Parameters<typeof compareWithExclusionHistory>[1] = null;
+        try {
+          pending = c.code === "D" ? null : JSON.parse(await readFile(abs, "utf-8"));
+        } catch {
+          pending = null;
+        }
+        v.push(...hist.problems.map((x) => ({ ...x, path: p })), ...compareWithExclusionHistory(hist, pending, p));
+      }
       continue;
     }
     const isDaily = new RegExp(`^${root}/live/predictions/[^/]+/\\d{4}-\\d{2}-\\d{2}\\.json$`).test(p);

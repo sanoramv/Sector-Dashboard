@@ -71,7 +71,7 @@ describe("rule versions coexist; corrections are new files", () => {
   });
 
   it("the guard treats a modified or deleted correction like any other protected record", async () => {
-    const git: GuardGit = { log: async () => "@@" + "c".repeat(40) + "\nM\tpublic/data/ledger/live/corrections/mv1-x/2026-10-29.v1.json\n@@" + "d".repeat(40) + "\nD\tpublic/data/ledger/live/corrections/mv1-x/2026-10-29.v2.json\n", show: async () => null, revParse: async () => null };
+    const git: GuardGit = { log: async () => "@@" + "c".repeat(40) + "\nM\tpublic/data/ledger/live/corrections/mv1-x/2026-10-29.v1.json\n@@" + "d".repeat(40) + "\nD\tpublic/data/ledger/live/corrections/mv1-x/2026-10-29.v2.json\n", show: async () => null, revParse: async () => null, isShallow: async () => false };
     const v = await scanHistory(git, "public/data/ledger");
     expect(v).toHaveLength(2);
     expect(v.every((x) => !x.acknowledged)).toBe(true);
