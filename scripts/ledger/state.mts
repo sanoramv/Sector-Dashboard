@@ -6,8 +6,13 @@ export type DateRecordStatus = "waiting" | "blocked" | "recorded" | "review-requ
 export type PublicationClass = "live" | "live-late" | "unverified" | "pending";
 export type RunStatus = "ok" | "idle" | "not-enabled" | "waiting" | "blocked" | "anomaly" | "error";
 
-/** Why an existing record could not be compared with a fresh evaluation. */
-export type R6ReasonCode = "constituent-lists-refreshed" | "inputs-not-ready";
+/**
+ * Qualifies an R6 result. `constituent-lists-refreshed`, `inputs-not-ready` and `history-below-lookback` explain why an
+ * existing record could NOT be compared (`existing-uncompared`, never a successful comparison). `retention-window-only`
+ * qualifies a successful comparison (`existing`) whose full digest differs only in retention-pruning metadata
+ * (quality.barsUsed / quality.usableFrom); see `checkRetentionOnly` in capture.mts.
+ */
+export type R6ReasonCode = "constituent-lists-refreshed" | "inputs-not-ready" | "history-below-lookback" | "retention-window-only";
 
 export interface R6UniverseEvidence {
   /** list identity stored in the immutable record: slug, symbol count, content hash, fetch time */

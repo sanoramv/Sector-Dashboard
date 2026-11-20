@@ -7,7 +7,8 @@ import path from "node:path";
 import type { RawDataset } from "../../src/types/dataset.ts";
 import type { ActivityRow } from "../../src/types/activity.ts";
 import type { MomentumCandidate } from "../../src/types/momentum.ts";
-import { prepareUniverse, type PreparedUniverse } from "../../src/lib/momentum/universe.ts";
+import { comparableBarsUpTo, prepareUniverse, type PreparedUniverse } from "../../src/lib/momentum/universe.ts";
+import { addDays } from "./calendar.mts";
 import { discover, moversOn } from "../../src/lib/momentum/discovery.ts";
 import { indexContextAt, marketContextAt } from "../../src/lib/momentum/market.ts";
 import type { RefreshState } from "../lib/refresh-state.mts";
@@ -100,7 +101,18 @@ export function compareUniverse(stored: UniverseListIdentity[], current: Univers
   return { stored, current, changedLists: [...new Set(changedLists)].sort(), symbolSetChangedLists: [...new Set(symbolSetChangedLists)].sort(), fetchedAtChanged };
 }
 
-export type ExistingDaily = { kind: "none" } | { kind: "valid"; predictionsSha256: string; universeLists: UniverseListIdentity[] } | { kind: "invalid"; problems: string[] };
+/** `header.sourceData.calendar` of a stored record: the benchmark calendar of the data the record was built from. */
+export interface StoredCalendar {
+  firstDate: string | null;
+  lastDate: string | null;
+  sessions: number;
+}
+
+/**
+ * `predictions` and `calendar` are only needed by the retention-window exception of R6. A caller that does not supply
+ * them gets the original behaviour (any digest difference is an anomaly).
+ */
+export type ExistingDaily = { kind: "none" } | { kind: "valid"; predictionsSha256: string; universeLists: UniverseListIdentity[]; predictions?: unknown[]; calendar?: StoredCalendar | null } | { kind: "invalid"; problems: string[] };
 
 /** Reads an existing daily file for R6. Anything that is not a complete, valid record is reported, never repaired. */
 export async function readExistingDaily(file: string, expect: { date: string; ruleVersion: string }): Promise<ExistingDaily> {
@@ -119,8 +131,151 @@ export async function readExistingDaily(file: string, expect: { date: string; ru
   }
   const problems = validateDaily(obj, expect);
   if (problems.length) return { kind: "invalid", problems: problems.slice(0, 5) };
-  const h = (obj as { header: { predictionsSha256: string; sourceData?: { universe?: { lists?: UniverseListIdentity[] } } } }).header;
-  return { kind: "valid", predictionsSha256: h.predictionsSha256, universeLists: h.sourceData?.universe?.lists ?? [] };
+  const o = obj as { header: { predictionsSha256: string; sourceData?: { universe?: { lists?: UniverseListIdentity[] }; calendar?: StoredCalendar } }; predictions: unknown[] };
+  const h = o.header;
+  return { kind: "valid", predictionsSha256: h.predictionsSha256, universeLists: h.sourceData?.universe?.lists ?? [], predictions: o.predictions, calendar: h.sourceData?.calendar ?? null };
+}
+
+/**
+ * R6 retention-window exception (post-activation corrective, design erratum 19).
+ *
+ * The price files keep only the last ~450 calendar days, pruned by wall-clock time on every refresh. R6 re-evaluates
+ * the last ten sessions on current data, so after the oldest session is pruned a stock whose comparable history began
+ * at the window start reports one bar fewer (`classification.quality.barsUsed`) and a later start
+ * (`classification.quality.usableFrom`). Those two fields are data-window metadata, not prediction outputs, but they
+ * are part of the canonical prediction digest. The full digest comparison is unchanged; this exception is consulted
+ * only after it fails, and passes only when EVERY condition below is proven. Anything else fails closed (anomaly).
+ */
+export const R6_RETENTION = {
+  /** quality fields that may differ (nothing else in a prediction may) */
+  fields: ["barsUsed", "usableFrom"] as const,
+  /** both sides need at least one trading year of comparable bars */
+  minBarsUsed: 252,
+  /** the current history must still reach this far back from the session (longest lookback: 52-week high, R10) */
+  lookbackCalendarDays: 365,
+};
+
+/** What the current data says about one stock's comparable history up to the session. */
+export interface RetentionStockHistory {
+  /** first validated bar of the stock in the current data */
+  firstBarDate: string;
+  /** true when the session's bar is in the stock's FIRST comparable segment (no price discontinuity since the first bar) */
+  firstSegment: boolean;
+  /** comparable bars from the start of the session's segment up to and including the session */
+  barsUpToDate: number;
+}
+
+export interface RetentionInput {
+  sessionDate: string;
+  /** the fresh candidate's predictions (their canonical digest must equal the candidate digest) */
+  candidatePredictions: unknown[];
+  /** current benchmark calendar, ascending */
+  calendar: string[];
+  stock: (symbol: string) => RetentionStockHistory | null;
+  /** R10 reports that this session's stored inputs (365-day window) changed since capture */
+  sourceRevised: boolean;
+}
+
+/** Builds the retention input for one session from the prepared universe. */
+export function retentionInputFor(u: PreparedUniverse, date: string, candidatePredictions: unknown[], sourceRevised: boolean): RetentionInput {
+  return {
+    sessionDate: date,
+    candidatePredictions,
+    calendar: u.calendar,
+    sourceRevised,
+    stock: (symbol) => {
+      const s = u.bySymbol.get(symbol);
+      const i = s?.indexByDate.get(date);
+      if (!s || i === undefined || s.bars.length === 0) return null;
+      return { firstBarDate: s.bars[0].date, firstSegment: s.segOf[i] === 0, barsUpToDate: comparableBarsUpTo(s, i).length };
+    },
+  };
+}
+
+/** A prediction with the two retention fields and the derived `recordHash` removed (everything else is kept). */
+export function retentionNormalised(p: unknown): unknown {
+  const q = structuredClone(p) as { recordHash?: unknown; classification?: { quality?: Record<string, unknown> } };
+  delete q.recordHash;
+  if (q.classification?.quality) for (const f of R6_RETENTION.fields) delete q.classification.quality[f];
+  return q;
+}
+
+/** The recordHash contract of record.mts / validate.mts: sha256Canonical of the record without `recordHash`. */
+const recordHashValid = (p: unknown): boolean => {
+  if (!p || typeof p !== "object") return false;
+  const { recordHash, ...rest } = p as Record<string, unknown>;
+  return typeof recordHash === "string" && recordHash === sha256Canonical(rest);
+};
+
+type RetentionVerdict ={ kind: "retention-only"; detail: string } | { kind: "below-lookback"; detail: string } | { kind: "not-applicable"; why: string };
+
+/** Proves (or refutes) that a digest difference is caused only by retention pruning. Pure and deterministic. */
+export function checkRetentionOnly(existing: Extract<ExistingDaily, { kind: "valid" }>, candidateSha: string, r: RetentionInput): RetentionVerdict {
+  const na = (why: string): RetentionVerdict => ({ kind: "not-applicable", why });
+  // 7. A material source revision is never explained away here: R10 owns it.
+  if (r.sourceRevised) return na("R10 reports a source revision for this session");
+  const sc = existing.calendar;
+  const stored = existing.predictions;
+  if (!sc || !sc.firstDate || !sc.lastDate || !Array.isArray(stored)) return na("the stored record has no calendar or predictions to compare");
+  const cal0 = r.calendar[0];
+  if (!cal0) return na("the current calendar is empty");
+  // 3. Trimming must actually have happened: the current history starts later than the stored one.
+  if (!(sc.firstDate < cal0)) return na("the current history does not start later than the stored history (nothing was pruned)");
+  const removedSessions = sc.sessions - r.calendar.filter((d) => d <= sc.lastDate!).length;
+  if (removedSessions < 1) return na("no stored session is missing from the current calendar");
+  // 6. Lookback. Only a loss CAUSED by pruning (stored covered it, current does not) is uncompared; otherwise anomaly.
+  const lookbackFrom = addDays(r.sessionDate, -R6_RETENTION.lookbackCalendarDays);
+  if (cal0 > lookbackFrom) {
+    if (sc.firstDate <= lookbackFrom) return { kind: "below-lookback", detail: `Existing valid record left untouched. Retention pruning has removed history the rules need: the current data starts ${cal0}, after ${lookbackFrom} (${R6_RETENTION.lookbackCalendarDays} days before ${r.sessionDate}), so a fresh evaluation is not comparable. This is NOT a successful comparison.` };
+    return na(`the current history starts ${cal0}, after the ${R6_RETENTION.lookbackCalendarDays}-day lookback ${lookbackFrom}, and the stored history did not cover it either`);
+  }
+  // Both prediction arrays must be exactly the ones the digests describe.
+  if (sha256Canonical(stored) !== existing.predictionsSha256) return na("the stored predictions do not match the stored digest");
+  if (sha256Canonical(r.candidatePredictions) !== candidateSha) return na("the candidate predictions do not match the candidate digest");
+  const cand = r.candidatePredictions;
+  if (stored.length !== cand.length) return na(`prediction count differs (${stored.length} stored, ${cand.length} now)`);
+  let changed = 0;
+  for (let k = 0; k < stored.length; k++) {
+    const a = stored[k] as { symbol?: string; classification?: { quality?: { barsUsed?: unknown; usableFrom?: unknown } } };
+    const b = cand[k] as typeof a;
+    const sym = a?.symbol;
+    if (typeof sym !== "string" || b?.symbol !== sym) return na(`prediction ${k} is a different stock (${String(sym)} / ${String(b?.symbol)})`);
+    // Each recordHash must satisfy its own contract (sha256Canonical of the record without it), on BOTH sides, so a
+    // recordHash difference can only come from the fields that differ - never from a manipulated hash.
+    if (!recordHashValid(a)) return na(`${sym}: the stored recordHash does not match its record`);
+    if (!recordHashValid(b)) return na(`${sym}: the candidate recordHash does not match its record`);
+    // 1, 2. Everything except the two retention fields (and the hash derived from them) is identical.
+    if (sha256Canonical(retentionNormalised(a)) !== sha256Canonical(retentionNormalised(b))) return na(`${sym}: a field other than quality.barsUsed / quality.usableFrom differs`);
+    const qa = a.classification?.quality;
+    const qb = b.classification?.quality;
+    if (!qa || !qb) return na(`${sym}: quality is missing`);
+    const sameBars = qa.barsUsed === qb.barsUsed;
+    const sameFrom = qa.usableFrom === qb.usableFrom;
+    if (sameBars && sameFrom) continue;
+    if (sameBars || sameFrom) return na(`${sym}: only one of barsUsed / usableFrom changed`);
+    const [ba, bb, fa, fb] = [qa.barsUsed, qb.barsUsed, qa.usableFrom, qb.usableFrom];
+    if (typeof ba !== "number" || typeof bb !== "number" || typeof fa !== "string" || typeof fb !== "string") return na(`${sym}: malformed quality fields`);
+    // 5. At least a trading year of comparable bars on both sides.
+    if (ba < R6_RETENTION.minBarsUsed || bb < R6_RETENTION.minBarsUsed) return na(`${sym}: barsUsed ${ba} -> ${bb} is below ${R6_RETENTION.minBarsUsed}`);
+    // 4. The stored start lies inside the stored history and in the part that has since been pruned for everyone.
+    if (!(fa >= sc.firstDate && fa < cal0)) return na(`${sym}: stored usableFrom ${fa} is not in the pruned part of the history (${sc.firstDate} .. before ${cal0})`);
+    // 4. The current start is the stock's actual first bar now, with no price discontinuity since.
+    const h = r.stock(sym);
+    if (!h) return na(`${sym}: no current bar for ${r.sessionDate}`);
+    if (!h.firstSegment || fb !== h.firstBarDate) return na(`${sym}: current usableFrom ${fb} is not the stock's first current bar (${h.firstBarDate}) in an unbroken history`);
+    if (bb !== h.barsUpToDate) return na(`${sym}: current barsUsed ${bb} does not match the ${h.barsUpToDate} bars in the current data`);
+    if (!(fa < fb)) return na(`${sym}: usableFrom moved backwards (${fa} -> ${fb})`);
+    // 3. The bars lost are no more than the sessions pruned.
+    const lost = ba - bb;
+    if (lost < 1 || lost > removedSessions) return na(`${sym}: ${lost} bar(s) lost but ${removedSessions} session(s) were pruned`);
+    changed++;
+  }
+  if (changed === 0) return na("no prediction differs in the retention fields");
+  const normSha = sha256Canonical(stored.map(retentionNormalised));
+  return {
+    kind: "retention-only",
+    detail: `Existing record has a different full prediction digest ONLY because retention pruned the oldest history (${removedSessions} session(s); stored history from ${sc.firstDate}, now from ${cal0}): ${changed} of ${stored.length} prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest ${normSha}). Nothing written.`,
+  };
 }
 
 /**
@@ -129,7 +284,7 @@ export async function readExistingDaily(file: string, expect: { date: string; ru
  * the result is `existing-uncompared` (reason `constituent-lists-refreshed`), never a "different predictions" anomaly,
  * and never counted as a successful comparison. A fetch-time change alone (identical contents) does not excuse a mismatch.
  */
-export function compareR6(existing: ExistingDaily, candidateSha: string | null, candidateNote: string | null, currentLists?: UniverseListIdentity[]): R6Evidence {
+export function compareR6(existing: ExistingDaily, candidateSha: string | null, candidateNote: string | null, currentLists?: UniverseListIdentity[], retention?: RetentionInput): R6Evidence {
   if (existing.kind === "none") return { status: "pass", existingPredictionsSha256: null, candidatePredictionsSha256: candidateSha, detail: "No existing record for this date and rule version." };
   if (existing.kind === "invalid") return { status: "anomaly", existingPredictionsSha256: null, candidatePredictionsSha256: candidateSha, detail: `Existing record is invalid and was left untouched: ${existing.problems.join("; ")}` };
   const universe = currentLists ? compareUniverse(existing.universeLists, currentLists) : undefined;
@@ -139,7 +294,14 @@ export function compareR6(existing: ExistingDaily, candidateSha: string | null, 
     return { status: "existing-uncompared", ...base, candidatePredictionsSha256: candidateSha, reasonCode: "constituent-lists-refreshed", detail: `Existing valid record left untouched. The constituent lists changed since it was made (${universe.changedLists.join(", ")}; ${universe.symbolSetChangedLists.length ? `membership changed in ${universe.symbolSetChangedLists.join(", ")}` : "company name / industry labels only, the symbols are identical"}), so a different prediction digest is expected and the two cannot be compared. This is NOT a successful comparison.` };
   }
   if (candidateSha === null) return { status: "existing-uncompared", ...base, candidatePredictionsSha256: null, reasonCode: "inputs-not-ready", detail: `Existing valid record left untouched; a fresh candidate cannot be built now so the digests were not compared (${candidateNote ?? "inputs not ready"}).` };
-  return { status: "anomaly", ...base, candidatePredictionsSha256: candidateSha, detail: "A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched." };
+  let why = "";
+  if (retention) {
+    const v = checkRetentionOnly(existing, candidateSha, retention);
+    if (v.kind === "retention-only") return { status: "existing", ...base, candidatePredictionsSha256: candidateSha, reasonCode: "retention-window-only", detail: v.detail };
+    if (v.kind === "below-lookback") return { status: "existing-uncompared", ...base, candidatePredictionsSha256: candidateSha, reasonCode: "history-below-lookback", detail: v.detail };
+    why = ` (Retention-window exception not applicable: ${v.why}.)`;
+  }
+  return { status: "anomaly", ...base, candidatePredictionsSha256: candidateSha, detail: `A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched.${why}` };
 }
 
 const hasBarOn = (bars: { date: string }[] | undefined, date: string): boolean => !!bars && bars.some((b) => b.date === date);
@@ -394,7 +556,9 @@ export async function runCapture(src: CaptureSource, env: CaptureEnv, opts: { se
     if (existing.kind !== "none") {
       const candidateSha = ev.daily ? ((ev.daily.header as { predictionsSha256: string }).predictionsSha256) : null;
       const note = ev.daily ? null : [...blocking, ...waiting].map((c) => `${c.id}: ${c.reason}`).join(" | ") || null;
-      const r6 = compareR6(existing, candidateSha, note, universeListIdentity(src.dataset));
+      const sourceRevised = r10Sessions.some((s) => s.date === date && !s.ok);
+      const retention = ev.daily ? retentionInputFor(u, date, ev.daily.predictions as unknown[], sourceRevised) : undefined;
+      const r6 = compareR6(existing, candidateSha, note, universeListIdentity(src.dataset), retention);
       const checks = [...ev.checks, r6check(r6)];
       if (r6.status === "anomaly") sessions.push({ date, outcome: "anomaly", checks, reasons: [`R6: ${r6.detail}`], file, warnings: [], r6 });
       else sessions.push({ date, outcome: "exists", checks, reasons: [r6.detail], file, warnings: [], r6 });
