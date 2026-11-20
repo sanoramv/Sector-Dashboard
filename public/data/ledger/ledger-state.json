@@ -1,13 +1,13 @@
 {
  "kind": "momentum-ledger.state",
  "schemaVersion": 1,
- "updatedAt": "2026-11-19T23:40:39.904Z",
- "lastAttemptAt": "2026-11-19T23:40:36.610Z",
+ "updatedAt": "2026-11-20T00:59:05.135Z",
+ "lastAttemptAt": "2026-11-20T00:59:01.760Z",
  "lastSuccessfulCaptureAt": "2026-11-19T22:20:19.482Z",
  "lastSuccessfulSessionDate": "2026-11-19",
  "runStatus": "anomaly",
  "lastFailure": {
-  "at": "2026-11-19T23:40:38.672Z",
+  "at": "2026-11-20T00:59:03.949Z",
   "date": "2026-11-18",
   "reasons": [
    "R6: A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched.",
@@ -91,7 +91,7 @@
    ],
    "r6": {
     "status": "anomaly",
-    "checkedAt": "2026-11-19T23:40:38.672Z",
+    "checkedAt": "2026-11-20T00:59:03.949Z",
     "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
     "candidatePredictionsSha256": "601c4d671603eaa0830721534475ba50599011813a1a6d7363528f13adbfb71f",
     "detail": "A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched.",
@@ -373,7 +373,7 @@
     "firstAnomalyAt": "2026-11-19T22:20:19.482Z"
    },
    "sourceDataDate": "2026-11-18",
-   "updatedAt": "2026-11-19T23:40:39.904Z",
+   "updatedAt": "2026-11-20T00:59:05.135Z",
    "earliestCutoffUtc": "2026-11-19T03:30:00.000Z",
    "r6Events": [
     {
@@ -462,7 +462,7 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-19T23:40:38.672Z",
+    "checkedAt": "2026-11-20T00:59:03.949Z",
     "existingPredictionsSha256": "fbc384ee3938dab3b783251523b3639c8648932caadb2283bf3c65f23adb794e",
     "candidatePredictionsSha256": "fbc384ee3938dab3b783251523b3639c8648932caadb2283bf3c65f23adb794e",
     "detail": "Existing record has an identical prediction digest; nothing written.",
@@ -743,7 +743,7 @@
     }
    },
    "sourceDataDate": "2026-11-19",
-   "updatedAt": "2026-11-19T23:40:39.904Z",
+   "updatedAt": "2026-11-20T00:59:05.135Z",
    "earliestCutoffUtc": "2026-11-20T03:30:00.000Z",
    "r6Events": [
     {
@@ -1092,6 +1092,11 @@
  },
  "runs": [
   {
+   "startedAt": "2026-11-20T00:59:01.760Z",
+   "slot": "0 19 * * 1-5",
+   "status": "anomaly"
+  },
+  {
    "startedAt": "2026-11-19T23:40:36.610Z",
    "slot": "30 17 * * 1-5",
    "status": "anomaly"
@@ -1185,17 +1190,12 @@
    "startedAt": "2026-11-14T09:09:38.032Z",
    "slot": "30 2 * * 2-6",
    "status": "not-enabled"
-  },
-  {
-   "startedAt": "2026-11-14T00:06:19.646Z",
-   "slot": "0 19 * * 1-5",
-   "status": "not-enabled"
   }
  ],
  "metrics": {
   "dailyFileBytes": 556944,
-  "ledgerBytes": 1173492,
-  "publicDataBytes": 26683195,
-  "captureSeconds": 2.064
+  "ledgerBytes": 1173488,
+  "publicDataBytes": 26683190,
+  "captureSeconds": 2.19
  }
 }
