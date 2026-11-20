@@ -2,7 +2,7 @@
 
 > Read this first in every session, then verify it against Git and GitHub. **Evidence beats this file**: if they
 > disagree, trust the evidence and correct this file. This file records approvals; it never grants new ones.
-> Times are UTC. Last updated: **2026-11-20 05:15 UTC** (written for the checkpoint commit of the controlled push).
+> Times are UTC. Last updated: **2026-11-20 06:20 UTC** (durable-exclusion checkpoint; committed locally, NOT pushed).
 
 ## A. Project identity
 - Repository: https://github.com/sanoramv/Sector-Dashboard · Production: https://sanoramv.github.io/Sector-Dashboard/
@@ -12,12 +12,15 @@
 - Owner is not a developer: explain in plain English, recommend one next step, get approval before any mutation.
 
 ## B. Current phase
-- Active phase: **Phase 0/1 close-out — controlled release.** R6 correction audited and committed; synced with
-  `origin/main`; full validation green. This checkpoint is committed and pushed together with `c901ac2`, `9c11ba8`,
-  the R6 fix and the merge (owner approval 2026-11-20). Post-push verification: see section I.
-- Last verified: 2026-11-20 05:10 UTC (local, after merging `origin/main` = `0e86cce`).
+- Active phase: **governance hardening** after the R6 correction (live on `origin/main` since `fcb35a6`).
+- Status: **LOCAL COMMITS READY, PUSH NOT APPROVED.** Durable holdout exclusions (guard + pre-commit, erratum 20) and
+  the owner-approved R6 review decision for 18 Nov are committed locally (see section D); all validations pass.
+- Production R6 not yet observed: no scheduled data run since the push (checked 05:45 UTC 20 Nov) → PENDING.
 
 ## C. Last verified checkpoint
+- **Push 2026-11-20 05:10 UTC:** `0e86cce..fcb35a6` (normal fast-forward); governance 44679121033, guard 44679121090,
+  deploy 44679121031 all success; Pages HTTP 200. **05:45 review (read-only):** red runs fail only at the final
+  `Ledger gate` step (unreviewed 18 Nov anomaly); a state reset could restore 18 Nov (fixed locally, section D).
 - **Live capture (verified 2026-11-20):** 2026-11-18 prediction (126 rows) published by `9cde568` at 2026-11-18
   22:11:34 UTC (cutoff 2026-11-19 03:30) — on time; receipt `f9c6653` class `live`. 2026-11-19 (123 rows):
   `9e89a3d`, receipt `1b63cbd`, `live`. Rule `mv1-8ecef864`. Issue #97 (R6 anomaly 18 Nov) open, untouched.
@@ -36,11 +39,19 @@
   19 Nov identical digest, R10 pass, nothing written.
 
 ## D. Current task execution
-- Objective: publish `c901ac2` + `9c11ba8` + `e08e513` + merge `6ffa92a` + this checkpoint with a normal push.
-- Remaining: verify on GitHub — commits on `origin/main`; Ledger governance tests, Ledger immutability guard, Build
-  and deploy to GitHub Pages green (or PENDING); guard 0 violations; 18 Nov still excluded. Then, after tonight's
-  first capture (~22:00 UTC 20 Nov): 19 Nov should record `existing/retention-window-only` (not an anomaly) and the
-  20 Nov capture should succeed.
+- **Durable exclusions (local commit):** `scripts/ledger/guard.mts` (`loadExclusionHistory`, `compareWithExclusionHistory`,
+  `checkExclusionHistory`, `GuardGit.isShallow`, history-based reason in `computeLiveHoldout`, guard git calls with
+  `GIT_NO_REPLACE_OBJECTS=1`), `scripts/ledger/precommit.mts` (same comparison for a pending state), new
+  `tests/ledger/durable-exclusion.test.ts` (19 tests), stubs updated in `r6-retention.test.ts` / `recovery.test.ts`,
+  design erratum 20. Reads all 68 committed state versions (all valid); real history: 2026-11-18 anomalous since
+  `9e89a3d`. Fails closed on shallow/grafted/missing/invalid/truncated history (no session eligible).
+- **R6 review decision (local commit):** `public/data/ledger/exemptions/r6-review-2026-11-18-mv1-8ecef864-601c4d671603.json`
+  binding `ac454375…` (stored) / `601c4d67…` (recomputed); validated by the guard's loader; gate simulation exit 0
+  (amber); 18 Nov still excluded (two reasons: R6 anomaly + permanent history exclusion).
+- **Validation (2026-11-20 ~06:15 UTC):** ledger 325/325, app 302/302, research 30/30, app + scripts typecheck,
+  `ledger:guard` 0 violations (1 eligible 19 Nov, 1 excluded 18 Nov, 1 R6 review) — all exit 0; rule version
+  `mv1-8ecef864`; baseline digest `568512f8…5795`; no change under `live/`, `protocol/`, `holdout.json`,
+  `ledger-state.json`, `src/`, `.github/`.
 
 ## E. Completed milestones
 | What | Commit / evidence |
@@ -57,21 +68,21 @@
 ## F. Pending work
 | Item | State |
 |---|---|
-| Post-push verification (section D) | PENDING |
+| Push + post-push verification | DONE (`fcb35a6`, all three workflows green) |
+| First production run of corrected R6 | PENDING — morning retry run (~09:30–10:30 UTC 20 Nov); check after ~11:00 UTC |
+| 20 Nov capture + receipt | PENDING — evening runs ~22:00 UTC 20 Nov; check after ~01:30 UTC 21 Nov (cutoff 2026-11-23 03:30 UTC) |
+| R6 review decision for 18 Nov (turns gate amber) | CREATED + COMMITTED LOCALLY — push needs approval |
+| Durable exclusion guard + pre-commit rule | IMPLEMENTED + COMMITTED LOCALLY — push needs approval |
 | 18 Nov holdout eligibility | EXCLUDED permanently (owner decision 2026-11-20; no restoration mechanism) |
 | 19 Nov holdout eligibility | ELIGIBLE so far; stays eligible if the fix is live before tonight's first run |
 | Phase B: governed OD1 outcome engine (immutable outcome records) | NOT STARTED — not approved |
 | Breakout accuracy improvement | NOT STARTED — H1–H3 pre-registered; live holdout only, after ≥ 250 completed live sessions + explicit owner authorisation |
 
 ## G. Known issues (unresolved)
-- **Holdout exclusions live in the MUTABLE `ledger-state.json`** (`computeLiveHoldout` reads `status`/`r6Events`).
-  A reset or hand-edit of that file that passes `validateState` would drop the 18 Nov exclusion; within the 10-session
-  R6 window the corrected R6 would then not re-flag it. Pre-existing design gap (also true without the fix once a
-  date leaves the window). Proposed correction (needs approval): a create-only, guard-protected exclusion record
-  (e.g. `exemptions/`-style `r6-anomaly-<date>.json`) written on the first anomaly, or a guard rule deriving
-  exclusions from the Git history of `ledger-state.json`.
-- Update-data runs since 19 Nov 22:20 conclude `failure` because of the 18 Nov anomaly (data still committed); the
-  final gate stays red until an R6 review decision is recorded for 18 Nov (owner decision; does not restore it).
+- Holdout exclusions previously depended on the mutable `ledger-state.json` alone — FIXED locally (erratum 20), not
+  yet pushed. Until pushed, a reset on `main` could still restore 18 Nov.
+- Update-data runs since 19 Nov 22:20 conclude `failure` (only the final `Ledger gate` step; data still committed)
+  because of the unreviewed 18 Nov anomaly. The local review decision makes it amber once pushed.
 - 94 false "Ledger snapshot missing" issues (pre-activation dates) are open; they never auto-close. Closing needs approval.
 - Watchdog raises a false "Ledger capture is stale" every Monday (36 h threshold vs weekend gap; #95, #96 auto-closed).
 - `scripts/ledger/state.mts` validates `enabledFrom` by regex shape only (lower priority; separate decision).
@@ -98,9 +109,11 @@ Standing rules: personal identity only (`Santhosh Ram V <santhoshramv@yahoo.com>
 validation; never claim success from a green workflow alone; never use data on/after 2026-11-18 for research.
 
 ## I. Next action
-Verify the push on GitHub (section D). Do not create another push just to record green workflows. Then propose the
-next task for approval (recommended: Phase B design review — governed OD1 outcome engine, read-only first; and the
-create-only exclusion record from section G). Do not close #97 or touch ledger data.
+1. Owner approves (or not) a normal push of the local commits (durable exclusions, R6 review decision, this
+   checkpoint): `git fetch` → ordinary `git merge origin/main` if needed → full re-validation → push → verify
+   governance tests, guard, deploy, and that the next data run's gate is amber, not red.
+2. Read-only checks still due: first production run of corrected R6 (morning run, check after ~11:00 UTC 20 Nov);
+   20 Nov capture + receipt (check after ~01:30 UTC 21 Nov). Phase B: not started, not approved.
 
 ## J. References
 - Ledger design: `docs/design/MOMENTUM_LEDGER_DESIGN.md`; decisions: `docs/design/MOMENTUM_LEDGER_DECISION_REVIEW.md`
