@@ -1,0 +1,11 @@
+{
+ "kind": "momentum-ledger.r6-review",
+ "schemaVersion": 1,
+ "sessionDate": "2026-11-18",
+ "ruleVersion": "mv1-8ecef864",
+ "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
+ "candidatePredictionsSha256": "601c4d671603eaa0830721534475ba50599011813a1a6d7363528f13adbfb71f",
+ "reason": "Owner-approved review of a known false alarm. The 2026-11-19 refresh pruned the oldest price bar (rolling ~450-day retention), so the R6 re-evaluation of 2026-11-18 differed only in classification.quality.barsUsed and quality.usableFrom (plus the recordHash derived from them) in 102 of 126 predictions; every output and input was identical. Corrected R6 (e08e513, erratum 19) classifies this pair as retention-window-only. This review does not clear the anomaly or its evidence, and 2026-11-18 stays permanently excluded from the live holdout (erratum 20).",
+ "recordedAt": "2026-11-20T06:00:00Z",
+ "recordedBy": "Santhosh Ram V (owner)"
+}
