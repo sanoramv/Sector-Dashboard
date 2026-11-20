@@ -2,6 +2,13 @@
  "schemaVersion": 1,
  "archives": {
   "index": {
+   "2026-11-20": {
+    "status": "ok",
+    "checkedAt": "2026-11-20T21:53:52.712Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
+   },
    "2026-11-19": {
     "status": "ok",
     "checkedAt": "2026-11-19T22:20:12.830Z",
@@ -2203,6 +2210,13 @@
    }
   },
   "stocks": {
+   "2026-11-20": {
+    "status": "ok",
+    "checkedAt": "2026-11-20T21:53:53.550Z",
+    "attempts": 1,
+    "symbolSetHash": "b2128cbc3b6b045d",
+    "detail": "753 tracked symbols"
+   },
    "2026-11-19": {
     "status": "ok",
     "checkedAt": "2026-11-19T22:20:14.097Z",
