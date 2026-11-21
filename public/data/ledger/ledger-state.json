@@ -1,13 +1,13 @@
 {
  "kind": "momentum-ledger.state",
  "schemaVersion": 1,
- "updatedAt": "2026-11-20T23:14:46.931Z",
- "lastAttemptAt": "2026-11-20T23:14:42.632Z",
+ "updatedAt": "2026-11-21T00:33:42.578Z",
+ "lastAttemptAt": "2026-11-21T00:33:39.331Z",
  "lastSuccessfulCaptureAt": "2026-11-20T21:53:59.314Z",
  "lastSuccessfulSessionDate": "2026-11-20",
  "runStatus": "anomaly",
  "lastFailure": {
-  "at": "2026-11-20T23:14:45.606Z",
+  "at": "2026-11-21T00:33:41.590Z",
   "date": null,
   "reasons": [
    "Unresolved anomaly on 2026-11-18: the immutable record was left untouched; see dates.<date>.r6Events in ledger-state.json"
@@ -90,7 +90,7 @@
    ],
    "r6": {
     "status": "anomaly",
-    "checkedAt": "2026-11-20T23:14:45.606Z",
+    "checkedAt": "2026-11-21T00:33:41.590Z",
     "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
     "candidatePredictionsSha256": "601c4d671603eaa0830721534475ba50599011813a1a6d7363528f13adbfb71f",
     "detail": "A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched.",
@@ -371,14 +371,14 @@
     },
     "firstAnomalyAt": "2026-11-19T22:20:19.482Z",
     "latestObservation": {
-     "at": "2026-11-20T23:14:45.606Z",
+     "at": "2026-11-21T00:33:41.590Z",
      "status": "existing",
      "reasonCode": "retention-window-only",
      "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (1 session(s); stored history from 2025-08-26, now from 2025-08-28): 102 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest cf9a4a1e1881dcb84405f991aaac1f6446542b6dd15a79a80c8861b5c27c5df4). Nothing written."
     }
    },
    "sourceDataDate": "2026-11-18",
-   "updatedAt": "2026-11-20T23:14:46.931Z",
+   "updatedAt": "2026-11-21T00:33:42.578Z",
    "earliestCutoffUtc": "2026-11-19T03:30:00.000Z",
    "r6Events": [
     {
@@ -475,7 +475,7 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-20T23:14:45.606Z",
+    "checkedAt": "2026-11-21T00:33:41.590Z",
     "existingPredictionsSha256": "fbc384ee3938dab3b783251523b3639c8648932caadb2283bf3c65f23adb794e",
     "candidatePredictionsSha256": "fbc384ee3938dab3b783251523b3639c8648932caadb2283bf3c65f23adb794e",
     "detail": "Existing record has an identical prediction digest; nothing written.",
@@ -756,7 +756,7 @@
     }
    },
    "sourceDataDate": "2026-11-19",
-   "updatedAt": "2026-11-20T23:14:46.931Z",
+   "updatedAt": "2026-11-21T00:33:42.578Z",
    "earliestCutoffUtc": "2026-11-20T03:30:00.000Z",
    "r6Events": [
     {
@@ -838,7 +838,7 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-20T23:14:45.606Z",
+    "checkedAt": "2026-11-21T00:33:41.590Z",
     "existingPredictionsSha256": "448452053dab3ff23ec8b88ff606582fb7976d519fe22bbabfb5c3b7f31ce483",
     "candidatePredictionsSha256": "448452053dab3ff23ec8b88ff606582fb7976d519fe22bbabfb5c3b7f31ce483",
     "detail": "Existing record has an identical prediction digest; nothing written.",
@@ -1119,7 +1119,7 @@
     }
    },
    "sourceDataDate": "2026-11-20",
-   "updatedAt": "2026-11-20T23:14:46.931Z",
+   "updatedAt": "2026-11-21T00:33:42.578Z",
    "earliestCutoffUtc": "2026-11-23T03:30:00.000Z",
    "r6Events": [
     {
@@ -1469,6 +1469,11 @@
  },
  "runs": [
   {
+   "startedAt": "2026-11-21T00:33:39.331Z",
+   "slot": "0 19 * * 1-5",
+   "status": "anomaly"
+  },
+  {
    "startedAt": "2026-11-20T23:14:42.632Z",
    "slot": "30 17 * * 1-5",
    "status": "anomaly"
@@ -1562,17 +1567,12 @@
    "startedAt": "2026-11-17T10:53:11.487Z",
    "slot": "30 2 * * 2-6",
    "status": "not-enabled"
-  },
-  {
-   "startedAt": "2026-11-17T02:15:25.911Z",
-   "slot": "0 19 * * 1-5",
-   "status": "not-enabled"
   }
  ],
  "metrics": {
   "dailyFileBytes": 567322,
-  "ledgerBytes": 1757103,
-  "publicDataBytes": 27421845,
-  "captureSeconds": 2.976
+  "ledgerBytes": 1757099,
+  "publicDataBytes": 27421841,
+  "captureSeconds": 2.26
  }
 }
