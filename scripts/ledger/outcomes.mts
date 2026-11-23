@@ -30,7 +30,9 @@ export const OUTCOME_RECEIPT_KIND = "momentum-ledger.od1-outcome-receipt";
 export const OUTCOME_CORRECTION_KIND = "momentum-ledger.od1-outcome-correction";
 export const COMMITMENT_SCHEME = "sha256(canonical({ salt, outcomesSha256 }))";
 /** Source files of the outcome engine; their hashes define the engine version (like the prediction rule version). */
-export const ENGINE_FILES = ["scripts/ledger/od1.mts", "scripts/ledger/outcomes.mts", "scripts/ledger/protocol.mts"] as const;
+/** B2a: the runner (which selects each window's bars, sigma window and segment) and the shared price-break
+ *  segmentation it uses are part of the engine, because they determine the stored inputs. */
+export const ENGINE_FILES = ["scripts/ledger/od1.mts", "scripts/ledger/outcomes.mts", "scripts/ledger/protocol.mts", "scripts/ledger/outcome-runner.mts", "src/lib/calculations/validation.ts"] as const;
 
 const HEX64 = /^[0-9a-f]{64}$/;
 const HEX40 = /^[0-9a-f]{40}$/;
@@ -132,7 +134,7 @@ export interface WindowEvidence {
   bars: Array<Od1WindowBar | null>;
   sigmaChanges: number[] | null;
 }
-type DailyLike = { header: { sessionDate: string; predictionsSha256: string; predictionCount: number; model: { ruleVersion: string } }; predictions: Array<{ predictionId: string; symbol: string; recordHash: string; bar: { high: number; low: number; close: number }; price: { changePct: number; volatility20: number | null } }> };
+export type DailyLike = { header: { sessionDate: string; predictionsSha256: string; predictionCount: number; model: { ruleVersion: string } }; predictions: Array<{ predictionId: string; symbol: string; recordHash: string; bar: { high: number; low: number; close: number }; price: { changePct: number; volatility20: number | null } }> };
 
 const inputsOf = (h: OutcomeHeader, e: Pick<OutcomeEntry, "group" | "frozen" | "sigmaChanges" | "bars">) => ({ sessions: h.sessions, bars: e.bars, up: e.group === "gainer", day: e.frozen.day, sigma: e.frozen.sigma, sigmaChanges: e.sigmaChanges, benchT: h.benchmark.closeT, benchTh: h.benchmark.closeTh });
 
