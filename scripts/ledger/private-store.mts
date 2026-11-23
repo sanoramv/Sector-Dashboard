@@ -17,7 +17,7 @@
 import { readFile } from "node:fs/promises";
 import { canonicalize } from "./canonical.mts";
 import { cleanPartials, createOnly } from "./files.mts";
-import { assertPrivateStorageRoot, commitmentOf, createOnlyDecision, validateCorrectionChain, validateOutcomeCorrection, validateOutcomeRecord, type OutcomeCorrection, type OutcomeRecord } from "./outcomes.mts";
+import { assertPrivateStorageRoot, assertSyntheticSession, commitmentOf, createOnlyDecision, validateCorrectionChain, validateOutcomeCorrection, validateOutcomeRecord, type OutcomeCorrection, type OutcomeRecord } from "./outcomes.mts";
 import { listTree, realRoot, safeResolve } from "./safe-path.mts";
 
 export type PutResult = { result: "created" | "existing"; stored: OutcomeRecord } | { result: "conflict"; stored: OutcomeRecord | null; detail: string };
@@ -95,6 +95,7 @@ export class FsPrivateStore implements PrivateStore {
   }
 
   async putRecord(record: OutcomeRecord): Promise<PutResult> {
+    assertSyntheticSession(record?.header?.sessionDate); // before anything is validated or written
     const key = keyOf(record);
     parseStorageKey(key);
     this.checked(key, record);
@@ -143,6 +144,9 @@ export class FsPrivateStore implements PrivateStore {
    * orphan replacement, which an identical retry completes and a different retry reports as a conflict.
    */
   async appendCorrection(key: string, c: StoredCorrection): Promise<"created" | "existing"> {
+    assertSyntheticSession(parseStorageKey(key).sessionDate);
+    assertSyntheticSession(c?.correction?.sessionDate);
+    assertSyntheticSession(c?.replacement?.header?.sessionDate);
     const original = await this.getRecord(key);
     if (!original) throw new Error(`${key}: there is no original record to correct`);
     const existing = await this.getCorrections(key);

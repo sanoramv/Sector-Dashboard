@@ -63,6 +63,22 @@ export async function computeEngine(repoRoot: string, definitionsSha256: string)
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
+// Synthetic-only lock (Phase B2a; hardened in the B2a security pass)
+// ---------------------------------------------------------------------------------------------------------------------
+/**
+ * Phase B2a hard gate: while true, every function that BUILDS, STORES or PUBLISHES a protected outcome artifact (record,
+ * receipt, correction, correction receipt) refuses any session dated before 2031, i.e. any real market date. It does
+ * NOT restrict the pure OD1 mathematics (`od1Outcome` etc. in od1.mts), which anyone can run on public data; it
+ * restricts this project's governed outcome artifacts. Turning it off is part of the owner-approved B2b activation.
+ */
+export const SYNTHETIC_ONLY = true;
+export const SYNTHETIC_FROM = "2031-01-01";
+export function assertSyntheticSession(date: unknown): void {
+  if (!isDate(date)) throw new Error(`Phase B2a is synthetic-only: ${JSON.stringify(date)} is not a valid session date and is refused`);
+  if (SYNTHETIC_ONLY && !(date >= SYNTHETIC_FROM)) throw new Error(`Phase B2a is synthetic-only: session ${date} is a real market date and is refused (no live outcome may be generated)`);
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
 // Storage and seal guards
 // ---------------------------------------------------------------------------------------------------------------------
 /** Protected outcome records may never live in the (public) repository or under any `public/` directory. */
@@ -160,6 +176,8 @@ export function buildOutcomeRecord(a: {
   github: { runId: string | null; runAttempt: string | null; sha: string | null };
   commitmentSalt: string;
 }): OutcomeRecord {
+  assertSyntheticSession(a.daily?.header?.sessionDate);
+  for (const d of a.sessions) assertSyntheticSession(d);
   if (a.receipt.class !== "live") throw new Error(`outcomes are only built for live sessions (receipt class ${a.receipt.class})`);
   const d = a.daily;
   if (sha256Canonical(d.predictions) !== d.header.predictionsSha256) throw new Error("the prediction file's predictions do not match its predictionsSha256");
@@ -314,6 +332,8 @@ export const commitmentOf = (salt: string, outcomesSha256: string): string => sh
 
 export function buildOutcomeReceipt(r: OutcomeRecord, createdAt: string): OutcomeReceipt {
   const h = r.header;
+  assertSyntheticSession(h.sessionDate);
+  assertSyntheticSession(h.endDate);
   return {
     kind: OUTCOME_RECEIPT_KIND,
     schemaVersion: LEDGER_SCHEMA_VERSION,

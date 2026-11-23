@@ -12,7 +12,7 @@ import { ledgerPaths } from "./constants.mts";
 import { exemptionTypeOf, validateDaily, validateExemption, validateReceipt, validateVersionRecord } from "./validate.mts";
 import { checkReceiptStateConsistency, validateState, type DateRecord, type R6Event } from "./state.mts";
 import { checkHoldoutTransition, checkProtocolIntegrity, type HoldoutFile, buildOd1File, od1DefinitionsSha256 } from "./protocol.mts";
-import { scanForOutcomeLeaks, validateOutcomeReceiptTree } from "./outcome-receipts.mts";
+import { scanForOutcomeLeaks, scanRepositoryForOutcomeLeaks, validateOutcomeReceiptTree } from "./outcome-receipts.mts";
 
 export interface Violation {
   kind: "history" | "file" | "holdout" | "protocol" | "partial" | "receipt" | "state" | "exemption" | "version" | "exclusion" | "outcome";
@@ -232,8 +232,10 @@ export async function checkOutcomeConfidentiality(ledgerRoot: string, eligible?:
   const abs = path.resolve(ledgerRoot);
   const v: Violation[] = (await validateOutcomeReceiptTree(abs, { definitionsSha256: od1DefinitionsSha256(), eligible })).map((x) => ({ kind: "outcome" as const, path: path.join(ledgerRoot, x.path), detail: x.detail }));
   if (eligible) return v;
-  const publicDir = abs.endsWith(path.join("public", "data", "ledger")) ? path.dirname(path.dirname(abs)) : abs;
-  for (const x of await scanForOutcomeLeaks([publicDir])) v.push({ kind: "outcome", path: x.path, detail: x.detail });
+  // The real ledger: scan the WHOLE repository (index + working tree), since anything committed anywhere is public.
+  // Any other root (test fixtures): scan that directory tree.
+  const leaks = abs.endsWith(path.join("public", "data", "ledger")) ? await scanRepositoryForOutcomeLeaks(path.dirname(path.dirname(path.dirname(abs)))) : await scanForOutcomeLeaks([abs]);
+  for (const x of leaks) v.push({ kind: "outcome", path: x.path, detail: x.detail });
   return v;
 }
 

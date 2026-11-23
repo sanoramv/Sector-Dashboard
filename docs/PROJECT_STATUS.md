@@ -2,7 +2,7 @@
 
 > Read this first in every session, then verify it against Git and GitHub. **Evidence beats this file**: if they
 > disagree, trust the evidence and correct this file. This file records approvals; it never grants new ones.
-> Times are UTC. Last updated: **2026-11-23 07:00 UTC** (Phase B2a implemented and validated locally; local commits, NOT pushed).
+> Times are UTC. Last updated: **2026-11-23 10:09 UTC** (B2a security hardening validated; push approved, in progress).
 
 ## A. Project identity
 - Repository: https://github.com/sanoramv/Sector-Dashboard · Production: https://sanoramv.github.io/Sector-Dashboard/
@@ -14,7 +14,7 @@
 ## B. Current phase
 - Phase B1 (OD1 engine foundation): **PUBLISHED** 2026-11-23 06:21 UTC (`1a788b0..c202517`).
 - Active phase: **Phase B2a — private outcome pipeline foundation** (LOCAL, synthetic-only; section D). Status:
-  implemented + validated; committed locally, NOT pushed. Nothing provisioned: no private repository, GitHub App,
+  implemented + validated + security-hardened (section D3); push approved 2026-11-23. Nothing provisioned: no private repository, GitHub App,
   token, secret, workflow, CLI or activation record. No live outcome computed, stored or published.
 - Production last verified healthy 2026-11-23 06:23 UTC (section C).
 
@@ -87,6 +87,65 @@
   path (mitigated by the add-only guard, receipt validation and main protection); private-repo branch protection needs
   GitHub Pro; the private repo's Actions and its owner account are trusted.
 - **Storage estimate:** ~1 MB raw / ~190 KB compressed per session (4 horizons); ~50 MB in Git per 250 sessions.
+- **Local commits (07:01 UTC):** `922b956` (code + tests), `a4777f2` (docs); `main` ahead of `origin/main` by 2; NOT pushed.
+
+## D2. B2a final release audit (2026-11-23 07:35–07:43 UTC, read-only; nothing changed in code)
+- **Commits:** `922b956` (9 files: 6 new modules, outcomes.mts, guard.mts, 1 test) and `a4777f2` (3 docs) contain only
+  B2a; personal identity; branch `main`, 2 ahead / 0 behind `origin/main` (`c202517`); only this file uncommitted.
+- **Validation:** ledger 383/383, app 302/302, research 30/30, both typechecks, guard 0 violations (eligible 19 + 20
+  Nov, excluded 18 Nov) — all exit 0; rule `mv1-8ecef864`; baseline `568512f8…5795` byte-identical; `od1.json` /
+  `holdout.json` hashes unchanged; no change under `public/`, `src/`, `.github/`; 0 outcome receipts tracked.
+- **Bypass tests** (scratchpad script, fabricated 2030 inputs, nothing written to the repo). BLOCKED: `planOutcomes`
+  and `runOutcomePipeline` for pre-2031 dates even with a spoofed env; the pipeline under `GITHUB_ACTIONS=true` +
+  public repo; store roots inside the repo (symlink, `..`, relative); sink traversal; `requireUnblinded`. NOT
+  BLOCKED (findings): F1 `buildDueRecord` with a forged due item, `buildOutcomeRecord` (B1), `FsPrivateStore.putRecord`
+  and `FsPublicReceiptSink.put` accept pre-2031 dates — the lock sits only at the entry points; F2 the execution-
+  context check trusts the injected env (passes with the flag set and `GITHUB_ACTIONS` unset/false) — a tripwire,
+  not a boundary; F3 the leak scan covers `public/` only, while anything committed anywhere in a public repo is public.
+  No workflow, CLI, credential or activation exists, so none is reachable by automation.
+- **Recommended hardening before push (needs approval; one small local commit):** move the synthetic lock into
+  `outcomes.mts` and call it in `buildOutcomeRecord`, `buildDueRecord`, `putRecord`, `appendCorrection`, sink `put`;
+  for non-synthetic dates also refuse when the REAL `process.env.GITHUB_REPOSITORY` is the public repo; extend the
+  leak scan to every JSON file in the repository (skip `.git`, `node_modules`, `dist`); add bypass tests.
+- **GitHub App (least privilege):** permissions cannot be path-scoped: Contents write can change any file/branch of
+  the installed repo. Recommend: install only on the public repo; Contents RW + Metadata R; public `main` ruleset
+  (block force-push, restrict deletions, App NOT a bypass actor); add a restrict-file-paths push rule only if GitHub
+  offers it for this repo type (docs unclear; verify in settings); key only in the private repo; guard as detection.
+- **Contents API (docs, not exercised):** PUT without `sha` creates; `sha` is required to update, so a missing `sha`
+  on an existing file fails (treat as exists -> GET, byte-compare: identical = existing, different = hard conflict);
+  parallel writes conflict (409) -> serialise, retry with backoff, then re-GET; rulesets apply to the App unless it is
+  a bypass actor; commits by an App token trigger push workflows (guard/governance/deploy per receipt) — batch later.
+- **Private repo:** needs GitHub Pro (personal account) for rulesets AND for environments/environment secrets in a
+  private repo; owner can still edit rulesets or delete the repo (restorable for a limited period). Git history alone
+  is not sufficient: keep an owner-held offline backup (`git bundle`) and consider HMAC-derived salts (secret master
+  key, backed up offline) so a lost record can be recomputed from the pinned public data and still match its receipt.
+- **Production (read-only 07:43 UTC):** no data run since the B1 push (weekend; next 23 Nov 14:30 UTC, PENDING);
+  push runs green; watchdog 00:23 success; latest capture 20 Nov (receipt `live`); R6: 18 Nov anomaly retained
+  (retention-window-only), 19/20 Nov `existing`, no new anomaly.
+- **Readiness:** B2a cannot generate live outcomes through any automated path; publishing is low-risk. Recommended
+  order: approve hardening -> re-validate -> push 3 commits.
+
+## D3. B2a security hardening (2026-11-23 09:58–10:09 UTC; owner-approved)
+- **F1 fixed:** the `SYNTHETIC_ONLY` lock moved into the engine file `outcomes.mts` and is now enforced in every
+  builder, store and publisher: `buildOutcomeRecord` (sessionDate + window), `buildOutcomeReceipt` /
+  `receiptForStoredRecord`, `buildDueRecord`, `evidenceFor`, `planOutcomes`, `FsPrivateStore.putRecord` /
+  `appendCorrection`, `correctionReceiptOf`, `FsPublicReceiptSink.put` (path must be a receipt path; content must be
+  for the same session). Invalid dates are refused too. The pure OD1 maths in `od1.mts` is deliberately NOT locked
+  (it is the research engine and a function of public data); docs no longer claim arbitrary computation is impossible.
+- **F2 fixed:** context check is documented as a tripwire. It now refuses the public repository whenever it is named
+  (any case/whitespace, any `GITHUB_ACTIONS` value), and once `SYNTHETIC_ONLY` is off an injected env is ignored in
+  favour of `process.env` (`effectiveEnv`). Structural restrictions are tested: no workflow/npm script/entry script
+  calls the pipeline, no App token or publisher secret referenced, no activation record or `outcomesFrom`.
+- **F3 fixed:** `scanRepositoryForOutcomeLeaks` (used by the guard for the real ledger) scans every staged blob in the
+  Git index plus every tracked or new non-ignored file, by content (gzip, JSON, JSONL, text), never by extension; it
+  never prints matched values. Real repository: 0 findings (~0.3 s). Limitation: detection in the guard, not a
+  pre-commit block; `.gitignore`d files are not scanned. Deliberately NOT added to `npm test` (that gates data updates).
+- **Tests:** 9 new (ledger 383 -> 392). A mutation run with the lock disabled fails them, as expected.
+- **Engine version:** `od1e-9f6e9c59` -> `od1e-2e4de377` (engine files changed; no outcome exists, nothing affected).
+- **Validation (10:09 UTC):** ledger 392/392, app 302/302, research 30/30, both typechecks, guard 0 violations (19 + 20
+  Nov eligible, 18 Nov excluded) — all exit 0; baseline JSON byte-identical (`568512f8…5795`); rule `mv1-8ecef864`;
+  `od1.json` `916b6636…1fd8` and `holdout.json` `ea9ecc1d…6e58` unchanged; `od1.mts`, `protocol.mts`, `public/`,
+  `src/`, `.github/` unchanged; 0 outcome receipts tracked; no live outcome computed. `origin/main` had not moved.
 
 ## E. Completed milestones
 | What | Commit / evidence |
@@ -112,7 +171,7 @@
 | 18 Nov holdout eligibility | EXCLUDED permanently (owner decision 2026-11-20; no restoration mechanism) |
 | 19 Nov holdout eligibility | ELIGIBLE so far; stays eligible if the fix is live before tonight's first run |
 | Phase B1: shared OD1 engine + outcome schema | PUBLISHED `c202517` (2026-11-23 06:21 UTC) |
-| Phase B2a: private pipeline foundation (local, synthetic) | DONE, committed locally, NOT pushed |
+| Phase B2a: private pipeline foundation (local, synthetic) + hardening | DONE; push approved 2026-11-23 (see section C/I for push evidence) |
 | Phase B2b: provisioning + activation | NOT APPROVED (needs private repo, GitHub App, activation record, `SYNTHETIC_ONLY` off) |
 | First scheduled data run on B1 code | PENDING — 23 Nov 14:30 UTC; check after ~15:30 UTC |
 | Phase B owner decisions | DECIDED 2026-11-23: private repo owns calculation/records; GitHub App; h1,2,5,10 (headline 1,5); receipts under `live/outcome-receipts/`; excluded sessions not processed; 19 Nov+ catch-up only with later approval; corrections append-only, originals authoritative; issues without outcome info. OPEN for B2b: GitHub Pro; repo/App names; activation date; catch-up; correction analysis policy; public vs private alert issues |
@@ -137,6 +196,9 @@ Approved now (scope exactly as stated):
 - 2026-11-23: push of B1 `01a4e5c` + `c202517` (USED 06:21 UTC); read-only B2 architecture/security design (done).
 - 2026-11-23: Phase B2a LOCAL implementation + local commits after full validation (done). NOT approved: push,
   workflow dispatch, issue changes, private repo, App, credentials, secrets, infrastructure, live outcomes.
+- 2026-11-23: B2a security hardening (F1–F3), regression tests, a separate local commit, and ONE normal push of
+  `922b956`, `a4777f2` and the hardening commit after all gates pass. NOT approved: B2b provisioning, private repo,
+  App, credentials, secrets, infrastructure, live outcomes, workflow dispatch, issue changes.
 
 Not approved (each needs fresh, explicit approval):
 - Production prediction-rule or scoring changes; any change to the 22 rule-version hash files or `DEFAULT_SETTINGS`.
@@ -149,9 +211,11 @@ Standing rules: personal identity only (`Santhosh Ram V <santhoshramv@yahoo.com>
 validation; never claim success from a green workflow alone; never use data on/after 2026-11-18 for research.
 
 ## I. Next action
-Owner reviews B2a (local commits) and decides: (1) push B2a; (2) B2b provisioning (GitHub Pro, private repo + App per
-`OD1_PRIVATE_PIPELINE.md` §5 — owner-performed); (3) activation date and any 19 Nov+ catch-up. Routine: verify the
-23 Nov 14:30 UTC data run (first on B1 code) after ~15:30 UTC and the evening capture after ~01:30 UTC 24 Nov.
+Post-push verification of the B2a push (guard, governance, deploy), then routine: verify the 23 Nov 14:30 UTC data
+run (first on B1/B2a code) after ~15:30 UTC and the evening capture after ~01:30 UTC 24 Nov.
+Next milestone: B2b provisioning, only after owner decisions: GitHub Pro; private repo + App names; HMAC-derived
+salts + offline backup; activation date; 19 Nov+ catch-up; per-file vs batched receipt commits; private-only vs
+public code-only alert issues; correction analysis policy.
 
 ## J. References
 - Private outcome pipeline: `docs/design/OD1_PRIVATE_PIPELINE.md`

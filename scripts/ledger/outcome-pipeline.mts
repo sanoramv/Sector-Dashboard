@@ -13,23 +13,37 @@
  */
 import { sha256Canonical } from "./canonical.mts";
 import type { OutcomeRecord } from "./outcomes.mts";
-import { RunnerBlock, assertSyntheticSession, buildDueRecord, planOutcomes, type PlanStatus, type RunnerContext, type RunnerMarket, type RunnerSession } from "./outcome-runner.mts";
+import { RunnerBlock, SYNTHETIC_ONLY, assertSyntheticSession, buildDueRecord, planOutcomes, type PlanStatus, type RunnerContext, type RunnerMarket, type RunnerSession } from "./outcome-runner.mts";
 import { OUTCOME_RECEIPTS_DIR, outcomeReceiptRel, receiptForStoredRecord, receiptLeakProblems, receiptText, type PublicReceiptSink } from "./outcome-receipts.mts";
 import { parseStorageKey, type PrivateStore } from "./private-store.mts";
 
 export const PUBLIC_REPOSITORY = "sanoramv/Sector-Dashboard";
 
 /**
- * Protected calculations may run only in the private outcome repository's workflow: the caller must declare that
- * context, and inside GitHub Actions the repository must be named and must not be the public repository.
+ * Execution-context TRIPWIRE (defense in depth, NOT authentication): environment variables can be set by anyone who
+ * runs the code, so this only catches accidental invocation. The real boundary is that no governed artifact can be
+ * built for a real date (SYNTHETIC_ONLY), no workflow or CLI calls the pipeline, no activation record exists and the
+ * public repository holds no credential for private storage (see docs/design/OD1_PRIVATE_PIPELINE.md §1a).
+ *
+ * The declared context must be the private outcome repository, and the public repository may never be named, whether
+ * or not GITHUB_ACTIONS is set.
  */
 export function assertProtectedExecutionContext(env: Record<string, string | undefined>): void {
   if (env.OD1_PROTECTED_CONTEXT !== "private-outcome-repository") throw new Error("protected OD1 outcomes may only be computed in the private outcome repository (OD1_PROTECTED_CONTEXT is not set)");
-  if (env.GITHUB_ACTIONS === "true") {
-    const repo = (env.GITHUB_REPOSITORY ?? "").toLowerCase();
+  const repo = (env.GITHUB_REPOSITORY ?? "").trim().toLowerCase();
+  if (repo === PUBLIC_REPOSITORY.toLowerCase()) throw new Error("protected OD1 outcomes are never computed in the public repository");
+  if (env.GITHUB_ACTIONS !== undefined && env.GITHUB_ACTIONS !== "") {
     if (!repo) throw new Error("GitHub Actions without GITHUB_REPOSITORY: refusing to compute protected outcomes");
-    if (repo === PUBLIC_REPOSITORY.toLowerCase()) throw new Error("protected OD1 outcomes are never computed in the public repository's Actions");
   }
+}
+
+/**
+ * The environment the context check uses. While SYNTHETIC_ONLY (tests), a caller-injected environment is allowed so the
+ * check itself can be tested. Once real dates are allowed (B2b), an injected environment is IGNORED and the real
+ * process environment is checked, so a caller cannot pass a forged one.
+ */
+export function effectiveEnv(injected: Record<string, string | undefined>, syntheticOnly: boolean = SYNTHETIC_ONLY): Record<string, string | undefined> {
+  return syntheticOnly ? injected : process.env;
 }
 
 export type AlertCode =
@@ -146,7 +160,7 @@ export async function reconcile(store: PrivateStore, sink: PublicReceiptSink, ke
 
 /** One pipeline run. Idempotent: any number of repeated or concurrent runs converge on the same records and receipts. */
 export async function runOutcomePipeline(sessions: RunnerSession[], market: RunnerMarket, ctx: Omit<RunnerContext, "stored">, deps: PipelineDeps): Promise<RunReport> {
-  assertProtectedExecutionContext(deps.env);
+  assertProtectedExecutionContext(effectiveEnv(deps.env));
   for (const s of sessions) assertSyntheticSession(s.daily.header.sessionDate);
   const report: RunReport = { ok: true, plan: {}, recordsCreated: [], recordsExisting: [], receiptsPublished: [], receiptsExisting: [], recovered: [], alerts: [] };
   const finish = () => ((report.ok = report.alerts.length === 0), report);

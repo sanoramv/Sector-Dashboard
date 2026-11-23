@@ -9,13 +9,15 @@
  * commitment and its time. Never classes, returns, flags, per-stock values, salts, unsalted outcome hashes or any
  * aggregate. Its time is the stored record's generatedAt, so every retry produces byte-identical receipts.
  */
-import { readFile } from "node:fs/promises";
+import { spawn } from "node:child_process";
+import { lstat, readFile, readdir } from "node:fs/promises";
+import { gunzipSync } from "node:zlib";
 import path from "node:path";
 import { canonicalize, sha256Hex } from "./canonical.mts";
 import { LEDGER_SCHEMA_VERSION } from "./constants.mts";
 import { createOnly } from "./files.mts";
 import { OD1_CLASSES, OD1_STORED_HORIZONS } from "./od1.mts";
-import { CORRECTION_REASONS, OUTCOME_CORRECTION_KIND, OUTCOME_KIND, buildOutcomeReceipt, validateOutcomeReceipt, type OutcomeCorrection, type OutcomeReceipt, type OutcomeRecord } from "./outcomes.mts";
+import { CORRECTION_REASONS, OUTCOME_CORRECTION_KIND, OUTCOME_KIND, assertSyntheticSession, buildOutcomeReceipt, validateOutcomeReceipt, type OutcomeCorrection, type OutcomeReceipt, type OutcomeRecord } from "./outcomes.mts";
 import { listTree, safeResolve } from "./safe-path.mts";
 
 export const OUTCOME_RECEIPTS_DIR = "live/outcome-receipts";
@@ -40,7 +42,7 @@ export interface CorrectionReceipt {
   recordedAt: string;
 }
 /** Public form of a private correction: the chain link and reason CODE only (the free-text reason stays private). */
-export const correctionReceiptOf = (c: OutcomeCorrection): CorrectionReceipt => ({ kind: CORRECTION_RECEIPT_KIND, schemaVersion: LEDGER_SCHEMA_VERSION, sessionDate: c.sessionDate, ruleVersion: c.ruleVersion, horizon: c.horizon, sequence: c.sequence, supersedes: c.supersedes, replacement: c.replacement, reasonCode: c.reasonCode, recordedAt: c.recordedAt });
+export const correctionReceiptOf = (c: OutcomeCorrection): CorrectionReceipt => (assertSyntheticSession(c?.sessionDate), { kind: CORRECTION_RECEIPT_KIND, schemaVersion: LEDGER_SCHEMA_VERSION, sessionDate: c.sessionDate, ruleVersion: c.ruleVersion, horizon: c.horizon, sequence: c.sequence, supersedes: c.supersedes, replacement: c.replacement, reasonCode: c.reasonCode, recordedAt: c.recordedAt });
 
 const HEX64 = /^[0-9a-f]{64}$/;
 export function validateCorrectionReceipt(o: any): string[] {
@@ -101,6 +103,16 @@ export class FsPublicReceiptSink implements PublicReceiptSink {
   }
   async put(rel: string, content: string): Promise<PublishResult> {
     if (!rel.startsWith(`${OUTCOME_RECEIPTS_DIR}/`)) throw new Error(`receipts may only be written under ${OUTCOME_RECEIPTS_DIR}/`);
+    const m = rel.match(FILE);
+    if (!m) throw new Error(`${rel} is not a receipt path (h<h>.json or h<h>.c<n>.json)`);
+    assertSyntheticSession(m[2]);
+    let o: { sessionDate?: unknown };
+    try {
+      o = JSON.parse(content);
+    } catch {
+      throw new Error(`${rel}: receipt content is not JSON`);
+    }
+    if (o?.sessionDate !== m[2]) throw new Error(`${rel}: receipt content is for a different session`);
     const res = await createOnly(await safeResolve(this.ledgerRoot, rel, { create: true }), content);
     return res.created ? "created" : res.existing === "identical" ? "existing" : "conflict";
   }
@@ -188,24 +200,170 @@ export async function validateOutcomeReceiptTree(ledgerRoot: string, ctx: { defi
   return v;
 }
 
-/** Markers that only PRIVATE files contain. Receipts never contain them (their kinds differ in the closing quote). */
-const PRIVATE_MARKERS = [`"${OUTCOME_KIND}"`, `"${OUTCOME_CORRECTION_KIND}"`, `"commitmentSalt"`, `"outcomesSha256"`];
+// ---------------------------------------------------------------------------------------------------------------------
+// Leak detection (hardened): content-based, extension-agnostic, repository-wide
+// ---------------------------------------------------------------------------------------------------------------------
+/** Cheap byte pre-filter: a file containing none of these cannot hold a protected artifact. Market data never does. */
+const PREFILTER = ["commitmentSalt", "outcomesSha256", "od1-outcomes", "od1-outcome-correction", "sigmaChanges"];
+/** In text that is not JSON (source code, docs, logs, half-written files): a key carrying a real 64-hex value, or a
+ *  protected kind used as a kind. Code such as `commitmentSalt: "9".repeat(64)` or `OUTCOME_KIND = "..."` is not hit. */
+const TEXT_PATTERNS: Array<[string, RegExp]> = [
+  ["salt value", /["']?commitmentSalt["']?\s*[:=]\s*["'][0-9a-f]{64}["']/],
+  ["unsalted outcomes hash", /["']?outcomesSha256["']?\s*[:=]\s*["'][0-9a-f]{64}["']/],
+  ["protected record kind", /["']kind["']\s*:\s*["']momentum-ledger\.od1-outcomes["']/],
+  ["private correction kind", /["']kind["']\s*:\s*["']momentum-ledger\.od1-outcome-correction["']/],
+];
+const PROTECTED_KINDS = new Set<string>([OUTCOME_KIND, OUTCOME_CORRECTION_KIND]);
 
-/** Scans directories (e.g. public/) for any protected outcome record, private correction, salt or unsalted hash. */
+/** Walks parsed JSON for anything only a PRIVATE artifact contains. Public receipts and prediction files never match. */
+function protectedInJson(v: unknown): string | null {
+  const stack: unknown[] = [v];
+  while (stack.length) {
+    const x = stack.pop();
+    if (!x || typeof x !== "object") continue;
+    if (Array.isArray(x)) {
+      stack.push(...x);
+      continue;
+    }
+    const o = x as Record<string, unknown>;
+    if (typeof o.kind === "string" && PROTECTED_KINDS.has(o.kind)) return `protected kind ${o.kind}`;
+    if ("commitmentSalt" in o) return "commitmentSalt";
+    if ("outcomesSha256" in o) return "outcomesSha256";
+    if (("predictionId" in o && o.outcome && typeof o.outcome === "object") || ("sigmaChanges" in o && "bars" in o)) return "per-prediction outcome entry";
+    stack.push(...Object.values(o));
+  }
+  return null;
+}
+
+/**
+ * Whether a file's BYTES hold protected outcome data (a record, a private correction, a salt or an unsalted outcomes
+ * hash), whatever its name or extension: gzip is decompressed, then JSON, JSONL and plain text are each checked.
+ * Returns a short reason (never the matched value), or null.
+ */
+export function protectedContentReason(buf: Buffer, depth = 0): string | null {
+  if (buf.length >= 2 && buf[0] === 0x1f && buf[1] === 0x8b && depth < 2) {
+    try {
+      return protectedContentReason(gunzipSync(buf, { maxOutputLength: 512 * 1024 * 1024 }), depth + 1);
+    } catch {
+      return null;
+    }
+  }
+  if (!PREFILTER.some((m) => buf.includes(m))) return null;
+  const text = buf.toString("utf-8");
+  try {
+    return protectedInJson(JSON.parse(text));
+  } catch {
+    /* not one JSON document */
+  }
+  const lines = text.split(/\r?\n/).filter((l) => l.trim());
+  for (const l of lines) {
+    try {
+      const r = protectedInJson(JSON.parse(l));
+      if (r) return r;
+    } catch {
+      /* not JSONL */
+    }
+  }
+  for (const [name, re] of TEXT_PATTERNS) if (re.test(text)) return name;
+  return null;
+}
+
+const SKIP_DIRS = new Set([".git", "node_modules", "dist"]);
+
+async function walkFiles(root: string, rel = ""): Promise<string[]> {
+  const out: string[] = [];
+  for (const e of await readdir(path.join(root, rel), { withFileTypes: true })) {
+    const r = rel ? `${rel}/${e.name}` : e.name;
+    if (e.isDirectory()) {
+      if (!SKIP_DIRS.has(e.name)) out.push(...(await walkFiles(root, r)));
+    } else if (e.isFile()) out.push(r);
+  }
+  return out;
+}
+
+async function scanFile(abs: string, shown: string, v: ReceiptViolation[]): Promise<void> {
+  let buf: Buffer;
+  try {
+    const st = await lstat(abs);
+    if (!st.isFile()) return; // links are not followed; git stores their target text, which is checked via the index
+    buf = await readFile(abs);
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return; // staged deletion or racing temp file
+    v.push({ path: shown, detail: `cannot be read for the protected-outcome scan (${(err as NodeJS.ErrnoException).code ?? "error"})` });
+    return;
+  }
+  const reason = protectedContentReason(buf);
+  if (reason) v.push({ path: shown, detail: `protected outcome data (${reason}) found in a publishable file` });
+}
+
+/** Scans every file under the given directories (link-free walk; .git, node_modules and dist are skipped). */
 export async function scanForOutcomeLeaks(dirs: string[]): Promise<ReceiptViolation[]> {
   const v: ReceiptViolation[] = [];
   for (const dir of dirs) {
     let files: string[];
     try {
-      files = await listTree(dir);
+      files = await walkFiles(dir);
     } catch (err) {
       v.push({ path: dir, detail: `cannot scan for protected outcome data: ${String(err)}` });
       continue;
     }
-    for (const f of files) {
-      const text = await readFile(path.join(dir, f), "utf-8");
-      for (const mk of PRIVATE_MARKERS) if (text.includes(mk)) v.push({ path: path.join(dir, f), detail: `protected outcome data (${mk}) found in a public path` });
+    for (const f of files) await scanFile(path.join(dir, f), path.join(dir, f), v);
+  }
+  return v;
+}
+
+/** Runs git and returns stdout as bytes (stdin optional). */
+function gitBytes(cwd: string, args: string[], input?: string): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const p = spawn("git", args, { cwd, stdio: ["pipe", "pipe", "pipe"] });
+    const out: Buffer[] = [];
+    let err = "";
+    p.stdout.on("data", (d: Buffer) => out.push(d));
+    p.stderr.on("data", (d: Buffer) => (err += d.toString()));
+    p.on("error", reject);
+    p.on("close", (code) => (code === 0 ? resolve(Buffer.concat(out)) : reject(new Error(`git ${args[0]} exited ${code}: ${err.slice(0, 200)}`))));
+    p.stdin.end(input ?? "");
+  });
+}
+
+/**
+ * Repository-wide scan of everything that is, or could be, published: every file in the INDEX (tracked and staged,
+ * read from the staged blob, so a staged leak is caught even if the working copy was changed back), plus every
+ * working-tree file that is tracked or untracked-but-not-ignored (new, renamed or moved files). Paths outside the
+ * receipt directory are not trusted.
+ */
+export async function scanRepositoryForOutcomeLeaks(repoRoot: string): Promise<ReceiptViolation[]> {
+  const v: ReceiptViolation[] = [];
+  const git = (args: string[], input?: string) => gitBytes(repoRoot, args, input);
+  let staged: Array<{ blob: string; file: string }>;
+  let work: string[];
+  try {
+    staged = (await git(["ls-files", "-s", "-z"]))
+      .toString("utf-8")
+      .split("\0")
+      .filter(Boolean)
+      .map((l) => {
+        const [meta, file] = l.split("\t");
+        return { blob: meta.split(" ")[1], file };
+      });
+    work = (await git(["ls-files", "-z", "--cached", "--others", "--exclude-standard"])).toString("utf-8").split("\0").filter(Boolean);
+  } catch (err) {
+    return [{ path: repoRoot, detail: `cannot list repository files for the protected-outcome scan: ${String(err).slice(0, 120)}` }];
+  }
+  // staged blobs, one git process: "<sha> blob <size>\n<content>\n" per object
+  if (staged.length) {
+    const out = await git(["cat-file", "--batch"], staged.map((s) => s.blob).join("\n") + "\n");
+    let at = 0;
+    for (const s of staged) {
+      const nl = out.indexOf(0x0a, at);
+      const [, type, size] = out.subarray(at, nl).toString("utf-8").split(" ");
+      const n = type === "missing" ? 0 : Number(size);
+      const body = out.subarray(nl + 1, nl + 1 + n);
+      at = nl + 1 + n + (type === "missing" ? 0 : 1);
+      const reason = type === "blob" ? protectedContentReason(Buffer.from(body)) : null;
+      if (reason) v.push({ path: `${s.file} (staged)`, detail: `protected outcome data (${reason}) found in a publishable file` });
     }
   }
+  for (const f of work) await scanFile(path.join(repoRoot, f), f, v);
   return v;
 }

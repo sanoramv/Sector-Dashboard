@@ -1,6 +1,6 @@
 # OD1 private outcome pipeline: architecture and provisioning (Phase B2a)
 
-**Status (2026-11-23):** Phase B2a is a local foundation only. Nothing described as "B2b" exists yet: no private repository, GitHub App, secret, workflow, activation record or live outcome. The code refuses real dates (`SYNTHETIC_ONLY`) and refuses to run outside a declared private context.
+**Status (2026-11-23):** Phase B2a is a local foundation only. Nothing described as "B2b" exists yet: no private repository, GitHub App, secret, workflow, activation record or live outcome. Every function that builds, stores or publishes a governed outcome artifact refuses real dates (`SYNTHETIC_ONLY`, see §1a). The environment check is a tripwire, not authentication.
 
 ## 1. Trust boundaries
 
@@ -21,8 +21,21 @@ What may cross the boundary:
 A public workflow can never receive protected values:
 
 - No public workflow calls the pipeline (tested).
-- The pipeline throws when `GITHUB_REPOSITORY` is the public repository or when `OD1_PROTECTED_CONTEXT` is not declared.
+- The pipeline throws when `GITHUB_REPOSITORY` is the public repository or when `OD1_PROTECTED_CONTEXT` is not declared. This is a tripwire against accidents only (see §1a).
 - The public repository holds no credential that can read the private one.
+
+### 1a. The actual security boundary (B2a security hardening, 2026-11-23)
+
+What is enforced in code and tested (`tests/ledger/outcome-pipeline.test.ts`, "B2a hardening"):
+
+| Layer | What it does | What it does NOT do |
+|---|---|---|
+| `SYNTHETIC_ONLY` lock in `outcomes.mts` | `buildOutcomeRecord`, `buildOutcomeReceipt`/`receiptForStoredRecord`, `buildDueRecord`, `evidenceFor`, `planOutcomes`, `FsPrivateStore.putRecord`/`appendCorrection`, `correctionReceiptOf`, `FsPublicReceiptSink.put` (path and content) and the input loaders all refuse any session before 2031 | It does not stop anyone from running the pure OD1 mathematics (`od1.mts`) on public data. That is possible by design: outcomes are a function of public prices, and the historical research baseline uses the same engine |
+| Execution-context check | Refuses without `OD1_PROTECTED_CONTEXT`, and refuses whenever the public repository is named (any case or `GITHUB_ACTIONS` value). After activation, an injected environment is ignored and the real process environment is checked (`effectiveEnv`) | Environment variables can be set by whoever runs the code, so it is not authentication |
+| Structural absence (tested) | No workflow, npm script or entry-point script calls the pipeline; no activation record or `outcomesFrom` exists; no workflow references an App token or publisher secret; the repository's own `public/data` is refused as runner input | — |
+| Repository-wide leak scan (guard) | Scans every file in the Git index (staged blobs) and every tracked or new, non-ignored working file, by content, not by name or extension (gzip, JSON, JSONL and plain text). It flags records, private corrections, salts, unsalted outcome hashes and per-prediction outcome entries; it never prints the matched value | It is detection, not prevention: it runs in the guard workflow (on ledger and script pushes, and after every data update) and in `npm run ledger:guard`, not as a pre-commit hook. Files matched by `.gitignore` are not scanned, because they are not committed |
+
+The governed boundary is therefore: **this project cannot build, store or publish an outcome record or receipt for a real session until a reviewed, owner-approved commit sets `SYNTHETIC_ONLY = false`, and the B2b publisher must reuse these same functions.** The seal on analysis (`requireUnblinded`, `holdout.json`) is unchanged.
 
 Confidentiality caveat: OD1 outcomes are deterministic functions of public market data, so anyone can compute them independently. The seal protects the **process**: nothing about outcomes is published, displayed or analysed by this project before unblinding. The salted commitment also means a receipt cannot be used to confirm a guess.
 
@@ -118,7 +131,8 @@ In B2b, the private workflow uses one concurrency group, `od1-outcomes`, with `c
    - Its engine version must equal the version recorded by the public tests.
 6. **Activation, owner-approved and create-only:**
    - A public activation record with `outcomesFrom`.
-   - A reviewed commit that sets `SYNTHETIC_ONLY = false`.
+   - A reviewed commit that sets `SYNTHETIC_ONLY = false` in `scripts/ledger/outcomes.mts` (this changes the engine version).
+   - The B2b receipt publisher must build receipts only through `receiptForStoredRecord` and check paths like `FsPublicReceiptSink.put`.
    - Any catch-up for sessions from 19 Nov is a separate, explicit approval.
 
 ## 6. Disabled example workflow (documentation only; NOT installed anywhere)

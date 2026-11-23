@@ -5,17 +5,18 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile } from "node:fs/promises";
+import { gzipSync } from "node:zlib";
 import os from "node:os";
 import path from "node:path";
 import { sha256Canonical, sha256Hex } from "../../scripts/ledger/canonical.mts";
 import { od1DefinitionsSha256 } from "../../scripts/ledger/protocol.mts";
 import { OD1_CLASSES, od1Epsilon, od1Measure, od1SigmaWindow, populationSd } from "../../scripts/ledger/od1.mts";
-import { ENGINE_FILES, OUTCOME_CORRECTION_KIND, commitmentOf, computeEngine, requireUnblinded, verifyReceiptAgainstRecord, type OutcomeCorrection, type OutcomeRecord } from "../../scripts/ledger/outcomes.mts";
-import { SYNTHETIC_FROM, assertSyntheticSession, buildDueRecord, planOutcomes, type RunnerContext, type RunnerMarket } from "../../scripts/ledger/outcome-runner.mts";
+import { ENGINE_FILES, OUTCOME_CORRECTION_KIND, buildOutcomeReceipt, buildOutcomeRecord, commitmentOf, computeEngine, requireUnblinded, verifyReceiptAgainstRecord, type OutcomeCorrection, type OutcomeRecord } from "../../scripts/ledger/outcomes.mts";
+import { SYNTHETIC_FROM, SYNTHETIC_ONLY, assertSyntheticSession, buildDueRecord, evidenceFor, planOutcomes, type RunnerContext, type RunnerMarket } from "../../scripts/ledger/outcome-runner.mts";
 import { FsPrivateStore, assertSalt, parseStorageKey, storedText, type PrivateStore } from "../../scripts/ledger/private-store.mts";
-import { FsPublicReceiptSink, correctionReceiptOf, correctionReceiptRel, outcomeReceiptRel, receiptForStoredRecord, receiptLeakProblems, receiptText, scanForOutcomeLeaks, validateOutcomeReceiptTree, type PublicReceiptSink } from "../../scripts/ledger/outcome-receipts.mts";
-import { ALERT_TEXT, alertIssueText, assertProtectedExecutionContext, runOutcomePipeline, type PipelineDeps } from "../../scripts/ledger/outcome-pipeline.mts";
+import { FsPublicReceiptSink, correctionReceiptOf, correctionReceiptRel, outcomeReceiptRel, receiptForStoredRecord, receiptLeakProblems, receiptText, protectedContentReason, scanForOutcomeLeaks, scanRepositoryForOutcomeLeaks, validateOutcomeReceiptTree, type PublicReceiptSink } from "../../scripts/ledger/outcome-receipts.mts";
+import { ALERT_TEXT, alertIssueText, assertProtectedExecutionContext, effectiveEnv, runOutcomePipeline, type PipelineDeps } from "../../scripts/ledger/outcome-pipeline.mts";
 import { loadRunnerMarket, loadRunnerSessions } from "../../scripts/ledger/outcome-inputs.mts";
 import { checkOutcomeConfidentiality } from "../../scripts/ledger/guard.mts";
 import { UnsafePathError, relativeSegments } from "../../scripts/ledger/safe-path.mts";
@@ -684,5 +685,176 @@ describe("B2a governance: public tree, sealed holdout, no leakage, workflows unt
     for (const f of execFileSync("git", ["ls-files", ".github/workflows"]).toString().split("\n").filter(Boolean)) expect(await readFile(f, "utf-8")).not.toMatch(/outcome-(pipeline|runner|inputs)|private-store|OD1_PROTECTED_CONTEXT/);
     expect(ENGINE_FILES).toContain("scripts/ledger/outcome-runner.mts");
     expect(ENGINE_FILES).toContain("src/lib/calculations/validation.ts");
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// B2a security hardening (F1, F2, F3). Every "real" date below is only used to prove that it is REFUSED.
+// ---------------------------------------------------------------------------------------------------------------------
+const REAL = "2026-11-19"; // a real live session: nothing may be built, stored or published for it
+const PRE = "2030-12-31"; // the last pre-synthetic day
+
+async function validRecord() {
+  const s = await setup();
+  await run(s);
+  return { s, rec: (await s.store.getRecord(`od1/${RV}/${T1}/h1`))! };
+}
+const redate = (rec: OutcomeRecord, d: string): OutcomeRecord => {
+  const c = structuredClone(rec);
+  c.header.sessionDate = d;
+  return c;
+};
+async function filesUnder(dir: string): Promise<string[]> {
+  const out: string[] = [];
+  for (const e of await readdir(dir, { withFileTypes: true, recursive: true })) if (e.isFile()) out.push(path.join(e.parentPath, e.name));
+  return out;
+}
+
+describe("B2a hardening F1: every artifact builder, store and publisher refuses real dates", () => {
+  it("the lock is on and lives in the engine file outcomes.mts", async () => {
+    expect(SYNTHETIC_ONLY).toBe(true);
+    expect(await readFile("scripts/ledger/outcomes.mts", "utf-8")).toContain("export const SYNTHETIC_ONLY = true;");
+    for (const d of [REAL, PRE, "2026-11-23", "not-a-date", "2031-02-30", ""]) expect(() => assertSyntheticSession(d)).toThrow("synthetic-only");
+    expect(() => assertSyntheticSession(undefined)).toThrow("synthetic-only");
+  });
+
+  it("direct lower-level calls with real or pre-2031 dates produce no record, receipt or correction", async () => {
+    const { s, rec } = await validRecord();
+    const session = s.sessions.find((x) => x.daily.header.sessionDate === T1)!;
+    for (const d of [REAL, PRE]) {
+      // record builders (B1 engine and B2a runner), with otherwise valid inputs
+      const daily = structuredClone(session.daily);
+      daily.header.sessionDate = d;
+      expect(() => buildOutcomeRecord({ daily, sessions: [T1] } as any)).toThrow("synthetic-only");
+      expect(() => buildOutcomeRecord({ daily: session.daily, sessions: [d] } as any)).toThrow("synthetic-only");
+      const item = { key: `od1/${RV}/${d}/h1`, sessionDate: d, horizon: 1, headline: true, status: "due" as const, reason: "forged", sessions: rec.header.sessions };
+      expect(() => buildDueRecord(item, { ...session, daily }, s.market, { ...s.ctx, stored: new Set() })).toThrow("synthetic-only");
+      expect(() => buildDueRecord(item, session, s.market, { ...s.ctx, stored: new Set() })).toThrow("synthetic-only");
+      expect(() => evidenceFor(s.market, [], item.key, d, rec.header.sessions, session.daily.predictions[0])).toThrow("synthetic-only");
+      // receipts
+      expect(() => buildOutcomeReceipt(redate(rec, d), rec.header.generatedAt)).toThrow("synthetic-only");
+      expect(() => receiptForStoredRecord(redate(rec, d))).toThrow("synthetic-only");
+      expect(() => correctionReceiptOf({ sessionDate: d } as OutcomeCorrection)).toThrow("synthetic-only");
+      // private store (fresh, empty)
+      const root = await tmp("private-f1");
+      const store = await FsPrivateStore.open(root, { repoRoot: process.cwd(), definitionsSha256: DEFS });
+      await expect(store.putRecord(redate(rec, d))).rejects.toThrow("synthetic-only");
+      await expect(store.appendCorrection(`od1/${RV}/${d}/h1`, { correction: { sessionDate: d } as OutcomeCorrection, replacement: redate(rec, d) })).rejects.toThrow("synthetic-only");
+      await expect(s.store.appendCorrection(`od1/${RV}/${T1}/h1`, { correction: { sessionDate: d } as OutcomeCorrection, replacement: rec })).rejects.toThrow("synthetic-only");
+      expect(await filesUnder(root)).toEqual([]);
+      // public sink: by path, and content for a different session than the path
+      const good = receiptText(receiptForStoredRecord(rec));
+      await expect(s.sink.put(outcomeReceiptRel(RV, d, 1), good.replace(new RegExp(T1, "g"), d))).rejects.toThrow("synthetic-only");
+      await expect(s.sink.put(correctionReceiptRel(RV, d, 1, 1), "{}")).rejects.toThrow("synthetic-only");
+    }
+    await expect(s.sink.put(outcomeReceiptRel(RV, T2, 2), good2(rec))).rejects.toThrow("different session");
+    await expect(s.sink.put(`live/outcome-receipts/${RV}/${T1}/notes.json`, "{}")).rejects.toThrow("not a receipt path");
+    // nothing dated before 2031 exists anywhere in the synthetic stores
+    for (const f of [...(await filesUnder(s.storeRoot)), ...(await filesUnder(path.join(s.ledger, "live", "outcome-receipts")))]) expect(f).not.toMatch(/20(2\d|30)-\d\d-\d\d/);
+  });
+
+  it("the full pipeline with a perfectly spoofed private context still refuses real sessions", async () => {
+    const s = await setup();
+    const real = s.sessions.map((x) => ({ ...x, daily: { ...x.daily, header: { ...x.daily.header, sessionDate: REAL } } }));
+    await expect(runOutcomePipeline(real, s.market, s.ctx, s.deps)).rejects.toThrow("synthetic-only");
+    expect(await filesUnder(s.storeRoot)).toEqual([]);
+  });
+});
+const good2 = (rec: OutcomeRecord) => receiptText(receiptForStoredRecord(rec)); // a T1 receipt offered under a T2 path
+
+describe("B2a hardening F2: the environment check is a tripwire; the real boundary is structural", () => {
+  it("environment manipulation: the public repository is refused however it is presented", () => {
+    for (const GITHUB_ACTIONS of [undefined, "", "false", "true", "1"])
+      for (const GITHUB_REPOSITORY of ["sanoramv/Sector-Dashboard", "SANORAMV/SECTOR-DASHBOARD", " sanoramv/sector-dashboard "])
+        expect(() => assertProtectedExecutionContext({ OD1_PROTECTED_CONTEXT: "private-outcome-repository", GITHUB_ACTIONS, GITHUB_REPOSITORY })).toThrow("public repository");
+    expect(() => assertProtectedExecutionContext({ OD1_PROTECTED_CONTEXT: "private-outcome-repository", GITHUB_ACTIONS: "1" })).toThrow("GITHUB_REPOSITORY");
+    for (const flag of [undefined, "", "true", "PRIVATE-OUTCOME-REPOSITORY", "private-outcome-repository "]) expect(() => assertProtectedExecutionContext({ ...ENV, OD1_PROTECTED_CONTEXT: flag })).toThrow("OD1_PROTECTED_CONTEXT");
+  });
+
+  it("once real dates are allowed, an injected environment is ignored in favour of the real process environment", () => {
+    expect(effectiveEnv(ENV, true)).toBe(ENV);
+    expect(effectiveEnv(ENV, false)).toBe(process.env);
+    expect(process.env.OD1_PROTECTED_CONTEXT).toBeUndefined(); // this (public) test process never declares the context
+    expect(() => assertProtectedExecutionContext(effectiveEnv(ENV, false))).toThrow();
+  });
+
+  it("independent restrictions: no workflow, CLI, activation record, credential or real-data path for outcomes", async () => {
+    const tracked = execFileSync("git", ["ls-files"]).toString().split("\n").filter(Boolean);
+    for (const f of tracked.filter((f) => f.startsWith(".github/"))) expect(await readFile(f, "utf-8")).not.toMatch(/outcome-(pipeline|runner|inputs|receipts)|private-store|OD1_PROTECTED_CONTEXT|OD1_PUBLISHER|create-github-app-token|od1-run|od1-publish/);
+    const pkg = JSON.parse(await readFile("package.json", "utf-8"));
+    expect(JSON.stringify(pkg.scripts)).not.toMatch(/outcome-|private-store|od1-/);
+    // only the ledger modules themselves and tests import the pipeline pieces: no entry-point script exists
+    for (const f of tracked.filter((f) => /\.(m?ts|tsx?|m?js)$/.test(f) && !f.startsWith("tests/") && !f.startsWith("scripts/ledger/")))
+      expect(await readFile(f, "utf-8"), f).not.toMatch(/outcome-(pipeline|inputs|runner)|private-store/);
+    expect(tracked.filter((f) => /^scripts\/(od1|outcome)/.test(f))).toEqual([]);
+    // no activation record and no outcome receipt in the public ledger
+    expect(tracked.filter((f) => f.startsWith("public/") && /activation|outcome/i.test(f))).toEqual([]);
+    for (const f of tracked.filter((f) => f.startsWith("public/data/ledger/"))) expect(await readFile(f, "utf-8")).not.toContain("outcomesFrom");
+  });
+});
+
+describe("B2a hardening F3: repository-wide, content-based leak detection", () => {
+  async function repo() {
+    const root = await tmp("leakrepo");
+    execFileSync("git", ["init", "-q"], { cwd: root });
+    const put = async (rel: string, content: string | Buffer) => {
+      await mkdir(path.dirname(path.join(root, rel)), { recursive: true });
+      await writeFile(path.join(root, rel), content);
+    };
+    return { root, put, add: (...f: string[]) => execFileSync("git", ["add", "--", ...f], { cwd: root }), scan: () => scanRepositoryForOutcomeLeaks(root) };
+  }
+
+  it("legitimate public files pass: market data, prediction records, prediction receipts, valid outcome receipts, the real repository", async () => {
+    const { s, rec } = await validRecord();
+    const r = await repo();
+    await r.put("public/data/stocks.json", await readFile(path.join(s.data, "stocks.json")));
+    await r.put("public/data/index-series.json", await readFile(path.join(s.data, "index-series.json")));
+    for (const f of await filesUnder(s.ledger)) await r.put(path.join("public/data/ledger", path.relative(s.ledger, f)), await readFile(f));
+    await r.put("public/data/notes.jsonl", '{"a":1}\n{"b":2}\n');
+    r.add(".");
+    expect(await r.scan()).toEqual([]);
+    expect(protectedContentReason(Buffer.from(receiptText(receiptForStoredRecord(rec))))).toBeNull();
+    // the actual repository: every tracked, staged and new file, including all real prediction and market data
+    expect(await scanRepositoryForOutcomeLeaks(process.cwd())).toEqual([]);
+  });
+
+  it("finds protected artifacts anywhere: renamed, extensionless, nested, gzipped, JSONL, stripped, staged, untracked", async () => {
+    const { rec } = await validRecord();
+    const text = storedText(rec);
+    const corr = JSON.stringify({ kind: OUTCOME_CORRECTION_KIND, sessionDate: T1 });
+    const cases: Array<[string, string | Buffer]> = [
+      ["docs/notes.md", text], // renamed to a doc
+      ["OUTCOMES", text], // extensionless at the root
+      ["a/b/c/d/report.txt", text], // nested, odd extension
+      ["tmp/out.json.gz", gzipSync(Buffer.from(text))], // compressed
+      ["reports/run.jsonl", `{"ok":true}\n${JSON.stringify(rec)}\n`], // JSONL
+      ["x/entries.json", JSON.stringify(rec.outcomes)], // outcomes without the header
+      ["x/corr.bin", corr], // private correction
+      ["x/salt.log", `run finished commitmentSalt: "${rec.header.commitmentSalt}"`], // a salt in a log line
+      ["x/truncated.json", text.slice(0, 2000)], // half-written file
+    ];
+    for (const [rel, content] of cases) {
+      const r = await repo();
+      await r.put(rel, content);
+      expect((await r.scan()).map((v) => v.path), rel).toContain(rel); // untracked, not ignored
+      r.add(rel);
+      expect((await r.scan()).map((v) => v.path), rel).toEqual([rel, `${rel} (staged)`].sort().reverse());
+    }
+    // staged leak whose working copy was restored: still caught from the index
+    const r = await repo();
+    await r.put("public/data/sector.json", text);
+    r.add("public/data/sector.json");
+    await r.put("public/data/sector.json", '{"clean":true}');
+    expect((await r.scan()).map((v) => v.path)).toEqual(["public/data/sector.json (staged)"]);
+    // violations never echo the protected value
+    expect(JSON.stringify(await r.scan())).not.toContain(rec.header.commitmentSalt);
+  });
+
+  it("the guard scans the whole repository for the real ledger and the whole tree for fixture roots", async () => {
+    const { s, rec } = await validRecord();
+    await mkdir(path.join(s.ledger, "deep", "er"), { recursive: true });
+    await writeFile(path.join(s.ledger, "deep", "er", "README"), storedText(rec));
+    expect((await checkOutcomeConfidentiality(s.ledger)).some((v) => /protected outcome data/.test(v.detail))).toBe(true);
+    expect((await scanForOutcomeLeaks([s.ledger])).length).toBe(1);
   });
 });

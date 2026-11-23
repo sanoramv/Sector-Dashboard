@@ -21,7 +21,7 @@ import type { DailyBar } from "../../src/types/market.ts";
 import type { RefreshState } from "../lib/refresh-state.mts";
 import { dateStatuses } from "./calendar.mts";
 import { OD1_HEADLINE_HORIZONS, OD1_STORED_HORIZONS, od1Maturity, od1SigmaWindow, type ArchiveStatus, type CalendarStatus, type Od1WindowBar } from "./od1.mts";
-import { buildOutcomeRecord, outcomeStorageKey, type DailyLike, type OutcomeRecord, type WindowEvidence } from "./outcomes.mts";
+import { assertSyntheticSession, buildOutcomeRecord, outcomeStorageKey, type DailyLike, type OutcomeRecord, type WindowEvidence } from "./outcomes.mts";
 
 export interface RunnerSession {
   daily: DailyLike & { predictions: Array<DailyLike["predictions"][number] & { bar: { open?: number; high: number; low: number; close: number } }> };
@@ -83,15 +83,8 @@ export class RunnerBlock extends Error {
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-/**
- * Phase B2a hard gate: while true, the runner refuses every session dated before 2031 (the synthetic fixtures), so this
- * code cannot produce a real live outcome. Turning it off is part of the owner-approved B2b activation.
- */
-export const SYNTHETIC_ONLY = true;
-export const SYNTHETIC_FROM = "2031-01-01";
-export function assertSyntheticSession(date: string): void {
-  if (SYNTHETIC_ONLY && !(date >= SYNTHETIC_FROM)) throw new Error(`Phase B2a is synthetic-only: session ${date} is a real market date and is refused (no live outcome may be generated)`);
-}
+/** The synthetic-only lock lives in outcomes.mts (it guards every artifact builder); re-exported for callers. */
+export { SYNTHETIC_FROM, SYNTHETIC_ONLY, assertSyntheticSession } from "./outcomes.mts";
 
 /** The NIFTY 500 trading calendar, calendar statuses and archive statuses from the public data. */
 export function calendarInputs(market: RunnerMarket): { tradingCalendar: string[]; calendarStatus: Record<string, CalendarStatus>; archives: Record<string, ArchiveStatus>; benchmark: Map<string, number> } {
@@ -129,6 +122,7 @@ export function planOutcomes(sessions: RunnerSession[], market: RunnerMarket, ct
 
 /** Window evidence for one prediction from the public data, with the prediction day checked against the frozen record. */
 export function evidenceFor(market: RunnerMarket, calendar: string[], key: string, sessionDate: string, sessions: string[], p: RunnerSession["daily"]["predictions"][number]): WindowEvidence {
+  assertSyntheticSession(sessionDate);
   const raw = market.stocks[p.symbol]?.bars;
   if (!raw || raw.length === 0) throw new RunnerBlock("stock-absent", key);
   const { bars } = validateBars(raw, { splitAtBreaks: false });
@@ -153,6 +147,8 @@ export function evidenceFor(market: RunnerMarket, calendar: string[], key: strin
 
 /** Builds the private record of one DUE plan item. Throws RunnerBlock (code only) when the evidence is not usable. */
 export function buildDueRecord(item: PlanItem, session: RunnerSession, market: RunnerMarket, ctx: RunnerContext): OutcomeRecord {
+  assertSyntheticSession(item.sessionDate);
+  assertSyntheticSession(session.daily.header.sessionDate);
   if (item.status !== "due" || !item.sessions) throw new Error(`${item.key} is not due`);
   if (!session.receipt) throw new Error(`${item.key}: no prediction receipt`);
   const cal = calendarInputs(market);
