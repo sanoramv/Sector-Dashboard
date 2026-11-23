@@ -44,6 +44,17 @@ These clarifications supersede the text they reference. They change no approved 
     - **R6 review vs eligibility.** A record-bound R6 review decision (erratum 14) turns the gate amber for that one anomaly pair. It never changes eligibility; a new or different anomaly keeps the gate red. The first such review is `exemptions/r6-review-2026-11-18-mv1-8ecef864-601c4d671603.json` (pair `ac454375…`/`601c4d67…`). 2026-11-18 stays excluded.
 
     Tests: `tests/ledger/durable-exclusion.test.ts`.
+21. **Phase B1 — shared OD1 engine and protected outcome schema (2026-11-23; implementation foundation, no live outcomes).**
+    - **Shared engine.** `scripts/ledger/od1.mts` is the only implementation of the sealed OD1 rules. It is pure and does no I/O. It was extracted unchanged from the research script, which now imports it and reproduces its frozen digest `568512f8…5795`. σ is a **parameter**. Governed outcomes pass the prediction record's frozen `price.volatility20`, which is bit-identical to the OD1 σ definition (tested). The σ-window changes only feed the descriptive `volWindowOutlier` flag. Maturity (`od1Maturity`) counts h sessions on the NIFTY 500 trading calendar. Every weekday in (t, t+h] must be resolved, and the index and stock archives of every session must be `ok`; otherwise the outcome is pending. Every sealed stored horizon (1, 2, 5, 10) is supported, the protocol is unchanged, and h = 1 and 5 are implemented first.
+    - **Protected records** (`scripts/ledger/outcomes.mts`, owner decisions 2026-11-23):
+      - Outcome records are never stored in the public repository or on Pages (`assertPrivateStorageRoot`).
+      - Each record binds to its prediction file (predictionsSha256, every recordHash, frozen σ and day bar, group) and records provenance: protocol hash, engine version `od1e-<8 hex>` over the engine files, data commit and file hashes, calendar, archives and run.
+      - It stores every input, and validation re-derives each outcome from those inputs, never from current or pruned data.
+      - Create-only: identical content is `existing`; different content is a `conflict` and is never overwritten.
+    - **Public receipts** contain identifiers, hashes, the horizon, the prediction count and times. They also carry a **salted** commitment (`sha256(canonical({salt, outcomesSha256}))`), whose salt is kept only in the private record. They never contain classes, returns, flags, counts by class or per-stock data (strict whitelist).
+    - **Corrections** are append-only records forming one unbroken chain of commitments (no fork, gap, restore or silent replacement). Each is attributed, and its analytical treatment is fixed at `pending-owner-decision`.
+    - **Sealing.** `requireUnblinded` throws while `holdout.json` is sealed. The completed-live-session definition (§16) and the 250-session gate are unchanged.
+    - Not in B1: no CLI, no workflow step and no storage backend, and nothing is written. Tests: `tests/ledger/od1-engine.test.ts`.
 
 ---
 
