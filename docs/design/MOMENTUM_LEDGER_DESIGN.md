@@ -55,6 +55,24 @@ These clarifications supersede the text they reference. They change no approved 
     - **Corrections** are append-only records forming one unbroken chain of commitments (no fork, gap, restore or silent replacement). Each is attributed, and its analytical treatment is fixed at `pending-owner-decision`.
     - **Sealing.** `requireUnblinded` throws while `holdout.json` is sealed. The completed-live-session definition (§16) and the 250-session gate are unchanged.
     - Not in B1: no CLI, no workflow step and no storage backend, and nothing is written. Tests: `tests/ledger/od1-engine.test.ts`.
+22. **Phase B2a — private outcome pipeline foundation (2026-11-23; local, synthetic-only, nothing provisioned).** Architecture and runbook: [`OD1_PRIVATE_PIPELINE.md`](OD1_PRIVATE_PIPELINE.md).
+    - **Trust boundary.** The public repository keeps prediction capture, prediction receipts, market data, public outcome receipts and the public guard. A separate PRIVATE repository will own outcome calculation, records, validation and corrections. Only the private workflow publishes receipts. Protected code refuses to run unless the context is declared, and never in the public repository's Actions (`assertProtectedExecutionContext`).
+    - **Runner** (`outcome-runner.mts`, pure, now part of the engine version): processes h = 1, 2, 5, 10, with headline = 1, 5. It uses NIFTY 500 calendar maturity, never skipping an unresolved session, and the frozen `volatility20`. A revised sigma window or day-t bar blocks the horizon (`source-revised`); it is never silently recomputed. It rejects sessions that are not eligible, not `live`, or dated before the owner's activation date (no automatic backfill). While `SYNTHETIC_ONLY` is set, it refuses every date before 2031 and the repository's real data.
+    - **Private store** (`private-store.mts`, `safe-path.mts`):
+      - create-only: an identical retry returns the STORED record; different outcomes are a conflict; nothing is ever overwritten;
+      - atomic link-publish, with partial files cleaned when the store is opened;
+      - strict keys and paths; traversal and symbolic links are refused; storage is never inside the repository or under `public/`;
+      - corrections are append-only, sequenced and commitment-chained, created by the owner only; the original stays authoritative.
+    - **Public receipts** (`outcome-receipts.mts`) live under `live/outcome-receipts/<rv>/<date>/h<h>.json`, with correction receipts at `.c<n>.json`.
+      - A receipt is built from the stored record and timed by its `generatedAt`, so every retry is byte-identical.
+      - A leak check blocks salts, unsalted hashes, class names, outcome fields and unexpected numbers.
+      - The guard validates the whitelist, the binding to the public prediction file and the correction chains.
+      - It rejects receipts for sessions that are not eligible, and any private marker anywhere under `public/` (violation kind `outcome`).
+    - **Pipeline** (`outcome-pipeline.mts`):
+      - Order: storage reachable → reconcile → build → private write and read-back → receipt.
+      - A record without a receipt is recovered. A receipt without a record, or one that does not match, stops the run and is never repaired.
+      - Reports and alerts carry keys and fixed codes only.
+    - Not in B2a: no workflow, CLI, activation record, private repository, GitHub App or secret; no live outcome. Holdout eligibility, the completed-session definition, the 250-session gate, R6 and durable exclusions are unchanged. Tests: `tests/ledger/outcome-pipeline.test.ts`.
 
 ---
 
