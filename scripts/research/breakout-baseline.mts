@@ -41,6 +41,7 @@ import { nextSessionOutcome, type NextSessionOutcome } from "../../src/lib/momen
 import { clusteredMean, computeOutcomeStats, runMomentumEvaluation, type OutcomeStats } from "../../src/lib/momentum/evaluation.ts";
 import { MOMENTUM_RULES } from "../../src/lib/momentum/classify.ts";
 import { ASSESSMENT_RULES } from "../../src/lib/momentum/assess.ts";
+import { OD1 as SHARED_OD1, od1Classify as sharedClassify, od1Epsilon as sharedEpsilon, od1Measure, od1SigmaWindow as sharedSigmaWindow, populationSd as sharedPopulationSd, type Od1Class as SharedOd1Class, type Od1Unavailable as SharedOd1Unavailable } from "../ledger/od1.mts";
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Fixed research parameters (recorded in the output; changing any of them is a new baseline, not a re-run)
@@ -54,8 +55,8 @@ export const EXPECTED_RULE_VERSION = "mv1-8ecef864";
 export const TOP_N = 50;
 export const COST_BPS = 20;
 export const BOOTSTRAP = { seed: 20261118, reps: 2000, level: 0.95 } as const;
-/** From the sealed protocol/od1.json. */
-export const OD1 = { k: 0.5, floorPct: 0.2, sigmaWindow: 20, minComparableBars: 22, abnormalGapSigma: 3, volWindowOutlierSigma: 3.5 } as const;
+/** From the sealed protocol/od1.json, via the shared OD1 engine (scripts/ledger/od1.mts). */
+export const OD1 = SHARED_OD1;
 export const MARKET_FILES = ["manifest.json", "index-series.json", "constituents.json", "stocks.json", "stock-activity.json"] as const;
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -132,66 +133,25 @@ export function assertFenceMatchesActivation(repoRoot: string, fence: string): s
 // ---------------------------------------------------------------------------------------------------------------------
 // OD1 (research implementation of the sealed protocol)
 // ---------------------------------------------------------------------------------------------------------------------
-export type Od1Class = "confirmed" | "partial" | "sideways" | "failed" | "reversal";
-export type Od1Unavailable = "insufficient-history" | "no-bar" | "discontinuity";
+export type Od1Class = SharedOd1Class;
+export type Od1Unavailable = SharedOd1Unavailable;
 export type Od1Result =
   | { status: "complete"; cls: Od1Class; R: number; X: number; eps: number; endDate: string; abnormalGap: boolean; volWindowOutlier: boolean }
   | { status: "unavailable"; reason: Od1Unavailable }
   | { status: "pending"; reason: "beyond-data" | "beyond-fence" };
 
-const pct = (a: number, b: number) => (a / b - 1) * 100;
-
-/** sigma window: the 20 daily % changes ending at t-1 (day t excluded). `comparable` = comparable bars up to and including t. */
-export function od1SigmaWindow(comparable: Array<Pick<DailyBar, "close">>): number[] | null {
-  if (comparable.length < OD1.minComparableBars) return null;
-  const n = comparable.length;
-  const changes: number[] = [];
-  for (let k = n - 1 - OD1.sigmaWindow; k < n - 1; k++) changes.push(pct(comparable[k].close, comparable[k - 1].close));
-  return changes;
-}
-/** Population standard deviation (divisor N). */
-export function populationSd(xs: number[]): number {
-  const m = xs.reduce((a, b) => a + b, 0) / xs.length;
-  return Math.sqrt(xs.reduce((s, x) => s + (x - m) ** 2, 0) / xs.length);
-}
-export const od1Epsilon = (sigma: number, h: number) => Math.max(OD1.k * sigma * Math.sqrt(h), OD1.floorPct);
-
-/** First-match classification from the OD1 quantities. `up` = gainer rules; otherwise the loser mirror. */
-export function od1Classify(q: { up: boolean; R: number; X: number; Hstar: number; Lstar: number; Ht: number; Lt: number; eps: number }): { cls: Od1Class; P: boolean; E: boolean; N: boolean; D: boolean; B: boolean } {
-  const { up, R, X, Hstar, Lstar, Ht, Lt, eps } = q;
-  const P = up ? R >= eps : R <= -eps;
-  const E = up ? X > 0 : X < 0;
-  const N = up ? Hstar > Ht : Lstar < Lt;
-  const D = up ? R <= -eps : R >= eps;
-  const B = up ? Lstar < Lt : Hstar > Ht;
-  let cls: Od1Class;
-  if (D && B) cls = "reversal";
-  else if (D) cls = "failed";
-  else if (P && E && N) cls = "confirmed";
-  else if (P || E || N) cls = "partial";
-  else cls = "sideways";
-  return { cls, P, E, N, D, B };
-}
+// The OD1 rules live in the shared engine (scripts/ledger/od1.mts); these wrappers keep the research API and its exact
+// result shape (the frozen result digest depends on it). Research has no prediction record, so sigma is computed from
+// the same 20-change window that defines volatility20.
+export const od1SigmaWindow = sharedSigmaWindow;
+export const populationSd = sharedPopulationSd;
+export const od1Epsilon = sharedEpsilon;
+export const od1Classify = sharedClassify;
 
 /** OD1 for a prediction-day bar and an already validated window of h bars (t+1..t+h). */
 export function od1FromBars(a: { up: boolean; day: Pick<DailyBar, "close" | "high" | "low">; window: Array<Pick<DailyBar, "open" | "close" | "high" | "low">>; benchT: number; benchTh: number; sigmaChanges: number[] }): { cls: Od1Class; R: number; X: number; eps: number; abnormalGap: boolean; volWindowOutlier: boolean } {
-  const h = a.window.length;
-  const sigma = populationSd(a.sigmaChanges);
-  const eps = od1Epsilon(sigma, h);
-  const R = pct(a.window[h - 1].close, a.day.close);
-  const X = R - pct(a.benchTh, a.benchT);
-  const Hstar = Math.max(...a.window.map((b) => b.high));
-  const Lstar = Math.min(...a.window.map((b) => b.low));
-  const { cls } = od1Classify({ up: a.up, R, X, Hstar, Lstar, Ht: a.day.high, Lt: a.day.low, eps });
-  const gap = pct(a.window[0].open, a.day.close);
-  return {
-    cls,
-    R,
-    X,
-    eps,
-    abnormalGap: Math.abs(gap) >= OD1.abnormalGapSigma * sigma,
-    volWindowOutlier: Math.max(...a.sigmaChanges.map(Math.abs)) >= OD1.volWindowOutlierSigma * sigma,
-  };
+  const m = od1Measure({ up: a.up, day: a.day, window: a.window, benchT: a.benchT, benchTh: a.benchTh, sigma: populationSd(a.sigmaChanges), sigmaChanges: a.sigmaChanges });
+  return { cls: m.cls, R: m.R, X: m.X, eps: m.eps, abnormalGap: m.abnormalGap, volWindowOutlier: m.volWindowOutlier as boolean };
 }
 
 /** OD1 for stock bar i at horizon h. Pending checks come first, so nothing on or after the fence is ever read. */
