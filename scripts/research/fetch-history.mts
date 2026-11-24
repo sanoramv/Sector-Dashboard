@@ -2,6 +2,7 @@
  * Research-only historical NSE archive download (Track C). Never touches public/data or production files.
  *
  *   npx tsx scripts/research/fetch-history.mts --from 2020-11-02 --to 2025-08-22 [--out research-data/nse] [--kinds stock,index]
+ *   npx tsx scripts/research/fetch-history.mts --dates 2024-01-20,2025-02-01   (exact dates, weekends allowed)
  *
  * Official NSE archives (the same hosts the production pipeline uses):
  *  - stock: products/content/sec_bhavdata_full_DDMMYYYY.csv  (all series; OHLC, prev close, volume, turnover, delivery;
@@ -43,7 +44,11 @@ async function main() {
   const to = opt("--to")!;
   const out = path.resolve(opt("--out", "research-data/nse")!);
   const kinds = opt("--kinds", "stock,index")!.split(",");
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(from ?? "") || !/^\d{4}-\d{2}-\d{2}$/.test(to ?? "")) throw new Error("--from and --to must be YYYY-MM-DD");
+  // --dates a,b,c fetches exactly those dates (weekend special sessions such as Muhurat or budget Saturdays included)
+  const explicit = opt("--dates")?.split(",").filter(Boolean) ?? null;
+  if (explicit) {
+    if (!explicit.every((d) => /^\d{4}-\d{2}-\d{2}$/.test(d))) throw new Error("--dates must be YYYY-MM-DD,YYYY-MM-DD,...");
+  } else if (!/^\d{4}-\d{2}-\d{2}$/.test(from ?? "") || !/^\d{4}-\d{2}-\d{2}$/.test(to ?? "")) throw new Error("--from and --to must be YYYY-MM-DD");
   if (out.split(path.sep).includes("public")) throw new Error("research data must never be written under public/");
   const manifest = path.join(out, "manifest.jsonl");
   await mkdir(out, { recursive: true });
@@ -62,7 +67,7 @@ async function main() {
   let ok = 0;
   let missing = 0;
   let failed = 0;
-  for (const date of weekdaysBetween(from, to)) {
+  for (const date of explicit ?? weekdaysBetween(from, to)) {
     for (const kind of kinds) {
       if (seen.has(`${kind}|${date}`)) continue;
       const file = path.join(out, kind, date.slice(0, 4), `${date}.csv.gz`);
@@ -109,7 +114,7 @@ async function main() {
       await sleep(1200);
     }
   }
-  console.log(`research history ${from}..${to} (${kinds.join(",")}): ok ${ok}, missing ${missing}, failed ${failed} -> ${out}`);
+  console.log(`research history ${explicit ? explicit.join(",") : `${from}..${to}`} (${kinds.join(",")}): ok ${ok}, missing ${missing}, failed ${failed} -> ${out}`);
 }
 
 main().catch((err) => {
