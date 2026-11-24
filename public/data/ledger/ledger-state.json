@@ -1,21 +1,19 @@
 {
  "kind": "momentum-ledger.state",
  "schemaVersion": 1,
- "updatedAt": "2026-11-24T01:46:07.637Z",
- "lastAttemptAt": "2026-11-24T01:46:02.719Z",
+ "updatedAt": "2026-11-24T02:40:00.647Z",
+ "lastAttemptAt": "2026-11-24T02:39:55.724Z",
  "lastSuccessfulCaptureAt": "2026-11-24T01:46:06.447Z",
  "lastSuccessfulSessionDate": "2026-11-23",
  "runStatus": "anomaly",
  "lastFailure": {
-  "at": "2026-11-24T01:46:06.447Z",
+  "at": "2026-11-24T02:39:59.337Z",
   "date": null,
   "reasons": [
    "Unresolved anomaly on 2026-11-18: the immutable record was left untouched; see dates.<date>.r6Events in ledger-state.json"
   ]
  },
- "recoveryRequired": [
-  "2026-11-23"
- ],
+ "recoveryRequired": [],
  "ruleVersion": "mv1-8ecef864",
  "enabledVersion": "mv1-8ecef864",
  "enabledFrom": "2026-11-18",
@@ -92,7 +90,7 @@
    ],
    "r6": {
     "status": "anomaly",
-    "checkedAt": "2026-11-24T01:46:06.447Z",
+    "checkedAt": "2026-11-24T02:39:59.337Z",
     "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
     "candidatePredictionsSha256": "601c4d671603eaa0830721534475ba50599011813a1a6d7363528f13adbfb71f",
     "detail": "A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched.",
@@ -373,14 +371,14 @@
     },
     "firstAnomalyAt": "2026-11-19T22:20:19.482Z",
     "latestObservation": {
-     "at": "2026-11-24T01:46:06.447Z",
+     "at": "2026-11-24T02:39:59.337Z",
      "status": "existing",
      "reasonCode": "retention-window-only",
      "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (3 session(s); stored history from 2025-08-26, now from 2025-09-01): 102 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest cf9a4a1e1881dcb84405f991aaac1f6446542b6dd15a79a80c8861b5c27c5df4). Nothing written."
     }
    },
    "sourceDataDate": "2026-11-18",
-   "updatedAt": "2026-11-24T01:46:07.637Z",
+   "updatedAt": "2026-11-24T02:40:00.647Z",
    "earliestCutoffUtc": "2026-11-19T03:30:00.000Z",
    "r6Events": [
     {
@@ -485,7 +483,7 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-24T01:46:06.447Z",
+    "checkedAt": "2026-11-24T02:39:59.337Z",
     "existingPredictionsSha256": "fbc384ee3938dab3b783251523b3639c8648932caadb2283bf3c65f23adb794e",
     "candidatePredictionsSha256": "ed57c43bb78fc589d064209448eae286339e8c6cc7cfa0b627f20921d4432c04",
     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (2 session(s); stored history from 2025-08-28, now from 2025-09-01): 101 of 123 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 2f466788c0fdf5fdc6ee6221bd41f412b78af7b9923f05cf44542dab562e586b). Nothing written.",
@@ -767,7 +765,7 @@
     }
    },
    "sourceDataDate": "2026-11-19",
-   "updatedAt": "2026-11-24T01:46:07.637Z",
+   "updatedAt": "2026-11-24T02:40:00.647Z",
    "earliestCutoffUtc": "2026-11-20T03:30:00.000Z",
    "r6Events": [
     {
@@ -857,7 +855,7 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-24T01:46:06.447Z",
+    "checkedAt": "2026-11-24T02:39:59.337Z",
     "existingPredictionsSha256": "448452053dab3ff23ec8b88ff606582fb7976d519fe22bbabfb5c3b7f31ce483",
     "candidatePredictionsSha256": "f31c032f90d2f062453e4ae2f2b390b25e390c221658efa81304a0f7f3e999df",
     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (2 session(s); stored history from 2025-08-28, now from 2025-09-01): 99 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 85e31b553c61f5967acbedea1a661ce9603a44143a7b5c51a2eec5a756377c45). Nothing written.",
@@ -1139,7 +1137,7 @@
     }
    },
    "sourceDataDate": "2026-11-20",
-   "updatedAt": "2026-11-24T01:46:07.637Z",
+   "updatedAt": "2026-11-24T02:40:00.647Z",
    "earliestCutoffUtc": "2026-11-23T03:30:00.000Z",
    "r6Events": [
     {
@@ -1163,7 +1161,7 @@
    "status": "recorded",
    "reasons": [],
    "generatedAt": "2026-11-24T01:46:06.447Z",
-   "publicationClass": "pending",
+   "publicationClass": "live",
    "cutoffUtc": null,
    "readiness": [
     {
@@ -1228,15 +1226,299 @@
     }
    ],
    "r6": {
-    "status": "pass",
-    "checkedAt": "2026-11-24T01:46:06.447Z",
-    "existingPredictionsSha256": null,
+    "status": "existing",
+    "checkedAt": "2026-11-24T02:39:59.337Z",
+    "existingPredictionsSha256": "3f504d5f3558214c715f49684fed24a01eda12bffaa2e7189b825c538a7efb4d",
     "candidatePredictionsSha256": "3f504d5f3558214c715f49684fed24a01eda12bffaa2e7189b825c538a7efb4d",
-    "detail": "No existing record for this date and rule version."
+    "detail": "Existing record has an identical prediction digest; nothing written.",
+    "universe": {
+     "stored": [
+      {
+       "slug": "auto",
+       "count": 15,
+       "sha256": "f051c2b43280c4b5783d9946f099ca6252a5e6ddc06d7bf96a5901063a0f4b96",
+       "symbolsSha256": "1eb589221403f591087746922a26c159ff8fb9018c8014728f76d8278a3598e4",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "bank",
+       "count": 14,
+       "sha256": "e41f54bd4d89e9c24ec2acef409b6f2244d66edcc262af2323b42bb402f9d884",
+       "symbolsSha256": "6096484ddd75c6776a2cd019ecada3cadb91028456a47ce69af6bd00dc9a29d9",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "chemicals",
+       "count": 20,
+       "sha256": "6409e8076dd4b71f5e1c5db7b87fbac9d81b90ee55d504ad09eb5c86cab1325d",
+       "symbolsSha256": "8a16fadd5d2a08ac6bec0b33116e5b1a132a2233e91fb01bbc8b7c70b61fe69b",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "consumer-durables",
+       "count": 14,
+       "sha256": "f62ff63dab1481622c279f59e0572e594ebb380736c85625960019eb4ef2cc42",
+       "symbolsSha256": "23c64da02ce6224c34136b67ccc1dcbec3d1b3ceee8c5b55252107690951c32d",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "financial-services",
+       "count": 20,
+       "sha256": "4593cce2f2f90650ea92c299a768822dffd8cfc0c952e889dbee8c3c50e4f2e3",
+       "symbolsSha256": "ab8bb5461a254a998b18d491f7cb002d357fe49c812d0e23c347e17f755120f6",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "fmcg",
+       "count": 15,
+       "sha256": "0a822feeb7e7af8db3cd78688604eb433ffaf7dd1b971f93abd59b6129f08c30",
+       "symbolsSha256": "9e77d445f32e0912367a8673a21d34e5aecd11f34dbabea78d62ed58c0ba11e3",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "healthcare",
+       "count": 20,
+       "sha256": "e94a448539be7e2b757850d3ab3bc5a5947a4f104624c5ae15171c07cb66e32c",
+       "symbolsSha256": "a07881b70e2258d1024adb97bdc5ba24feb024c016df4a0e6a057919f5320c20",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "it",
+       "count": 10,
+       "sha256": "b57c9c03c0d4c9e735d1c1027bbdb73f9ccd06e81c199b2076c69a686f4c5c58",
+       "symbolsSha256": "bb1b8de8a89e1e8e796c123da69a4253ead07f76944c0c62b4cca6c83f888d7c",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "media",
+       "count": 10,
+       "sha256": "868ce1de9bf23d1cbb94f4422bd02efa2b4f754d0b443d276abac04748f2a5a5",
+       "symbolsSha256": "7c534a5157248866d26717ca4b624ab9df92bf437bbf1bd0cb5fbf2340443a0e",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "metal",
+       "count": 15,
+       "sha256": "7f0ea736e1687f43f677f28fe9c3225656c5f514a4b01874ab1900e4a70c65af",
+       "symbolsSha256": "cb7a509cad34875ccf261b899fa1d9785f5a6503996dc7abeef63ae01fe12583",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "microcap250",
+       "count": 254,
+       "sha256": "4cdb81bce2f26087e32ee6f874e0acd097e2f501a80b8f9b0987797d4fdecb16",
+       "symbolsSha256": "a67e2b7579e649faa34f9eb0ba90c80daf497f6996aee3671e40cf4013a30471",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "midcap150",
+       "count": 150,
+       "sha256": "c3edfa49259824c2f243e042c613834d4494bd9f5679b53c91e8b627a85e1808",
+       "symbolsSha256": "3baf9d65ba2de5a40761801e42fe3f6942a52928117014346ef411383a196d29",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "nifty500",
+       "count": 501,
+       "sha256": "97d7a102bad70cf701e0904779305c797d5bd2475253f1c721d12002a22c9a2f",
+       "symbolsSha256": "03c1ee5b6f8daead6adeba3ae88f8abd32d6635b4e90620bbcc164f91f79ae3a",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "oil-gas",
+       "count": 15,
+       "sha256": "da35c247b4f4fc0748e617de6ff0a34aa5c9355b419d3a29c84732a7887f68dd",
+       "symbolsSha256": "4cfc554fdf2699c8e31b55bd8b2cb92f87a70d94b7f28a8d09b7a7a741944beb",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "pharma",
+       "count": 20,
+       "sha256": "e05a2e5aa880ee8cd84469ff173ffdbf8231615a9272ae3ee269331a2772b5ab",
+       "symbolsSha256": "0cf9ab0810859f482dde93ca8eff1d7904df701d4286ba6755bf2baa05a8c729",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "private-bank",
+       "count": 10,
+       "sha256": "6400d1f2f26bce03781e8864e8a313556c19061b426446b2861b93118bbc2e61",
+       "symbolsSha256": "8ba35cd88e136ece0a06dd98d16b91c7c1462b1960c89821262a137480f0bfc0",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "psu-bank",
+       "count": 12,
+       "sha256": "1752cffad39ecba5fdc1779d201181cb3fdff716ad15f5b541cca802d74d4dd6",
+       "symbolsSha256": "07e04c031bc4ab7779d370349a58dd22297e77467eceec95d36c51c69ec270a0",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "realty",
+       "count": 10,
+       "sha256": "44c893747314755dae5fef52b049b9cf2862ba6f423890e782775c120fad3727",
+       "symbolsSha256": "34d186a127a004b04cf31d9e78bb896d73237ed22d252584cbb50f6fe6012dc4",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "smallcap250",
+       "count": 251,
+       "sha256": "f5be6c4ff93fdadfc674fc8dcff1b05022b78530ea99389551c7041667e571e0",
+       "symbolsSha256": "ba938ae9a54254e4bb623eb01e18099940d627649aa97e76cfb810d89ac4cd8d",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      }
+     ],
+     "current": [
+      {
+       "slug": "auto",
+       "count": 15,
+       "sha256": "f051c2b43280c4b5783d9946f099ca6252a5e6ddc06d7bf96a5901063a0f4b96",
+       "symbolsSha256": "1eb589221403f591087746922a26c159ff8fb9018c8014728f76d8278a3598e4",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "bank",
+       "count": 14,
+       "sha256": "e41f54bd4d89e9c24ec2acef409b6f2244d66edcc262af2323b42bb402f9d884",
+       "symbolsSha256": "6096484ddd75c6776a2cd019ecada3cadb91028456a47ce69af6bd00dc9a29d9",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "chemicals",
+       "count": 20,
+       "sha256": "6409e8076dd4b71f5e1c5db7b87fbac9d81b90ee55d504ad09eb5c86cab1325d",
+       "symbolsSha256": "8a16fadd5d2a08ac6bec0b33116e5b1a132a2233e91fb01bbc8b7c70b61fe69b",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "consumer-durables",
+       "count": 14,
+       "sha256": "f62ff63dab1481622c279f59e0572e594ebb380736c85625960019eb4ef2cc42",
+       "symbolsSha256": "23c64da02ce6224c34136b67ccc1dcbec3d1b3ceee8c5b55252107690951c32d",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "financial-services",
+       "count": 20,
+       "sha256": "4593cce2f2f90650ea92c299a768822dffd8cfc0c952e889dbee8c3c50e4f2e3",
+       "symbolsSha256": "ab8bb5461a254a998b18d491f7cb002d357fe49c812d0e23c347e17f755120f6",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "fmcg",
+       "count": 15,
+       "sha256": "0a822feeb7e7af8db3cd78688604eb433ffaf7dd1b971f93abd59b6129f08c30",
+       "symbolsSha256": "9e77d445f32e0912367a8673a21d34e5aecd11f34dbabea78d62ed58c0ba11e3",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "healthcare",
+       "count": 20,
+       "sha256": "e94a448539be7e2b757850d3ab3bc5a5947a4f104624c5ae15171c07cb66e32c",
+       "symbolsSha256": "a07881b70e2258d1024adb97bdc5ba24feb024c016df4a0e6a057919f5320c20",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "it",
+       "count": 10,
+       "sha256": "b57c9c03c0d4c9e735d1c1027bbdb73f9ccd06e81c199b2076c69a686f4c5c58",
+       "symbolsSha256": "bb1b8de8a89e1e8e796c123da69a4253ead07f76944c0c62b4cca6c83f888d7c",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "media",
+       "count": 10,
+       "sha256": "868ce1de9bf23d1cbb94f4422bd02efa2b4f754d0b443d276abac04748f2a5a5",
+       "symbolsSha256": "7c534a5157248866d26717ca4b624ab9df92bf437bbf1bd0cb5fbf2340443a0e",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "metal",
+       "count": 15,
+       "sha256": "7f0ea736e1687f43f677f28fe9c3225656c5f514a4b01874ab1900e4a70c65af",
+       "symbolsSha256": "cb7a509cad34875ccf261b899fa1d9785f5a6503996dc7abeef63ae01fe12583",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "microcap250",
+       "count": 254,
+       "sha256": "4cdb81bce2f26087e32ee6f874e0acd097e2f501a80b8f9b0987797d4fdecb16",
+       "symbolsSha256": "a67e2b7579e649faa34f9eb0ba90c80daf497f6996aee3671e40cf4013a30471",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "midcap150",
+       "count": 150,
+       "sha256": "c3edfa49259824c2f243e042c613834d4494bd9f5679b53c91e8b627a85e1808",
+       "symbolsSha256": "3baf9d65ba2de5a40761801e42fe3f6942a52928117014346ef411383a196d29",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "nifty500",
+       "count": 501,
+       "sha256": "97d7a102bad70cf701e0904779305c797d5bd2475253f1c721d12002a22c9a2f",
+       "symbolsSha256": "03c1ee5b6f8daead6adeba3ae88f8abd32d6635b4e90620bbcc164f91f79ae3a",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "oil-gas",
+       "count": 15,
+       "sha256": "da35c247b4f4fc0748e617de6ff0a34aa5c9355b419d3a29c84732a7887f68dd",
+       "symbolsSha256": "4cfc554fdf2699c8e31b55bd8b2cb92f87a70d94b7f28a8d09b7a7a741944beb",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "pharma",
+       "count": 20,
+       "sha256": "e05a2e5aa880ee8cd84469ff173ffdbf8231615a9272ae3ee269331a2772b5ab",
+       "symbolsSha256": "0cf9ab0810859f482dde93ca8eff1d7904df701d4286ba6755bf2baa05a8c729",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "private-bank",
+       "count": 10,
+       "sha256": "6400d1f2f26bce03781e8864e8a313556c19061b426446b2861b93118bbc2e61",
+       "symbolsSha256": "8ba35cd88e136ece0a06dd98d16b91c7c1462b1960c89821262a137480f0bfc0",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "psu-bank",
+       "count": 12,
+       "sha256": "1752cffad39ecba5fdc1779d201181cb3fdff716ad15f5b541cca802d74d4dd6",
+       "symbolsSha256": "07e04c031bc4ab7779d370349a58dd22297e77467eceec95d36c51c69ec270a0",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "realty",
+       "count": 10,
+       "sha256": "44c893747314755dae5fef52b049b9cf2862ba6f423890e782775c120fad3727",
+       "symbolsSha256": "34d186a127a004b04cf31d9e78bb896d73237ed22d252584cbb50f6fe6012dc4",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      },
+      {
+       "slug": "smallcap250",
+       "count": 251,
+       "sha256": "f5be6c4ff93fdadfc674fc8dcff1b05022b78530ea99389551c7041667e571e0",
+       "symbolsSha256": "ba938ae9a54254e4bb623eb01e18099940d627649aa97e76cfb810d89ac4cd8d",
+       "fetchedAt": "2026-10-09T20:10:35.187Z"
+      }
+     ],
+     "changedLists": [],
+     "symbolSetChangedLists": [],
+     "fetchedAtChanged": false
+    }
    },
    "sourceDataDate": "2026-11-23",
-   "updatedAt": "2026-11-24T01:46:07.637Z",
-   "earliestCutoffUtc": "2026-11-24T03:30:00.000Z"
+   "updatedAt": "2026-11-24T02:40:00.647Z",
+   "earliestCutoffUtc": "2026-11-24T03:30:00.000Z",
+   "r6Events": [
+    {
+     "at": "2026-11-24T02:39:59.337Z",
+     "status": "existing",
+     "existingPredictionsSha256": "3f504d5f3558214c715f49684fed24a01eda12bffaa2e7189b825c538a7efb4d",
+     "candidatePredictionsSha256": "3f504d5f3558214c715f49684fed24a01eda12bffaa2e7189b825c538a7efb4d",
+     "detail": "Existing record has an identical prediction digest; nothing written."
+    }
+   ]
   }
  },
  "calendar": {
@@ -1577,6 +1859,11 @@
  },
  "runs": [
   {
+   "startedAt": "2026-11-24T02:39:55.724Z",
+   "slot": "0 16 * * 1-5",
+   "status": "anomaly"
+  },
+  {
    "startedAt": "2026-11-24T01:46:02.719Z",
    "slot": "30 14 * * 1-5",
    "status": "anomaly"
@@ -1670,17 +1957,12 @@
    "startedAt": "2026-11-17T23:54:35.507Z",
    "slot": "30 17 * * 1-5",
    "status": "not-enabled"
-  },
-  {
-   "startedAt": "2026-11-17T23:14:20.535Z",
-   "slot": "0 16 * * 1-5",
-   "status": "not-enabled"
   }
  ],
  "metrics": {
   "dailyFileBytes": 536829,
-  "ledgerBytes": 2293920,
-  "publicDataBytes": 27950304,
-  "captureSeconds": 3.73
+  "ledgerBytes": 2298656,
+  "publicDataBytes": 27955745,
+  "captureSeconds": 3.615
  }
 }
