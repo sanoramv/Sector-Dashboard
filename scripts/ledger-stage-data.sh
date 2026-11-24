@@ -7,6 +7,8 @@ set -euo pipefail
 LEDGER="public/data/ledger"
 
 git add public/data
+# OD1 outcome records (create-only, validated before they are written; the guard checks them after the push)
+if [ -d data/outcomes ]; then git add data/outcomes; fi
 
 if [ "${LEDGER_SAFE:-false}" != "true" ]; then
   echo "::error::Ledger changes are not validated; keeping them out of this commit."

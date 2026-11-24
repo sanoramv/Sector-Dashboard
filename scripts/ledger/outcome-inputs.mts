@@ -1,14 +1,12 @@
 /**
- * Input loading for the outcome runner (Phase B2a): reads prediction files, prediction receipts and market-data
- * archives in their PUBLISHED formats from a given directory. While the runner is synthetic-only, file names dated
- * before 2031 are refused BEFORE they are read, and the repository's own public/data directory is refused, so no real
- * outcome input can be loaded by this code.
+ * Input loading for the outcome runner: reads prediction files, prediction receipts and market-data files in their
+ * PUBLISHED formats from a ledger root and a data directory (normally the repository's public/data).
  */
-import { readFile, realpath } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { sha256Hex } from "./canonical.mts";
 import type { RefreshState } from "../lib/refresh-state.mts";
-import { SYNTHETIC_ONLY, assertSyntheticSession, type RunnerMarket, type RunnerSession } from "./outcome-runner.mts";
+import type { RunnerMarket, RunnerSession } from "./outcome-runner.mts";
 import { listTree } from "./safe-path.mts";
 
 /** Repository-relative prefix recorded in records and receipts as the prediction file's public path. */
@@ -21,7 +19,6 @@ export async function loadRunnerSessions(ledgerRoot: string, ruleVersion: string
     const m = rel.match(/\/(\d{4}-\d{2}-\d{2})\.json$/);
     if (!m) continue;
     const date = m[1];
-    assertSyntheticSession(date); // before reading anything
     const buf = await readFile(path.join(ledgerRoot, rel));
     let receipt: RunnerSession["receipt"] = null;
     try {
@@ -35,12 +32,7 @@ export async function loadRunnerSessions(ledgerRoot: string, ruleVersion: string
   return out;
 }
 
-export async function loadRunnerMarket(dataDir: string, opts: { repoRoot: string; commit: string }): Promise<RunnerMarket> {
-  if (SYNTHETIC_ONLY) {
-    const real = await realpath(dataDir);
-    const repoData = await realpath(path.join(opts.repoRoot, "public", "data")).catch(() => null);
-    if (repoData && (real === repoData || real.startsWith(repoData + path.sep))) throw new Error("Phase B2a is synthetic-only: the repository's real market data is refused");
-  }
+export async function loadRunnerMarket(dataDir: string, opts: { commit: string }): Promise<RunnerMarket> {
   const files: Array<{ name: string; sha256: string }> = [];
   const read = async (name: string) => {
     const buf = await readFile(path.join(dataDir, name));

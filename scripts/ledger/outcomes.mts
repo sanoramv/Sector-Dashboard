@@ -1,34 +1,26 @@
 /**
- * Governed OD1 outcome records, receipts and corrections — schema, builders and validators (Phase B1).
+ * Governed OD1 outcome records and corrections — schema, builder and validator.
  *
- * B1 is a FOUNDATION ONLY: nothing here reads live data, writes files or is called by any workflow. No live outcome is
- * computed, persisted or published in B1.
+ * History: Phase B1 designed these records as PRIVATE (blinded holdout, salted public receipts). On 2026-11-24 the
+ * owner ended strict blinding (public/data/ledger/protocol/evaluation-policy.json, docs/design/EVALUATION_POLICY.md):
+ * the live mv1 ledger is now a continuously monitored prospective benchmark, and outcome records are stored openly in
+ * this repository (data/outcomes/), create-only. Salts, commitments, receipts and the private-storage restriction were
+ * removed; the OD1 mathematics (od1.mts) and the sealed protocol are unchanged.
  *
- * Owner decisions (2026-11-23) built into the design:
- *  1. Protected outcomes are never stored in the public repository or on GitHub Pages. Outcome RECORDS belong in
- *     access-controlled storage outside the repository (`assertPrivateStorageRoot`); only RECEIPTS may be public.
- *  2. h = 1 and 5 first; the engine supports every horizon the sealed protocol stores (1, 2, 5, 10) and the protocol
- *     is not changed.
- *  3. Receipts carry hashes and provenance only: a SALTED commitment to the record, never classes, returns, flags,
- *     measurements or per-stock data (`validateOutcomeReceipt` is a strict whitelist).
- *  4. Corrections are append-only records that supersede by commitment; an original record is never overwritten
- *     (`createOnlyDecision`, `validateCorrectionChain`). Their analytical treatment awaits an owner decision.
- *  5. The sealed definition of a completed live session is unchanged; nothing here counts sessions.
- *
- * Lesson of the R6 retention false alarm: every record stores the exact inputs it was computed from, and validation
- * re-derives each outcome from THOSE inputs (never from current, pruned data).
+ *  - h = 1, 2, 5, 10 are stored (sealed protocol); h = 1 and 5 are the headline horizons.
+ *  - Corrections are append-only records that supersede by the record's outcomesSha256; an original record is never
+ *    overwritten (`createOnlyDecision`, `validateCorrectionChain`). Their analytical treatment is an owner decision.
+ *  - Every record stores the exact inputs it was computed from, and validation re-derives each outcome from THOSE
+ *    inputs (never from current, pruned data) — the lesson of the R6 retention false alarm.
  */
 import { readFile } from "node:fs/promises";
-import { realpathSync } from "node:fs";
 import path from "node:path";
 import { sha256Canonical, sha256Hex } from "./canonical.mts";
 import { LEDGER_SCHEMA_VERSION } from "./constants.mts";
 import { OD1_STORED_HORIZONS, od1Outcome, populationSd, type ArchiveStatus, type CalendarStatus, type Od1Outcome, type Od1WindowBar } from "./od1.mts";
 
 export const OUTCOME_KIND = "momentum-ledger.od1-outcomes";
-export const OUTCOME_RECEIPT_KIND = "momentum-ledger.od1-outcome-receipt";
 export const OUTCOME_CORRECTION_KIND = "momentum-ledger.od1-outcome-correction";
-export const COMMITMENT_SCHEME = "sha256(canonical({ salt, outcomesSha256 }))";
 /** Source files of the outcome engine; their hashes define the engine version (like the prediction rule version). */
 /** B2a: the runner (which selects each window's bars, sigma window and segment) and the shared price-break
  *  segmentation it uses are part of the engine, because they determine the stored inputs. */
@@ -63,48 +55,42 @@ export async function computeEngine(repoRoot: string, definitionsSha256: string)
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Synthetic-only lock (Phase B2a; hardened in the B2a security pass)
+// Storage key and evaluation policy
 // ---------------------------------------------------------------------------------------------------------------------
-/**
- * Phase B2a hard gate: while true, every function that BUILDS, STORES or PUBLISHES a protected outcome artifact (record,
- * receipt, correction, correction receipt) refuses any session dated before 2031, i.e. any real market date. It does
- * NOT restrict the pure OD1 mathematics (`od1Outcome` etc. in od1.mts), which anyone can run on public data; it
- * restricts this project's governed outcome artifacts. Turning it off is part of the owner-approved B2b activation.
- */
-export const SYNTHETIC_ONLY = true;
-export const SYNTHETIC_FROM = "2031-01-01";
-export function assertSyntheticSession(date: unknown): void {
-  if (!isDate(date)) throw new Error(`Phase B2a is synthetic-only: ${JSON.stringify(date)} is not a valid session date and is refused`);
-  if (SYNTHETIC_ONLY && !(date >= SYNTHETIC_FROM)) throw new Error(`Phase B2a is synthetic-only: session ${date} is a real market date and is refused (no live outcome may be generated)`);
-}
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Storage and seal guards
-// ---------------------------------------------------------------------------------------------------------------------
-/** Protected outcome records may never live in the (public) repository or under any `public/` directory. */
-export function assertPrivateStorageRoot(storageRoot: string, repoRoot: string): void {
-  if (!storageRoot || !path.isAbsolute(storageRoot)) throw new Error("outcome storage root must be an absolute path outside the repository");
-  const real = (p: string) => {
-    try {
-      return realpathSync(p);
-    } catch {
-      return path.resolve(p);
-    }
-  };
-  const root = real(storageRoot);
-  const repo = real(repoRoot);
-  if (root === repo || root.startsWith(repo + path.sep)) throw new Error(`outcome storage root ${storageRoot} is inside the repository; protected outcomes must never be committed or published`);
-  if (root.split(path.sep).includes("public")) throw new Error(`outcome storage root ${storageRoot} contains a public/ directory`);
-}
-/** The logical key of a record inside private storage (reveals nothing but the session, rule version and horizon). */
+/** The logical key of a record in the outcome store: od1/<rule version>/<date>/h<h>. */
 export const outcomeStorageKey = (ruleVersion: string, sessionDate: string, horizon: number) => `od1/${ruleVersion}/${sessionDate}/h${horizon}`;
-/** Any analysis of protected outcomes must call this first; it throws while the holdout is sealed. */
+/** Kept for the historical contract: true only if holdout.json itself records an unblinding (it never has). */
 export function requireUnblinded(holdout: { status?: string; unblinded?: unknown } | null): void {
   if (!holdout || holdout.status !== "unblinded" || !obj(holdout.unblinded)) throw new Error("the live holdout is sealed: protected outcomes may not be analysed, summarised or displayed before the owner's explicit unblinding");
 }
 
+export const EVALUATION_POLICY_KIND = "momentum-ledger.evaluation-policy";
+export interface EvaluationPolicy {
+  kind: typeof EVALUATION_POLICY_KIND;
+  schemaVersion: number;
+  mode: "continuous-monitoring";
+  decidedAt: string;
+  decidedBy: string;
+  referenceRuleVersion: string;
+  outcomesFrom: string;
+  excludedSessions: Array<{ sessionDate: string; reason: string }>;
+  [k: string]: unknown;
+}
+/** Live outcomes may be computed, stored and shown only under a valid continuous-monitoring policy. */
+export function validateEvaluationPolicy(o: unknown): string[] {
+  const p: string[] = [];
+  if (!obj(o)) return ["evaluation policy is not an object"];
+  if (o.kind !== EVALUATION_POLICY_KIND || o.schemaVersion !== LEDGER_SCHEMA_VERSION) p.push("evaluation policy kind/schemaVersion");
+  if (o.mode !== "continuous-monitoring") p.push('evaluation policy mode must be "continuous-monitoring"');
+  if (!isDate(o.decidedAt) || !isDate(o.outcomesFrom)) p.push("evaluation policy decidedAt and outcomesFrom must be real dates");
+  if (typeof o.decidedBy !== "string" || !o.decidedBy.trim()) p.push("evaluation policy must be attributed (decidedBy)");
+  if (!RULE.test(String(o.referenceRuleVersion))) p.push("evaluation policy referenceRuleVersion must be mv<N>-<8 hex>");
+  if (!Array.isArray(o.excludedSessions) || o.excludedSessions.some((e: any) => !obj(e) || !isDate(e.sessionDate) || typeof e.reason !== "string")) p.push("evaluation policy excludedSessions must list {sessionDate, reason}");
+  return p;
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
-// Outcome record (PRIVATE)
+// Outcome record
 // ---------------------------------------------------------------------------------------------------------------------
 export interface OutcomeEntry {
   predictionId: string;
@@ -134,8 +120,6 @@ export interface OutcomeHeader {
   data: { commit: string; files: Array<{ name: string; sha256: string }> };
   generatedAt: string;
   github: { runId: string | null; runAttempt: string | null; sha: string | null };
-  /** secret; kept only with the private record so the public commitment cannot be used to confirm guesses */
-  commitmentSalt: string;
   outcomesSha256: string;
 }
 export interface OutcomeRecord {
@@ -155,8 +139,8 @@ export type DailyLike = { header: { sessionDate: string; predictionsSha256: stri
 const inputsOf = (h: OutcomeHeader, e: Pick<OutcomeEntry, "group" | "frozen" | "sigmaChanges" | "bars">) => ({ sessions: h.sessions, bars: e.bars, up: e.group === "gainer", day: e.frozen.day, sigma: e.frozen.sigma, sigmaChanges: e.sigmaChanges, benchT: h.benchmark.closeT, benchTh: h.benchmark.closeTh });
 
 /**
- * Builds a private outcome record from an immutable prediction file and already-checked window evidence. Pure: the
- * caller supplies the maturity result, the evidence, provenance, salt and time. Fails closed on any inconsistency.
+ * Builds an outcome record from an immutable prediction file and already-checked window evidence. Pure: the caller
+ * supplies the maturity result, the evidence, provenance and time. Fails closed on any inconsistency.
  */
 export function buildOutcomeRecord(a: {
   daily: DailyLike;
@@ -174,10 +158,7 @@ export function buildOutcomeRecord(a: {
   data: { commit: string; files: Array<{ name: string; sha256: string }> };
   generatedAt: string;
   github: { runId: string | null; runAttempt: string | null; sha: string | null };
-  commitmentSalt: string;
 }): OutcomeRecord {
-  assertSyntheticSession(a.daily?.header?.sessionDate);
-  for (const d of a.sessions) assertSyntheticSession(d);
   if (a.receipt.class !== "live") throw new Error(`outcomes are only built for live sessions (receipt class ${a.receipt.class})`);
   const d = a.daily;
   if (sha256Canonical(d.predictions) !== d.header.predictionsSha256) throw new Error("the prediction file's predictions do not match its predictionsSha256");
@@ -209,14 +190,13 @@ export function buildOutcomeRecord(a: {
     data: a.data,
     generatedAt: a.generatedAt,
     github: a.github,
-    commitmentSalt: a.commitmentSalt,
     outcomesSha256: sha256Canonical(outcomes),
   };
   return { kind: OUTCOME_KIND, schemaVersion: LEDGER_SCHEMA_VERSION, header, outcomes };
 }
 
 /**
- * Validates a private outcome record: structure, provenance, hashes, and that EVERY stored outcome re-derives exactly
+ * Validates an outcome record: structure, provenance, hashes, and that EVERY stored outcome re-derives exactly
  * from its stored inputs with the shared engine (tamper detection). With `daily` it also binds the record to the
  * immutable prediction file (identity, recordHash, frozen sigma and day bar, group, completeness, duplicates).
  */
@@ -228,7 +208,7 @@ export function validateOutcomeRecord(o: unknown, ctx: { definitionsSha256: stri
   if (o.schemaVersion !== LEDGER_SCHEMA_VERSION) p.push(`schemaVersion must be ${LEDGER_SCHEMA_VERSION}`);
   const h = o.header;
   if (!obj(h) || !Array.isArray(o.outcomes)) return [...p, "header must be an object and outcomes an array"];
-  keysExactly(h, ["sessionDate", "horizon", "sessions", "endDate", "ruleVersion", "protocol", "engine", "source", "calendar", "archives", "benchmark", "data", "generatedAt", "github", "commitmentSalt", "outcomesSha256"], "header", p);
+  keysExactly(h, ["sessionDate", "horizon", "sessions", "endDate", "ruleVersion", "protocol", "engine", "source", "calendar", "archives", "benchmark", "data", "generatedAt", "github", "outcomesSha256"], "header", p);
   if (!isDate(h.sessionDate)) p.push("header.sessionDate must be a real date");
   if (!Number.isInteger(h.horizon) || !OD1_STORED_HORIZONS.includes(h.horizon)) p.push(`header.horizon must be one of the sealed stored horizons ${OD1_STORED_HORIZONS.join(", ")}`);
   const sessions: unknown[] = Array.isArray(h.sessions) ? h.sessions : [];
@@ -251,7 +231,6 @@ export function validateOutcomeRecord(o: unknown, ctx: { definitionsSha256: stri
   if (!obj(h.data) || !HEX40.test(String(h.data.commit)) || !Array.isArray(h.data.files) || h.data.files.length === 0 || h.data.files.some((f: any) => !obj(f) || typeof f.name !== "string" || !HEX64.test(String(f.sha256)))) p.push("header.data provenance must name the data commit (40 hex) and file hashes");
   if (!isIso(h.generatedAt)) p.push("header.generatedAt must be an ISO time");
   if (!obj(h.github) || !["runId", "runAttempt", "sha"].every((k) => k in h.github)) p.push("header.github must record runId, runAttempt and sha (null allowed)");
-  if (!HEX64.test(String(h.commitmentSalt))) p.push("header.commitmentSalt must be 64 hex");
   if (h.outcomesSha256 !== sha256Canonical(o.outcomes)) p.push("header.outcomesSha256 does not match the outcomes");
   if (obj(s) && s.predictionCount !== o.outcomes.length) p.push(`header.source.predictionCount ${s?.predictionCount} != ${o.outcomes.length} outcomes`);
   const seen = new Set<string>();
@@ -312,93 +291,7 @@ export function createOnlyDecision(existing: Pick<OutcomeRecord, "header"> | nul
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Receipt (PUBLIC-SAFE: hashes and provenance only)
-// ---------------------------------------------------------------------------------------------------------------------
-export interface OutcomeReceipt {
-  kind: typeof OUTCOME_RECEIPT_KIND;
-  schemaVersion: number;
-  sessionDate: string;
-  ruleVersion: string;
-  horizon: number;
-  endDate: string;
-  protocol: { id: "od1"; definitionsSha256: string };
-  engine: { version: string };
-  source: { dailyFile: string; dailyFileSha256: string; predictionsSha256: string; predictionCount: number };
-  commitment: { scheme: typeof COMMITMENT_SCHEME; value: string };
-  storage: { store: "private"; key: string };
-  createdAt: string;
-}
-export const commitmentOf = (salt: string, outcomesSha256: string): string => sha256Canonical({ salt, outcomesSha256 });
-
-export function buildOutcomeReceipt(r: OutcomeRecord, createdAt: string): OutcomeReceipt {
-  const h = r.header;
-  assertSyntheticSession(h.sessionDate);
-  assertSyntheticSession(h.endDate);
-  return {
-    kind: OUTCOME_RECEIPT_KIND,
-    schemaVersion: LEDGER_SCHEMA_VERSION,
-    sessionDate: h.sessionDate,
-    ruleVersion: h.ruleVersion,
-    horizon: h.horizon,
-    endDate: h.endDate,
-    protocol: { id: "od1", definitionsSha256: h.protocol.definitionsSha256 },
-    engine: { version: h.engine.version },
-    source: { dailyFile: h.source.dailyFile, dailyFileSha256: h.source.dailyFileSha256, predictionsSha256: h.source.predictionsSha256, predictionCount: h.source.predictionCount },
-    commitment: { scheme: COMMITMENT_SCHEME, value: commitmentOf(h.commitmentSalt, h.outcomesSha256) },
-    storage: { store: "private", key: outcomeStorageKey(h.ruleVersion, h.sessionDate, h.horizon) },
-    createdAt,
-  };
-}
-
-/** Strict whitelist: a receipt can only ever hold identifiers, hashes, the horizon, the prediction count and times. */
-export function validateOutcomeReceipt(o: unknown, ctx: { definitionsSha256: string }): string[] {
-  const p: string[] = [];
-  if (!obj(o)) return ["receipt is not an object"];
-  keysExactly(o, ["kind", "schemaVersion", "sessionDate", "ruleVersion", "horizon", "endDate", "protocol", "engine", "source", "commitment", "storage", "createdAt"], "receipt", p);
-  if (o.kind !== OUTCOME_RECEIPT_KIND) p.push(`kind must be ${OUTCOME_RECEIPT_KIND}`);
-  if (o.schemaVersion !== LEDGER_SCHEMA_VERSION) p.push(`schemaVersion must be ${LEDGER_SCHEMA_VERSION}`);
-  if (!isDate(o.sessionDate) || !isDate(o.endDate) || !(o.endDate > o.sessionDate)) p.push("sessionDate and endDate must be real dates, endDate after sessionDate");
-  if (!RULE.test(String(o.ruleVersion))) p.push("ruleVersion must be mv<N>-<8 hex>");
-  if (!Number.isInteger(o.horizon) || !OD1_STORED_HORIZONS.includes(o.horizon)) p.push("horizon must be a sealed stored horizon");
-  if (!obj(o.protocol)) p.push("protocol must be an object");
-  else {
-    keysExactly(o.protocol, ["id", "definitionsSha256"], "protocol", p);
-    if (o.protocol.id !== "od1" || o.protocol.definitionsSha256 !== ctx.definitionsSha256) p.push("protocol must be od1 with the sealed definitionsSha256");
-  }
-  if (!obj(o.engine)) p.push("engine must be an object");
-  else {
-    keysExactly(o.engine, ["version"], "engine", p);
-    if (!ENGINE.test(String(o.engine.version))) p.push("engine.version must be od1e-<8 hex>");
-  }
-  if (!obj(o.source)) p.push("source must be an object");
-  else {
-    keysExactly(o.source, ["dailyFile", "dailyFileSha256", "predictionsSha256", "predictionCount"], "source", p);
-    if (typeof o.source.dailyFile !== "string" || !o.source.dailyFile.endsWith(`/${o.ruleVersion}/${o.sessionDate}.json`)) p.push("source.dailyFile must name this session and rule version");
-    if (!HEX64.test(String(o.source.dailyFileSha256)) || !HEX64.test(String(o.source.predictionsSha256))) p.push("source hashes must be 64 hex");
-    if (!Number.isInteger(o.source.predictionCount) || o.source.predictionCount < 0) p.push("source.predictionCount must be a non-negative integer");
-  }
-  if (!obj(o.commitment)) p.push("commitment must be an object");
-  else {
-    keysExactly(o.commitment, ["scheme", "value"], "commitment", p);
-    if (o.commitment.scheme !== COMMITMENT_SCHEME || !HEX64.test(String(o.commitment.value))) p.push("commitment must be a salted sha256 commitment (64 hex)");
-  }
-  if (!obj(o.storage)) p.push("storage must be an object");
-  else {
-    keysExactly(o.storage, ["store", "key"], "storage", p);
-    if (o.storage.store !== "private" || o.storage.key !== outcomeStorageKey(String(o.ruleVersion), String(o.sessionDate), Number(o.horizon))) p.push("storage must be the private logical key of this record");
-  }
-  if (!isIso(o.createdAt)) p.push("createdAt must be an ISO time");
-  return p;
-}
-
-/** Binds a public receipt to its private record (re-computes the commitment with the record's secret salt). */
-export function verifyReceiptAgainstRecord(receipt: OutcomeReceipt, record: OutcomeRecord): string[] {
-  const want = buildOutcomeReceipt(record, receipt.createdAt);
-  return sha256Canonical(want) === sha256Canonical(receipt) ? [] : ["the receipt does not commit to this outcome record"];
-}
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Corrections (append-only; PUBLIC-SAFE: commitments only)
+// Corrections (append-only; records are identified by their outcomesSha256)
 // ---------------------------------------------------------------------------------------------------------------------
 export const CORRECTION_REASONS = ["source-revised", "calendar-revised", "engine-defect", "other"] as const;
 export interface OutcomeCorrection {
@@ -409,9 +302,9 @@ export interface OutcomeCorrection {
   horizon: number;
   /** 1 for the first correction of a record, then 2, 3, ... */
   sequence: number;
-  /** commitment of the record being superseded (the original receipt's, or the previous correction's replacement) */
+  /** outcomesSha256 of the record being superseded (the original, or the previous correction's replacement) */
   supersedes: string;
-  /** commitment of the new, separately stored record; the superseded record is never changed */
+  /** outcomesSha256 of the new, separately stored record; the superseded record is never changed */
   replacement: string;
   reasonCode: (typeof CORRECTION_REASONS)[number];
   reason: string;
@@ -429,7 +322,7 @@ export function validateOutcomeCorrection(o: unknown): string[] {
   if (o.schemaVersion !== LEDGER_SCHEMA_VERSION) p.push(`schemaVersion must be ${LEDGER_SCHEMA_VERSION}`);
   if (!isDate(o.sessionDate) || !RULE.test(String(o.ruleVersion)) || !OD1_STORED_HORIZONS.includes(o.horizon)) p.push("sessionDate, ruleVersion and horizon must identify a record");
   if (!Number.isInteger(o.sequence) || o.sequence < 1) p.push("sequence must be a positive integer");
-  if (!HEX64.test(String(o.supersedes)) || !HEX64.test(String(o.replacement))) p.push("supersedes and replacement must be 64-hex commitments");
+  if (!HEX64.test(String(o.supersedes)) || !HEX64.test(String(o.replacement))) p.push("supersedes and replacement must be 64-hex outcome hashes");
   if (o.supersedes === o.replacement) p.push("a correction must replace a record with a DIFFERENT record");
   if (!CORRECTION_REASONS.includes(o.reasonCode)) p.push(`reasonCode must be one of ${CORRECTION_REASONS.join(", ")}`);
   const reason = typeof o.reason === "string" ? o.reason.trim() : "";
@@ -440,11 +333,11 @@ export function validateOutcomeCorrection(o: unknown): string[] {
   return p;
 }
 
-/** The corrections of ONE record form a single unbroken chain starting at the original commitment. */
-export function validateCorrectionChain(original: { sessionDate: string; ruleVersion: string; horizon: number; commitment: string }, corrections: OutcomeCorrection[]): string[] {
+/** The corrections of ONE record form a single unbroken chain starting at the original record's outcomesSha256. */
+export function validateCorrectionChain(original: { sessionDate: string; ruleVersion: string; horizon: number; outcomesSha256: string }, corrections: OutcomeCorrection[]): string[] {
   const p: string[] = [];
   const sorted = [...corrections].sort((a, b) => a.sequence - b.sequence);
-  let head = original.commitment;
+  let head = original.outcomesSha256;
   const seen = new Set<string>([head]);
   sorted.forEach((c, i) => {
     p.push(...validateOutcomeCorrection(c).map((x) => `correction ${c.sequence}: ${x}`));

@@ -1,31 +1,23 @@
 /**
- * Phase B1: shared OD1 engine (scripts/ledger/od1.mts) and the protected outcome schema (scripts/ledger/outcomes.mts).
- * SYNTHETIC fixtures only: no live prediction file is read for outcomes, no live outcome is computed, nothing is written
- * outside a temporary directory.
+ * Shared OD1 engine (scripts/ledger/od1.mts) and the outcome record schema (scripts/ledger/outcomes.mts).
+ * SYNTHETIC fixtures only.
  */
 import { describe, expect, it } from "vitest";
 import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
 import { sha256Canonical } from "../../scripts/ledger/canonical.mts";
 import { OD1_DEFINITIONS, od1DefinitionsSha256 } from "../../scripts/ledger/protocol.mts";
 import { OD1, OD1_CLASSES, OD1_HEADLINE_HORIZONS, OD1_STORED_HORIZONS, od1Classify, od1Epsilon, od1Maturity, od1Measure, od1Outcome, od1SigmaWindow, populationSd, type Od1WindowBar } from "../../scripts/ledger/od1.mts";
 import {
-  assertPrivateStorageRoot,
-  buildOutcomeReceipt,
   buildOutcomeRecord,
-  commitmentOf,
   computeEngine,
   createOnlyDecision,
   engineVersionOf,
-  outcomeStorageKey,
   requireUnblinded,
   validateCorrectionChain,
+  validateEvaluationPolicy,
   validateOutcomeCorrection,
-  validateOutcomeReceipt,
   validateOutcomeRecord,
-  verifyReceiptAgainstRecord,
   type OutcomeCorrection,
   type OutcomeRecord,
 } from "../../scripts/ledger/outcomes.mts";
@@ -210,7 +202,6 @@ async function record(over: Partial<Parameters<typeof buildOutcomeRecord>[0]> = 
     data: { commit: "3".repeat(40), files: [{ name: "stocks.json", sha256: "4".repeat(64) }] },
     generatedAt: "2031-03-06T22:00:00.000Z",
     github: { runId: null, runAttempt: null, sha: null },
-    commitmentSalt: "5".repeat(64),
     ...over,
   });
 }
@@ -292,51 +283,17 @@ describe("protected outcome record: schema, provenance, tamper detection", () =>
     missing.header.source.predictionCount = 3;
     expect(validateOutcomeRecord(missing, { definitionsSha256: DEFS, daily: daily() }).join(" ")).toContain("prediction has no outcome entry");
     expect(createOnlyDecision(null, r)).toBe("create");
-    expect(createOnlyDecision(r, await record({ generatedAt: "2031-03-07T01:00:00.000Z", commitmentSalt: "9".repeat(64) }))).toBe("existing");
+    expect(createOnlyDecision(r, await record({ generatedAt: "2031-03-07T01:00:00.000Z", github: { runId: "9", runAttempt: "1", sha: null } }))).toBe("existing");
     expect(createOnlyDecision(r, await record({ benchmark: { closeT: 20000, closeTh: 19000 } }))).toBe("conflict");
     expect(() => createOnlyDecision(r, { header: { ...r.header, horizon: 5 } })).toThrow("different sessions");
   });
 });
 
 // ---------------------------------------------------------------------------------------------------------------------
-describe("public receipt: confidentiality and binding", () => {
-  it("contains only identifiers, hashes, horizon, prediction count and times - no classes, returns or per-stock data", async () => {
-    const r = await record();
-    const rc = buildOutcomeReceipt(r, "2031-03-06T22:00:01.000Z");
-    expect(validateOutcomeReceipt(rc, { definitionsSha256: DEFS })).toEqual([]);
-    const text = JSON.stringify(rc);
-    for (const w of [...OD1_CLASSES, "AAA", "BBB", "unavailable", "complete", "no-bar", "insufficient", "R\"", "eps", "gap", "20040", r.header.commitmentSalt, r.header.outcomesSha256]) expect(text).not.toContain(w); // never the secret salt or the record's own content hash
-    const numbers: number[] = [];
-    JSON.parse(text, (_k, v) => (typeof v === "number" && numbers.push(v), v));
-    expect(numbers.sort()).toEqual([1, 1, 4].sort()); // schemaVersion, horizon, predictionCount
-    expect(rc.storage).toEqual({ store: "private", key: outcomeStorageKey(RV, T, 1) });
-    expect(verifyReceiptAgainstRecord(rc, r)).toEqual([]);
-  });
-  it("two records with different outcomes yield receipts that differ only in the salted commitment", async () => {
-    const a = buildOutcomeReceipt(await record(), "2031-03-06T22:00:01.000Z");
-    const b = buildOutcomeReceipt(await record({ benchmark: { closeT: 20000, closeTh: 19000 }, commitmentSalt: "a".repeat(64) }), "2031-03-06T22:00:01.000Z");
-    expect({ ...a, commitment: null }).toEqual({ ...b, commitment: null });
-    expect(a.commitment.value).not.toBe(b.commitment.value);
-    // the commitment is unlinkable without the secret salt
-    const r = await record();
-    expect(commitmentOf("5".repeat(64), r.header.outcomesSha256)).toBe(a.commitment.value);
-    expect(commitmentOf("6".repeat(64), r.header.outcomesSha256)).not.toBe(a.commitment.value);
-  });
-  it("any extra field, a wrong storage key, or a mismatched record is rejected", async () => {
-    const r = await record();
-    const rc = buildOutcomeReceipt(r, "2031-03-06T22:00:01.000Z");
-    expect(validateOutcomeReceipt({ ...rc, counts: { confirmed: 2 } }, { definitionsSha256: DEFS }).join(" ")).toContain("unknown key counts");
-    expect(validateOutcomeReceipt({ ...rc, source: { ...rc.source, classes: ["confirmed"] } }, { definitionsSha256: DEFS }).join(" ")).toContain("unknown key classes");
-    expect(validateOutcomeReceipt({ ...rc, storage: { store: "private", key: "public/data/x" } }, { definitionsSha256: DEFS }).join(" ")).toContain("private logical key");
-    expect(verifyReceiptAgainstRecord(rc, await record({ benchmark: { closeT: 20000, closeTh: 19000 } }))).toEqual(["the receipt does not commit to this outcome record"]);
-  });
-});
-
-// ---------------------------------------------------------------------------------------------------------------------
 describe("append-only corrections", () => {
-  const orig = { sessionDate: T, ruleVersion: RV, horizon: 1, commitment: "a".repeat(64) };
+  const orig = { sessionDate: T, ruleVersion: RV, horizon: 1, outcomesSha256: "a".repeat(64) };
   const corr = (seq: number, sup: string, rep: string, over: Partial<OutcomeCorrection> = {}): OutcomeCorrection => ({ kind: "momentum-ledger.od1-outcome-correction", schemaVersion: 1, sessionDate: T, ruleVersion: RV, horizon: 1, sequence: seq, supersedes: sup, replacement: rep, reasonCode: "source-revised", reason: "NSE re-published the bhavcopy for the window session; values changed.", recordedAt: "2031-03-20T00:00:00Z", recordedBy: "owner", analyticalTreatment: "pending-owner-decision", ...over });
-  it("a valid chain supersedes by commitment and never touches the original", () => {
+  it("a valid chain supersedes by outcomesSha256 and never touches the original", () => {
     expect(validateCorrectionChain(orig, [corr(1, "a".repeat(64), "b".repeat(64)), corr(2, "b".repeat(64), "c".repeat(64))])).toEqual([]);
   });
   it("forks, gaps, duplicates, restoring an earlier record and silent replacement are rejected", () => {
@@ -356,14 +313,16 @@ describe("append-only corrections", () => {
 
 // ---------------------------------------------------------------------------------------------------------------------
 describe("storage, sealing and engine identity", () => {
-  it("protected records can never be stored inside the repository or under public/", () => {
-    expect(() => assertPrivateStorageRoot(path.resolve("public/data/ledger/outcomes"), process.cwd())).toThrow("inside the repository");
-    expect(() => assertPrivateStorageRoot(path.resolve("."), process.cwd())).toThrow("inside the repository");
-    expect(() => assertPrivateStorageRoot("relative/dir", process.cwd())).toThrow("absolute path");
-    expect(() => assertPrivateStorageRoot(path.join(os.tmpdir(), "x", "public", "y"), process.cwd())).toThrow("public/");
-    expect(() => assertPrivateStorageRoot(path.join(os.tmpdir(), "od1-private-store"), process.cwd())).not.toThrow();
+  it("the evaluation policy (continuous monitoring) is validated strictly", async () => {
+    const real = JSON.parse(await readFile("public/data/ledger/protocol/evaluation-policy.json", "utf-8"));
+    expect(validateEvaluationPolicy(real)).toEqual([]);
+    expect(real.excludedSessions.map((e: { sessionDate: string }) => e.sessionDate)).toEqual(["2026-11-18"]);
+    expect(validateEvaluationPolicy({ ...real, mode: "sealed" }).join(" ")).toContain("continuous-monitoring");
+    expect(validateEvaluationPolicy({ ...real, decidedBy: "" }).join(" ")).toContain("attributed");
+    expect(validateEvaluationPolicy({ ...real, outcomesFrom: "2026-02-30" }).join(" ")).toContain("real dates");
+    expect(validateEvaluationPolicy(null)).toEqual(["evaluation policy is not an object"]);
   });
-  it("analysis is refused while the holdout is sealed (the real holdout.json is sealed)", async () => {
+  it("holdout.json is kept unchanged as the historical sealed contract (the policy, not an edit, ends the blinding)", async () => {
     const h = JSON.parse(await readFile("public/data/ledger/holdout.json", "utf-8"));
     expect(h).toMatchObject({ status: "sealed", unblinded: null, gate: { minCompletedLiveSessions: 250 } });
     expect(() => requireUnblinded(h)).toThrow("sealed");
@@ -371,13 +330,11 @@ describe("storage, sealing and engine identity", () => {
     expect(() => requireUnblinded({ status: "unblinded", unblinded: null })).toThrow("sealed");
     expect(() => requireUnblinded({ status: "unblinded", unblinded: { authorisedBy: "owner" } })).not.toThrow();
   });
-  it("B1 writes nothing and no outcome file exists in the repository", async () => {
-    for (const f of ["scripts/ledger/od1.mts", "scripts/ledger/outcomes.mts"]) {
+  it("the engine modules write nothing (records are written only by the outcome store)", async () => {
+    for (const f of ["scripts/ledger/od1.mts", "scripts/ledger/outcomes.mts", "scripts/ledger/outcome-runner.mts"]) {
       const src = await readFile(f, "utf-8");
       expect(src).not.toMatch(/writeFile|appendFile|createOnly\(|mkdir|rename\(|unlink/);
     }
-    const tracked = execFileSync("git", ["ls-files"]).toString();
-    expect(tracked).not.toMatch(/od1-outcome|\/outcomes\/od1\//);
   });
   it("the engine version is deterministic and changes with any engine file", async () => {
     const a = await computeEngine(process.cwd(), DEFS);

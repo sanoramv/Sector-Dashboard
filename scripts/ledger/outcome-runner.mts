@@ -1,11 +1,10 @@
 /**
- * OD1 outcome runner — deterministic planning and record building (Phase B2a). PURE: it reads no files, writes nothing
- * and makes no network call; the caller supplies the immutable prediction files, the public market data, the public
- * holdout eligibility and the keys already in private storage. It is designed to run ONLY in the private outcome
- * repository's workflow (see outcome-pipeline.mts `assertProtectedExecutionContext`); B2a exercises it on synthetic
- * 2031 fixtures only and no entry point, workflow or activation record exists.
+ * OD1 outcome runner — deterministic planning and record building. PURE: it reads no files, writes nothing and makes
+ * no network call; the caller supplies the immutable prediction files, the market data, the live eligibility and the
+ * keys already stored. Driven by `outcome-process.mts` (scheduled after the data update) under the continuous-monitoring
+ * evaluation policy of 2026-11-24.
  *
- * Rules (sealed OD1, design §15 + erratum 22):
+ * Rules (sealed OD1, design §15 + errata 22 and 23):
  *  - every stored horizon 1, 2, 5, 10 is processed; only 1 and 5 are marked `headline` (completion counts those);
  *  - maturity uses the NIFTY 500 trading calendar via `od1Maturity`: an unresolved weekday or a non-ok archive keeps
  *    the horizon pending — a session is never skipped;
@@ -21,7 +20,7 @@ import type { DailyBar } from "../../src/types/market.ts";
 import type { RefreshState } from "../lib/refresh-state.mts";
 import { dateStatuses } from "./calendar.mts";
 import { OD1_HEADLINE_HORIZONS, OD1_STORED_HORIZONS, od1Maturity, od1SigmaWindow, type ArchiveStatus, type CalendarStatus, type Od1WindowBar } from "./od1.mts";
-import { assertSyntheticSession, buildOutcomeRecord, outcomeStorageKey, type DailyLike, type OutcomeRecord, type WindowEvidence } from "./outcomes.mts";
+import { buildOutcomeRecord, outcomeStorageKey, type DailyLike, type OutcomeRecord, type WindowEvidence } from "./outcomes.mts";
 
 export interface RunnerSession {
   daily: DailyLike & { predictions: Array<DailyLike["predictions"][number] & { bar: { open?: number; high: number; low: number; close: number } }> };
@@ -43,17 +42,15 @@ export interface RunnerMarket {
 
 export interface RunnerContext {
   ruleVersion: string;
-  /** owner-approved, create-only activation (null = none: the runner refuses to plan anything) */
+  /** the evaluation policy's outcomesFrom (null = none: the runner refuses to plan anything) */
   activation: { outcomesFrom: string } | null;
-  /** live-holdout eligibility computed by the PUBLIC guard (`computeLiveHoldout`): only these sessions are processed */
+  /** live eligibility computed by the guard (`computeLiveHoldout`) minus the policy's excluded sessions */
   eligibleSessions: ReadonlySet<string>;
   definitionsSha256: string;
   engine: { version: string; files: Array<{ path: string; sha256: string }> };
   generatedAt: string;
   github: { runId: string | null; runAttempt: string | null; sha: string | null };
-  /** fresh 256-bit secret per record (crypto randomness in production; injected for determinism in tests) */
-  newSalt: () => string;
-  /** keys already present in private storage */
+  /** keys already present in the outcome store */
   stored: ReadonlySet<string>;
 }
 
@@ -83,9 +80,6 @@ export class RunnerBlock extends Error {
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-/** The synthetic-only lock lives in outcomes.mts (it guards every artifact builder); re-exported for callers. */
-export { SYNTHETIC_FROM, SYNTHETIC_ONLY, assertSyntheticSession } from "./outcomes.mts";
-
 /** The NIFTY 500 trading calendar, calendar statuses and archive statuses from the public data. */
 export function calendarInputs(market: RunnerMarket): { tradingCalendar: string[]; calendarStatus: Record<string, CalendarStatus>; archives: Record<string, ArchiveStatus>; benchmark: Map<string, number> } {
   const { bars } = validateBars(market.indexSeries[BENCHMARK.slug]?.bars ?? []);
@@ -102,14 +96,13 @@ export function planOutcomes(sessions: RunnerSession[], market: RunnerMarket, ct
   const out: PlanItem[] = [];
   for (const s of [...sessions].sort((a, b) => a.daily.header.sessionDate.localeCompare(b.daily.header.sessionDate))) {
     const date = s.daily.header.sessionDate;
-    assertSyntheticSession(date);
     if (s.daily.header.model.ruleVersion !== ctx.ruleVersion) throw new Error(`${date}: prediction file has rule version ${s.daily.header.model.ruleVersion}, the runner is configured for ${ctx.ruleVersion}`);
     for (const h of OD1_STORED_HORIZONS) {
       const base = { key: outcomeStorageKey(ctx.ruleVersion, date, h), sessionDate: date, horizon: h, headline: OD1_HEADLINE_HORIZONS.includes(h) };
       if (date < ctx.activation.outcomesFrom) out.push({ ...base, status: "before-activation", reason: `before the activation date ${ctx.activation.outcomesFrom}; earlier sessions need a separate, explicitly approved catch-up` });
       else if (!ctx.eligibleSessions.has(date)) out.push({ ...base, status: "excluded", reason: "the session is not eligible for the live holdout (excluded sessions are not processed)" });
       else if (!s.receipt || s.receipt.class !== "live") out.push({ ...base, status: "not-live", reason: `the prediction receipt is ${s.receipt ? `class ${s.receipt.class}` : "missing"}` });
-      else if (ctx.stored.has(base.key)) out.push({ ...base, status: "stored", reason: "already in private storage" });
+      else if (ctx.stored.has(base.key)) out.push({ ...base, status: "stored", reason: "already in the outcome store" });
       else {
         const m = od1Maturity({ sessionDate: date, h, tradingCalendar: cal.tradingCalendar, calendarStatus: cal.calendarStatus, archives: cal.archives });
         if (m.status === "pending") out.push({ ...base, status: "pending", reason: m.reason });
@@ -122,7 +115,6 @@ export function planOutcomes(sessions: RunnerSession[], market: RunnerMarket, ct
 
 /** Window evidence for one prediction from the public data, with the prediction day checked against the frozen record. */
 export function evidenceFor(market: RunnerMarket, calendar: string[], key: string, sessionDate: string, sessions: string[], p: RunnerSession["daily"]["predictions"][number]): WindowEvidence {
-  assertSyntheticSession(sessionDate);
   const raw = market.stocks[p.symbol]?.bars;
   if (!raw || raw.length === 0) throw new RunnerBlock("stock-absent", key);
   const { bars } = validateBars(raw, { splitAtBreaks: false });
@@ -145,10 +137,8 @@ export function evidenceFor(market: RunnerMarket, calendar: string[], key: strin
   return { bars: window, sigmaChanges: od1SigmaWindow(comparable) };
 }
 
-/** Builds the private record of one DUE plan item. Throws RunnerBlock (code only) when the evidence is not usable. */
+/** Builds the record of one DUE plan item. Throws RunnerBlock (code only) when the evidence is not usable. */
 export function buildDueRecord(item: PlanItem, session: RunnerSession, market: RunnerMarket, ctx: RunnerContext): OutcomeRecord {
-  assertSyntheticSession(item.sessionDate);
-  assertSyntheticSession(session.daily.header.sessionDate);
   if (item.status !== "due" || !item.sessions) throw new Error(`${item.key} is not due`);
   if (!session.receipt) throw new Error(`${item.key}: no prediction receipt`);
   const cal = calendarInputs(market);
@@ -180,7 +170,6 @@ export function buildDueRecord(item: PlanItem, session: RunnerSession, market: R
       data: market.data,
       generatedAt: ctx.generatedAt,
       github: ctx.github,
-      commitmentSalt: ctx.newSalt(),
     });
   } catch (err) {
     if (/no longer reproduces the frozen volatility20/.test(String(err))) throw new RunnerBlock("source-revised", item.key);

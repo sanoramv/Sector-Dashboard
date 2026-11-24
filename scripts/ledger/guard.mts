@@ -11,8 +11,8 @@ import path from "node:path";
 import { ledgerPaths } from "./constants.mts";
 import { exemptionTypeOf, validateDaily, validateExemption, validateReceipt, validateVersionRecord } from "./validate.mts";
 import { checkReceiptStateConsistency, validateState, type DateRecord, type R6Event } from "./state.mts";
-import { checkHoldoutTransition, checkProtocolIntegrity, type HoldoutFile, buildOd1File, od1DefinitionsSha256 } from "./protocol.mts";
-import { scanForOutcomeLeaks, scanRepositoryForOutcomeLeaks, validateOutcomeReceiptTree } from "./outcome-receipts.mts";
+import { checkHoldoutTransition, checkProtocolIntegrity, type HoldoutFile, buildOd1File } from "./protocol.mts";
+import { checkOutcomeStore } from "./outcome-check.mts";
 
 export interface Violation {
   kind: "history" | "file" | "holdout" | "protocol" | "partial" | "receipt" | "state" | "exemption" | "version" | "exclusion" | "outcome";
@@ -219,23 +219,6 @@ export async function validateTree(ledgerRoot: string): Promise<Violation[]> {
     /* reported below */
   }
   for (const p of checkProtocolIntegrity(od1, holdout)) v.push({ kind: "protocol", path: paths.protocolOd1, detail: p });
-  v.push(...(await checkOutcomeConfidentiality(ledgerRoot)));
-  return v;
-}
-
-/**
- * Phase B2a (erratum 22): public outcome receipts are hash-only and add-only (they live under live/), and no protected
- * outcome record, private correction, salt or unsalted outcome hash may exist anywhere in the public tree. With
- * `eligible`, a receipt for a session that is not eligible for the live holdout is a violation.
- */
-export async function checkOutcomeConfidentiality(ledgerRoot: string, eligible?: ReadonlySet<string>): Promise<Violation[]> {
-  const abs = path.resolve(ledgerRoot);
-  const v: Violation[] = (await validateOutcomeReceiptTree(abs, { definitionsSha256: od1DefinitionsSha256(), eligible })).map((x) => ({ kind: "outcome" as const, path: path.join(ledgerRoot, x.path), detail: x.detail }));
-  if (eligible) return v;
-  // The real ledger: scan the WHOLE repository (index + working tree), since anything committed anywhere is public.
-  // Any other root (test fixtures): scan that directory tree.
-  const leaks = abs.endsWith(path.join("public", "data", "ledger")) ? await scanRepositoryForOutcomeLeaks(path.dirname(path.dirname(path.dirname(abs)))) : await scanForOutcomeLeaks([abs]);
-  for (const x of leaks) v.push({ kind: "outcome", path: x.path, detail: x.detail });
   return v;
 }
 
@@ -612,7 +595,7 @@ export async function runGuard(git: GuardGit, ledgerRoot: string): Promise<Guard
   } catch {
     /* holdout.json problems are reported by validateTree / checkHoldoutHistory */
   }
-  const rest = [...ex.problems, ...srProblems, ...reviews.problems, ...holdoutProblems, ...(await validateTree(ledgerRoot)), ...(await validateVersionRecords(git, ledgerRoot)), ...(await checkHoldoutHistory(git, ledgerRoot)), ...(await checkExclusionHistory(git, ledgerRoot, exclusionHistory)), ...(await checkOutcomeConfidentiality(ledgerRoot, new Set(holdout.eligible))).filter((x) => /not eligible/.test(x.detail))];
+  const rest = [...ex.problems, ...srProblems, ...reviews.problems, ...holdoutProblems, ...(await validateTree(ledgerRoot)), ...(await validateVersionRecords(git, ledgerRoot)), ...(await checkHoldoutHistory(git, ledgerRoot)), ...(await checkExclusionHistory(git, ledgerRoot, exclusionHistory)), ...(await checkOutcomeStore(git, ledgerRoot, new Set(holdout.eligible)))];
   return {
     violations: [...history.filter((h) => !h.acknowledged), ...rest],
     acknowledged: history.filter((h) => h.acknowledged),

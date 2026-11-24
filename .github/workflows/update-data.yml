@@ -93,9 +93,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: npm run ledger:verify
 
+      # Continuous-monitoring evaluation (docs/design/EVALUATION_POLICY.md): matured OD1 outcomes of past live
+      # sessions, written create-only to data/outcomes/, plus the dashboard summary in public/data/evaluation/.
+      # Never blocks the capture, the market data or the commit.
+      - name: Ledger outcomes (OD1 evaluation)
+        id: ledger_outcomes
+        continue-on-error: true
+        run: npm run ledger:outcomes
+
       - name: Remove interrupted ledger partial files
         if: ${{ always() }}
-        run: find public/data/ledger -name '*.partial' -type f -print -delete || true
+        run: find public/data/ledger public/data/evaluation data/outcomes -name '*.partial' -type f -print -delete 2>/dev/null || true
 
       # Fail-closed validation of the pending ledger changes BEFORE the data commit. On failure only
       # public/data/ledger is restored to HEAD and an anomaly is recorded; market data is untouched.
