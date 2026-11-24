@@ -17,7 +17,32 @@ reliability, 2% security/governance. Discover what works; do not defend the curr
 - Git identity: `Santhosh Ram V <santhoshramv@yahoo.com>` only. Never force-push, rebase or amend.
 
 ## 0. Live checkpoint
-- 2026-11-24 08:20 UTC: B1 + B2 DONE (pushed `8a52ee7`). Download running in background (resumed 08:08 UTC). Now on B3: shadow pre-declaration `docs/research/SHADOW_PREDICTIONS.md`.
+- 2026-11-24 08:20 UTC: B1 + B2 DONE (pushed `8a52ee7`). Download running in background (resumed 08:08 UTC).
+- 2026-11-24 08:31 UTC: B3 DONE locally, NOT pushed: `623292d` (pre-declaration `docs/research/SHADOW_PREDICTIONS.md`),
+  `e4e0274` (code `scripts/shadow/*`, `scripts/shadow-run.mts`, `npm run shadow`, workflow step `shadow`
+  continue-on-error, `tests/ledger/shadow.test.ts` +15 -> ledger 383, Evaluation tab EXPERIMENTAL card). Versions:
+  `bo-wide-v1-35c57038`, `bo-raw-v1-0bcafcae`, `bo-cap10-v1-6810f8ab`. Inactive until `public/data/shadow/activation.json`
+  (create-only; `{kind:"shadow.activation", captureFrom, approvedAt, document}`) exists. **Waiting for owner approval to
+  publish + activate (release recommendation given).**
+- 2026-11-24 08:41 UTC: download COMPLETE (08:33; + 6 weekend special sessions 08:35; 2022-08-08 recovered from an
+  xlsx served as .csv, verified 1814/1814). B4 validation DONE `5d3f14c` (0 problems, 1,194 sessions; PREV_CLOSE is NOT
+  split-adjusted — doc corrected). B5 plan FROZEN `ff723b1` (`docs/research/HISTORICAL_VALIDATION.md`) before any result.
+  ETF/equity reference lists in `research-data/reference/` (hashes in the plan).
+- 2026-11-24 08:55 UTC: B5 DONE `e137f77` (results in `docs/research/HISTORICAL_VALIDATION.md` §2, digest `643f7731…`,
+  output `research-data/historical-validation.json`). Replicated: >=10% warning (+9.8 pp h1), conditions/score/flag add
+  nothing, breakout = same-size gainer, nothing tradable. Weak: market-wide bearish (+2.7), raw h10 X (+0.38). Not
+  replicated: breakout-specific bearish (+4.0, fails a half), leading sector. Contradicted h1: top-50 neutrality (+3.4).
+  Local commits `623292d..` NOT pushed: the range includes the shadow implementation, so a push needs owner approval.
+- 2026-11-24 08:58 UTC: B6 converter + downloader `6b6c476` (validated 23,509/23,509 rows on 12 overlap dates). Bulk
+  download 2016-01-01 → 2020-10-30 RUNNING in background (legacy equity, then index; log
+  `research-data/fetch-2016-2020.log`; resume = re-run the two commands in that log order:
+  `npx tsx scripts/research/fetch-history-legacy.mts --from 2016-01-01 --to 2020-10-30` then
+  `npx tsx scripts/research/fetch-history.mts --from 2016-01-01 --to 2020-10-30 --kinds index`).
+  After it: run `history-validate.mts` (extend `--out`), find weekend special sessions 2016–2020 (PREV_CLOSE ≠ prior
+  close across a whole session) and fetch them with `--dates`; then document. Release recommendation for the 6 local
+  commits given to the owner 2026-11-24 08:58 UTC. **Owner decision 2026-11-24 09:02 UTC: "Don't push yet"** — keep all
+  commits local; shadow capture stays unpublished and inactive (no shadow sessions are being collected). Do not push or
+  activate without a new explicit approval.
 
 ## 3. Git state at handover (historical, pre-restart) (verify with `git status`, `git log --oneline origin/main..HEAD`, `git fetch`)
 - Branch `main`. `origin/main` = `1596276` (EPIPE hotfix, pushed and green 2026-11-24 04:24 UTC).
@@ -200,9 +225,9 @@ survey, and already-downloaded archive dates are DONE. Re-run them only if code 
 - [x] B1 resume (2026-11-24 08:09 UTC): state verified (clean, 9 ahead / 0 behind, no merge needed), download resumed 08:08 UTC
 - [x] B2 (2026-11-24 08:14 UTC): validation passed (ledger 368, app 306, research 33, typechecks, guard 0, digest, rule, hashes, build); push `1596276..8a52ee7`; guard 45354430077, deploy 45354430161, governance 45354429970 all success; Pages 200
 - [ ] B2 first production outcome-step run verified
-- [ ] B3 shadow plan pre-declared (definitions, versions, promotion criteria) and committed
-- [ ] B3 shadow capture implemented, tested, committed; release recommendation given
-- [ ] B4 5-year download complete and validated (integrity, coverage, corporate actions, universe)
-- [ ] B5 validation plan frozen and committed BEFORE results
-- [ ] B5 independent validation run and reported (all four horizons, net returns)
+- [x] B3 shadow plan pre-declared and committed (`623292d`)
+- [x] B3 shadow capture implemented, tested, committed (`e4e0274`); release recommendation given; owner 2026-11-24 09:02 UTC: don't push yet
+- [x] B4 5-year download complete and validated (`5d3f14c`; universe rule frozen in the B5 plan)
+- [x] B5 validation plan frozen and committed BEFORE results (`ff723b1`)
+- [x] B5 independent validation run and reported (`e137f77`)
 - [ ] B6 older-format parser validated; 10-year data acquired

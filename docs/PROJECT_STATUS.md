@@ -2,7 +2,7 @@
 
 > Read this first in every session, then verify it against Git and GitHub. **Evidence beats this file**: if they
 > disagree, trust the evidence and correct this file. This file records approvals; it never grants new ones.
-> Times are UTC. Last updated: **2026-11-24 08:20 UTC** (B1+B2 done: 9 commits pushed `1596276..8a52ee7`, all push runs green; download resumed; B3 shadow pre-declaration in progress). Handover: `docs/RESUME.md`.
+> Times are UTC. Last updated: **2026-11-24 08:58 UTC** (B1+B2 done and pushed `8a52ee7`; B3 committed locally `623292d`, `e4e0274`, awaiting publication approval; download running). Handover: `docs/RESUME.md`.
 
 ## A. Project identity
 - Repository: https://github.com/sanoramv/Sector-Dashboard · Production: https://sanoramv.github.io/Sector-Dashboard/
@@ -210,10 +210,10 @@
 |---|---|
 | Publish the 8 local commits (+ pre-restart docs commit) | DONE 2026-11-24 08:14 UTC (`8a52ee7`), runs green |
 | First scheduled outcome-processing run in production | PENDING (after the push) |
-| Shadow capture BO-wide / BO-raw / BO-cap10 | APPROVED; not started |
-| 5-year download 2020-11-02 → 2025-08-22 | PAUSED at 2023-06-01 (672 stock, 639 index files; resumable) |
-| Data validation + independent replication on 2020-11 → 2025-08 | NOT STARTED (freeze plan first) |
-| 10-year expansion (older NSE formats, 2016+) | APPROVED; not started |
+| Shadow capture BO-wide / BO-raw / BO-cap10 | Implemented locally (`623292d`, `e4e0274`); owner 2026-11-24 09:02 UTC: don't push yet |
+| 5-year download 2020-11-02 → 2025-08-22 | COMPLETE and validated 2026-11-24 (`5d3f14c`) |
+| Data validation + independent replication on 2020-11 → 2025-08 | DONE: `5d3f14c`, plan `ff723b1`, results `e137f77` (local) |
+| 10-year expansion (older NSE formats, 2016+) | Converter validated `6b6c476`; bulk download running (2016-01 → 2020-10) |
 | 24 Nov evening capture | PENDING — check after ~01:30 UTC 25 Nov |
 
 ## G. Known issues (unresolved)
@@ -244,6 +244,9 @@ Approved 2026-11-24 (current):
 - Routine technical decisions, implementation, testing and ordinary local commits are delegated.
 - Evidence-based promotion with checkpoints at 20, 50, 100 and 250 sessions (no fixed 100-session wait).
 
+Owner decision 2026-11-24 09:02 UTC: release recommendation for the 6 local commits (`623292d`..`6b6c476`, incl. the shadow
+implementation) → **"Don't push yet"**. Commits stay local; shadow capture is neither published nor activated.
+
 Still needs explicit owner approval:
 - Replacing or changing production Possible breakout setup / Continuation characteristics logic (mv1).
 - Publishing the shadow-capture implementation (give a release recommendation first).
@@ -260,6 +263,22 @@ validation; never claim success from a green workflow alone; historical developm
 - 08:13 UTC validation on `8a52ee7`: ledger 368/368, app 306/306, research 33/33, both typechecks, guard 0 violations (3 eligible, 18 Nov excluded), baseline `568512f8…5795`, rule `mv1-8ecef864`, `od1.json`/`holdout.json` hashes unchanged, build OK; `src/lib/momentum`, `src/lib/calculations`, predictions/receipts unchanged vs `1596276`; outcome step continue-on-error; 0 `research-data` files tracked; personal identity on all 9 commits.
 - 08:14:42 UTC push `1596276..8a52ee7`. Runs: guard 45354430077 success, deploy 45354430161 success (Pages 200), governance 45354429970 success.
 - First production outcome-step run: PENDING (next scheduled data update, 24 Nov 14:30 UTC slot or later).
+- B3 (local, not pushed): `623292d` pre-declaration, `e4e0274` implementation. Any-rank computation reproduces the mv1
+  top-50 gainer lists of 19, 20, 23 Nov exactly; evaluator engine path reproduces every stored mv1 outcome exactly;
+  end-to-end scratch run OK (all horizons pending; no shadow outcome examined). Validation: ledger 383/383, app 306/306,
+  research 33/33, both typechecks, guard 0, build OK, rule `mv1-8ecef864`, `src/lib` and `public/data/ledger` unchanged.
+  Card checked in headless Chrome (no failed requests). Publishing + activation need owner approval.
+- 08:33 UTC download complete; B4 validation `5d3f14c` (0 problems; PREV_CLOSE not split-adjusted, corrected in
+  HISTORICAL_DATA.md); B5 plan frozen `ff723b1` before any 2020–2025 result.
+- 08:55 UTC B5 results `e137f77` (`docs/research/HISTORICAL_VALIDATION.md` §2; digest `643f7731…`): 928 sessions
+  2021-11-15 → 2025-08-07. Replicated: day change ≥ 10% worse (h1 +9.8 pp), close/volume conditions, evidence score and
+  consolidation flag add nothing, breakouts ≈ same-size gainers, nothing tradable after 20 bps. Weak: market-wide bearish
+  penalty (+2.7 pp), raw-breakout h10 X (+0.38). Not replicated: breakout-specific bearish effect, leading sectors.
+  Contradicted at h1: top-50 neutrality (top-50 breakouts +3.4 pp worse). Study output on (a) byte-identical after the
+  refactor; ledger/app untouched. Local commits since `8a52ee7`: `623292d e4e0274 5d3f14c ff723b1 e137f77 6b6c476`
+  (not pushed; publication needs owner approval because it includes the shadow implementation).
+- 08:58 UTC B6: legacy converter `6b6c476` validated (23,509/23,509 rows identical on 12 overlap dates); bulk
+  2016-01 → 2020-10 download running in the background.
 
 ## I. Next action
 **Pre-restart checkpoint (2026-11-24 06:09 UTC).** Follow `docs/RESUME.md` (section "Outstanding tasks", item 1 onwards).
