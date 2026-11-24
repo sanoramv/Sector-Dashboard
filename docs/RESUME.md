@@ -16,7 +16,10 @@ reliability, 2% security/governance. Discover what works; do not defend the curr
 - Website: https://sanoramv.github.io/Sector-Dashboard/ (GitHub Pages; data refreshed by `update-data.yml`)
 - Git identity: `Santhosh Ram V <santhoshramv@yahoo.com>` only. Never force-push, rebase or amend.
 
-## 3. Git state at handover (verify with `git status`, `git log --oneline origin/main..HEAD`, `git fetch`)
+## 0. Live checkpoint
+- 2026-11-24 08:20 UTC: B1 + B2 DONE (pushed `8a52ee7`). Download running in background (resumed 08:08 UTC). Now on B3: shadow pre-declaration `docs/research/SHADOW_PREDICTIONS.md`.
+
+## 3. Git state at handover (historical, pre-restart) (verify with `git status`, `git log --oneline origin/main..HEAD`, `git fetch`)
 - Branch `main`. `origin/main` = `1596276` (EPIPE hotfix, pushed and green 2026-11-24 04:24 UTC).
 - Local commits NOT yet pushed (publication APPROVED, see §8), oldest first:
   `7d7abab`, `51a9404`, `7b1fe81`, `e5ba9a6`, `b695f6f`, `9c34a16`, `f1b0bb9`, `a1b58f5`, plus the pre-restart commit
@@ -194,8 +197,8 @@ survey, and already-downloaded archive dates are DONE. Re-run them only if code 
 - [x] Experiments 1–4 (`51a9404`)
 - [x] Evaluation policy, outcome engine, catch-up, dashboard (`7b1fe81`…`f1b0bb9`)
 - [x] Downloader + resume-safe fix; download paused at 2023-06-01
-- [ ] B1 resume: state verified, download resumed, bot commits merged
-- [ ] B2 validation passed and 8 (+1) commits pushed; governance / guard / deploy green
+- [x] B1 resume (2026-11-24 08:09 UTC): state verified (clean, 9 ahead / 0 behind, no merge needed), download resumed 08:08 UTC
+- [x] B2 (2026-11-24 08:14 UTC): validation passed (ledger 368, app 306, research 33, typechecks, guard 0, digest, rule, hashes, build); push `1596276..8a52ee7`; guard 45354430077, deploy 45354430161, governance 45354429970 all success; Pages 200
 - [ ] B2 first production outcome-step run verified
 - [ ] B3 shadow plan pre-declared (definitions, versions, promotion criteria) and committed
 - [ ] B3 shadow capture implemented, tested, committed; release recommendation given

@@ -2,7 +2,7 @@
 
 > Read this first in every session, then verify it against Git and GitHub. **Evidence beats this file**: if they
 > disagree, trust the evidence and correct this file. This file records approvals; it never grants new ones.
-> Times are UTC. Last updated: **2026-11-24 06:09 UTC** (pre-restart checkpoint: 8 commits approved for publication, not yet pushed; downloader paused). Handover: `docs/RESUME.md`.
+> Times are UTC. Last updated: **2026-11-24 08:20 UTC** (B1+B2 done: 9 commits pushed `1596276..8a52ee7`, all push runs green; download resumed; B3 shadow pre-declaration in progress). Handover: `docs/RESUME.md`.
 
 ## A. Project identity
 - Repository: https://github.com/sanoramv/Sector-Dashboard · Production: https://sanoramv.github.io/Sector-Dashboard/
@@ -208,7 +208,7 @@
 ## F. Pending work (see docs/RESUME.md for the ordered checklist)
 | Item | State |
 |---|---|
-| Publish the 8 local commits (+ pre-restart docs commit) | APPROVED 2026-11-24; do after restart with full validation |
+| Publish the 8 local commits (+ pre-restart docs commit) | DONE 2026-11-24 08:14 UTC (`8a52ee7`), runs green |
 | First scheduled outcome-processing run in production | PENDING (after the push) |
 | Shadow capture BO-wide / BO-raw / BO-cap10 | APPROVED; not started |
 | 5-year download 2020-11-02 → 2025-08-22 | PAUSED at 2023-06-01 (672 stock, 639 index files; resumable) |
@@ -254,6 +254,12 @@ Still needs explicit owner approval:
 Standing rules: personal identity only (`Santhosh Ram V <santhoshramv@yahoo.com>`); stop and report on any failed
 validation; never claim success from a green workflow alone; historical development data must stay before
 2026-11-18 (live data is the prospective test).
+
+## I0. Post-restart (2026-11-24)
+- 08:08 UTC: state verified (branch main, clean, 9 ahead / 0 behind origin `1596276`, no downloader running, manifest last 2023-06-01). Download resumed in background.
+- 08:13 UTC validation on `8a52ee7`: ledger 368/368, app 306/306, research 33/33, both typechecks, guard 0 violations (3 eligible, 18 Nov excluded), baseline `568512f8…5795`, rule `mv1-8ecef864`, `od1.json`/`holdout.json` hashes unchanged, build OK; `src/lib/momentum`, `src/lib/calculations`, predictions/receipts unchanged vs `1596276`; outcome step continue-on-error; 0 `research-data` files tracked; personal identity on all 9 commits.
+- 08:14:42 UTC push `1596276..8a52ee7`. Runs: guard 45354430077 success, deploy 45354430161 success (Pages 200), governance 45354429970 success.
+- First production outcome-step run: PENDING (next scheduled data update, 24 Nov 14:30 UTC slot or later).
 
 ## I. Next action
 **Pre-restart checkpoint (2026-11-24 06:09 UTC).** Follow `docs/RESUME.md` (section "Outstanding tasks", item 1 onwards).
