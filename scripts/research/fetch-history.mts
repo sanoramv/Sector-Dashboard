@@ -8,13 +8,16 @@
  *           available from late 2019)
  *  - index: content/indices/ind_close_all_DDMMYYYY.csv        (all NSE indices; available from at least 2014)
  * Files are stored gzipped under <out>/<kind>/<YYYY>/<date>.csv.gz with a JSONL manifest (status, bytes, sha256).
- * Resumable (files already present are skipped), paced at one request per ~1.2 s, weekdays only; a 404 is recorded as
- * "missing" (holiday or not published) and never retried in the same run. --out must be git-ignored.
+ * Resumable: a (kind, date) whose manifest entry is "ok" or "missing" is skipped; "error" entries are retried. Files are
+ * written atomically (.partial + rename); leftover .partial files are deleted on start; a file present WITHOUT a
+ * manifest entry (interrupted between write and manifest append) is verified (gunzip + CSV check) and recorded, or
+ * deleted and downloaded again. Paced at one request per ~1.2 s, weekdays only; a 404 is recorded as "missing" (holiday
+ * or not published). Stop any time with Ctrl-C / SIGTERM and re-run the same command. --out must be git-ignored.
  */
 import { createHash } from "node:crypto";
-import { appendFile, mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { appendFile, mkdir, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { gzipSync } from "node:zlib";
+import { gunzipSync, gzipSync } from "node:zlib";
 import { requestHeaders } from "../lib/http.mts";
 
 const URLS: Record<string, (ddmmyyyy: string) => string> = {
@@ -53,6 +56,9 @@ async function main() {
   } catch {
     /* new manifest */
   }
+  // recovery: remove interrupted partial files
+  const walk = async (d: string): Promise<string[]> => (await readdir(d, { withFileTypes: true }).catch(() => [])).flatMap((e) => (e.isDirectory() ? [] : [path.join(d, e.name)])).concat(...(await Promise.all((await readdir(d, { withFileTypes: true }).catch(() => [])).filter((e) => e.isDirectory()).map((e) => walk(path.join(d, e.name))))));
+  for (const f of (await walk(out)).filter((x) => x.endsWith(".partial"))) await rm(f);
   let ok = 0;
   let missing = 0;
   let failed = 0;
@@ -60,7 +66,18 @@ async function main() {
     for (const kind of kinds) {
       if (seen.has(`${kind}|${date}`)) continue;
       const file = path.join(out, kind, date.slice(0, 4), `${date}.csv.gz`);
-      if (await stat(file).then(() => true, () => false)) continue;
+      if (await stat(file).then(() => true, () => false)) {
+        // present but not in the manifest: verify it, record it, or download it again
+        try {
+          const buf = gunzipSync(await readFile(file));
+          if (!/,/.test(buf.toString("utf-8").split("\n")[0] ?? "")) throw new Error("not a CSV archive");
+          await appendFile(manifest, JSON.stringify({ kind, date, at: new Date().toISOString(), status: "ok", bytes: buf.length, sha256: createHash("sha256").update(buf).digest("hex"), recovered: true }) + "\n");
+          ok++;
+          continue;
+        } catch {
+          await rm(file);
+        }
+      }
       let entry: Record<string, unknown> = { kind, date, at: new Date().toISOString() };
       try {
         const res = await fetch(URLS[kind](ddmmyyyy(date)), { headers: requestHeaders(), signal: AbortSignal.timeout(30_000) });
@@ -78,7 +95,8 @@ async function main() {
             failed++;
           } else {
             await mkdir(path.dirname(file), { recursive: true });
-            await writeFile(file, gzipSync(buf));
+            await writeFile(`${file}.partial`, gzipSync(buf));
+            await rename(`${file}.partial`, file);
             entry = { ...entry, status: "ok", bytes: buf.length, sha256: createHash("sha256").update(buf).digest("hex") };
             ok++;
           }

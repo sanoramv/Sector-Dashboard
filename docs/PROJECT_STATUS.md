@@ -2,21 +2,26 @@
 
 > Read this first in every session, then verify it against Git and GitHub. **Evidence beats this file**: if they
 > disagree, trust the evidence and correct this file. This file records approvals; it never grants new ones.
-> Times are UTC. Last updated: **2026-11-23 10:09 UTC** (B2a security hardening validated; push approved, in progress).
+> Times are UTC. Last updated: **2026-11-24 06:09 UTC** (pre-restart checkpoint: 8 commits approved for publication, not yet pushed; downloader paused). Handover: `docs/RESUME.md`.
 
 ## A. Project identity
 - Repository: https://github.com/sanoramv/Sector-Dashboard · Production: https://sanoramv.github.io/Sector-Dashboard/
-- Purpose: static NSE sector/industry dashboard (Vite + React on GitHub Pages; data refreshed by GitHub Actions).
-- Owner objective: make **Daily Movers & Continuation → Continuation characteristics → Setup: Possible breakout setup**
-  measurably more reliable, using evidence (Momentum Ledger live holdout), never trial-and-error tuning.
-- Owner is not a developer: explain in plain English, recommend one next step, get approval before any mutation.
+  · Local path: `/Users/santhosh/Desktop/my-projects/trade/Sector-Dashboard`.
+- Purpose: **personal NSE research platform** (Vite + React on GitHub Pages; data refreshed by GitHub Actions), used
+  only by the owner. Primary objective (2026-11-24): prediction accuracy, signal quality and understanding stock
+  behaviour, especially **Daily Movers & Continuation → Setup: Possible breakout setup** and **Continuation
+  characteristics**. Priorities: ~45% accuracy, 25% historical research, 20% live evaluation, 8% reliability, 2%
+  security/governance.
+- Owner is not a developer: explain in plain English, recommend one next step. Routine technical work is delegated.
 
 ## B. Current phase
-- Phase B1 (OD1 engine foundation): **PUBLISHED** 2026-11-23 06:21 UTC (`1a788b0..c202517`).
-- Active phase: **Phase B2a — private outcome pipeline foundation** (LOCAL, synthetic-only; section D). Status:
-  implemented + validated + security-hardened (section D3); push approved 2026-11-23. Nothing provisioned: no private repository, GitHub App,
-  token, secret, workflow, CLI or activation record. No live outcome computed, stored or published.
-- Production last verified healthy 2026-11-23 06:23 UTC (section C).
+- **Track A (historical research):** experiments 1–4 done (exploratory, 2025-08 → 2026-11). Next: independent
+  validation on the newly downloaded 2020-11 → 2025-08 period (pre-declare first).
+- **Track B (live evaluation):** continuous monitoring of `mv1-8ecef864` implemented locally (outcome engine,
+  catch-up, Evaluation tab). Publication APPROVED 2026-11-24; not yet pushed.
+- **Shadow predictions** BO-wide / BO-raw / BO-cap10: APPROVED 2026-11-24; not yet implemented.
+- **Track C (historical data):** 5-year download paused at 2023-06-01 (resumable); 10-year expansion approved.
+- Production last verified healthy 2026-11-24 04:26 UTC (EPIPE hotfix `1596276`: governance, guard, deploy green).
 
 ## C. Last verified checkpoint
 - **B1 publication (2026-11-23):** pre-push audit 06:15 UTC: `01a4e5c` = 4 audited files (od1.mts, outcomes.mts,
@@ -58,7 +63,7 @@
   baseline digest `568512f8…5795` reproduced; dry-run capture on real data: 18 Nov `existing/retention-window-only`,
   19 Nov identical digest, R10 pass, nothing written.
 
-## D. Current task execution — Phase B2a (2026-11-23 06:39–07:00 UTC)
+## D. (HISTORICAL) Phase B2a execution (2026-11-23 06:39–07:00 UTC)
 - **Architecture (owner decisions 2026-11-23, supersedes the earlier "push model" design):** a separate PRIVATE
   repository will compute outcomes, store records, validate, hold corrections and (later) evaluation; the PUBLIC
   repository keeps capture, prediction receipts, market data, public outcome receipts and the guard. The private
@@ -89,7 +94,7 @@
 - **Storage estimate:** ~1 MB raw / ~190 KB compressed per session (4 horizons); ~50 MB in Git per 250 sessions.
 - **Local commits (07:01 UTC):** `922b956` (code + tests), `a4777f2` (docs); `main` ahead of `origin/main` by 2; NOT pushed.
 
-## D2. B2a final release audit (2026-11-23 07:35–07:43 UTC, read-only; nothing changed in code)
+## D2. (HISTORICAL) B2a final release audit (2026-11-23 07:35–07:43 UTC, read-only; nothing changed in code)
 - **Commits:** `922b956` (9 files: 6 new modules, outcomes.mts, guard.mts, 1 test) and `a4777f2` (3 docs) contain only
   B2a; personal identity; branch `main`, 2 ahead / 0 behind `origin/main` (`c202517`); only this file uncommitted.
 - **Validation:** ledger 383/383, app 302/302, research 30/30, both typechecks, guard 0 violations (eligible 19 + 20
@@ -125,7 +130,7 @@
 - **Readiness:** B2a cannot generate live outcomes through any automated path; publishing is low-risk. Recommended
   order: approve hardening -> re-validate -> push 3 commits.
 
-## D3. B2a security hardening (2026-11-23 09:58–10:09 UTC; owner-approved)
+## D3. (HISTORICAL) B2a security hardening (2026-11-23 09:58–10:09 UTC; owner-approved)
 - **F1 fixed:** the `SYNTHETIC_ONLY` lock moved into the engine file `outcomes.mts` and is now enforced in every
   builder, store and publisher: `buildOutcomeRecord` (sessionDate + window), `buildOutcomeReceipt` /
   `receiptForStoredRecord`, `buildDueRecord`, `evidenceFor`, `planOutcomes`, `FsPrivateStore.putRecord` /
@@ -147,35 +152,69 @@
   `od1.json` `916b6636…1fd8` and `holdout.json` `ea9ecc1d…6e58` unchanged; `od1.mts`, `protocol.mts`, `public/`,
   `src/`, `.github/` unchanged; 0 outcome receipts tracked; no live outcome computed. `origin/main` had not moved.
 
+- **Push (10:10:27 UTC):** `c202517..1ebad71` (`922b956`, `a4777f2`, `1ebad71`). Runs: guard 45153649220 success;
+  deploy 45153649186 success (Pages HTTP 200); **governance 45153649081 FAILURE**: unhandled `write EPIPE` at
+  `outcome-receipts.mts` `gitBytes` (stdin always piped and written even for git commands that never read it; on
+  Linux a fast-exiting git closes the pipe first). Not a test assertion failure; not reproducible on macOS. Data
+  updates are NOT affected (`update-data.yml` gates on `npm test`, not the ledger suite); Pages deployed; the guard's
+  own run passed but could hit the same race after a data update (false guard failure, no data impact).
+- **Fix (10:19 UTC, LOCAL, UNCOMMITTED):** stdin is `ignore` unless there is input; EPIPE on the cat-file pipe is
+  ignored (git's exit code decides). Ledger 392/392, app 302/302, both typechecks, guard 0 — all exit 0.
+  Needs owner approval for a fix commit + push. (Superseded: see the hotfix entry below.)
+- **EPIPE hotfix (owner-approved 2026-11-24; 04:15–04:27 UTC):**
+  - Root cause confirmed: failing line was `p.stdin.end(input ?? "")` (`outcome-receipts.mts:325` at `1ebad71`) in
+    `gitBytes`, called by `scanRepositoryForOutcomeLeaks` (guard -> `checkOutcomeConfidentiality`). stdin was always
+    piped and written with no error handler; when git exits before consuming it, Node emits an unhandled `write EPIPE`.
+    Errors came from `guard.test.ts` and the F3 test, which scan tiny temporary repos (git exits in microseconds).
+    Reproduced locally: the pushed helper crashes (uncaught EPIPE) when git does not read its input; with empty input
+    macOS does not raise it, Linux CI did. The scheduled guard (real repo) was exposed to the same race but passed all
+    4 post-data-update runs (45307517252, 45314097203, 45319323853, 45324508711); data updates never depended on it.
+  - Fix (`1596276`): stdin `ignore` unless there is input; a stdin error REJECTS (never ignored); cat-file output must
+    match every staged entry (sha, size, no truncation), missing objects are violations, any cat-file failure is an
+    "incomplete scan" violation. Detection rules, staged/new-file coverage and the synthetic lock unchanged.
+  - Tests: +2 (ledger 392 -> 394): deterministic EPIPE reproduction now a handled rejection; 100 parallel fast git
+    runs + 20 scans clean; genuine staged leak found; non-repo, corrupted object store and guard path are violations.
+    Mutation (handler removed) fails the test.
+  - Sync: fast-forward to `52b3b41` (4 bot data commits, `public/data/` only). Validation: ledger 394/394, app
+    302/302, research 30/30, both typechecks, guard 0 (3 eligible: 19, 20, 23 Nov; 18 Nov excluded), baseline
+    byte-identical, rule `mv1-8ecef864`, engine `od1e-2e4de377`, `od1.json`/`holdout.json` unchanged (sealed), 0
+    outcome receipts.
+  - Push 04:24:08 UTC `52b3b41..1596276`. Runs: guard 45326144033 success, deploy 45326143941 success (Pages 200),
+    governance 45326144060 success.
+  - Production: data runs 24 Nov 01:45, 02:39, 03:24, 04:09 UTC all success; 23 Nov captured, receipt `live`; R6:
+    23 Nov `existing`; `runStatus` amber only for the known retained 18 Nov anomaly (unchanged since before B2a).
+    The 23 Nov evening slots ran late (GitHub schedule delay, as on 18 Nov when the 14:30 slot ran at 22:11): the
+    01:45–04:09 UTC runs on 24 Nov are those slots, and they captured 23 Nov. No run is missing.
+- Post-push: `holdout.json` at `1ebad71` sha256 `ea9ecc1d…6e58` (sealed); all 8 workflows `active`; last data run
+  21 Nov success; next 23 Nov 14:30 UTC PENDING.
+
 ## E. Completed milestones
 | What | Commit / evidence |
 |---|---|
 | Momentum Ledger Phase A1 (capture-only) deployed | `19c3c09`; token probe `aef4072` (run passed 2026-11-02) |
-| Watchdog fix: no missing-capture alerts while disabled | `6d00270`, pushed 2026-11-03 |
-| BL1 ledger test made data-growth-proof | `7319986` |
 | Ledger enabled: `mv1-8ecef864` from 2026-11-18 | `5740ac6`; guard, deploy, governance green |
-| First live captures 18 + 19 Nov, receipts `live` | `9cde568`/`f9c6653`; `9e89a3d`/`1b63cbd` |
 | Phase 1B reproducible breakout baseline | `c901ac2`; `docs/research/BREAKOUT_BASELINE.md` |
-| Project tracking files | `9c11ba8` |
 | R6 retention-window correction | `e08e513`; merge `6ffa92a` |
-| Phase B1 shared OD1 engine + outcome schema | `01a4e5c`, `c202517`; pushed 2026-11-23 06:21 UTC, all checks green |
+| Phase B1 shared OD1 engine + outcome schema | `01a4e5c`, `c202517`; pushed 2026-11-23 06:21 UTC |
+| B2a foundation + hardening (later retired) | `922b956`, `a4777f2`, `1ebad71`; pushed 2026-11-23 10:10 UTC |
+| EPIPE hotfix | `1596276`; pushed 2026-11-24 04:24 UTC; governance 45326144060, guard 45326144033, deploy 45326143941 green |
+| Breakout characteristics study (experiments 1–4) | `7d7abab` (plan), `51a9404` (results) — LOCAL |
+| Evaluation policy: continuous monitoring | `7b1fe81` — LOCAL |
+| Live outcome engine + workflow step + guard checks | `e5ba9a6` — LOCAL |
+| Catch-up outcomes (19 Nov h1+h2, 20 Nov h1) | `b695f6f` — LOCAL |
+| Historical reference export + Evaluation tab | `9c34a16`, `f1b0bb9` — LOCAL |
+| Historical downloader + data notes | `a1b58f5` — LOCAL |
 
-## F. Pending work
+## F. Pending work (see docs/RESUME.md for the ordered checklist)
 | Item | State |
 |---|---|
-| Push + post-push verification | DONE (`fcb35a6`, all three workflows green) |
-| First production run of corrected R6 | PENDING — morning retry run (~09:30–10:30 UTC 20 Nov); check after ~11:00 UTC |
-| 20 Nov capture + receipt | PENDING — evening runs ~22:00 UTC 20 Nov; check after ~01:30 UTC 21 Nov (cutoff 2026-11-23 03:30 UTC) |
-| R6 review decision for 18 Nov | PUBLISHED (`a730339`); amber gate PENDING first scheduled run |
-| Durable exclusion guard + pre-commit rule | PUBLISHED (`5292cf2`); CI guard green |
-| 18 Nov holdout eligibility | EXCLUDED permanently (owner decision 2026-11-20; no restoration mechanism) |
-| 19 Nov holdout eligibility | ELIGIBLE so far; stays eligible if the fix is live before tonight's first run |
-| Phase B1: shared OD1 engine + outcome schema | PUBLISHED `c202517` (2026-11-23 06:21 UTC) |
-| Phase B2a: private pipeline foundation (local, synthetic) + hardening | DONE; push approved 2026-11-23 (see section C/I for push evidence) |
-| Phase B2b: provisioning + activation | NOT APPROVED (needs private repo, GitHub App, activation record, `SYNTHETIC_ONLY` off) |
-| First scheduled data run on B1 code | PENDING — 23 Nov 14:30 UTC; check after ~15:30 UTC |
-| Phase B owner decisions | DECIDED 2026-11-23: private repo owns calculation/records; GitHub App; h1,2,5,10 (headline 1,5); receipts under `live/outcome-receipts/`; excluded sessions not processed; 19 Nov+ catch-up only with later approval; corrections append-only, originals authoritative; issues without outcome info. OPEN for B2b: GitHub Pro; repo/App names; activation date; catch-up; correction analysis policy; public vs private alert issues |
-| Breakout accuracy improvement | NOT STARTED — H1–H3 pre-registered; live holdout only, after ≥ 250 completed live sessions + explicit owner authorisation |
+| Publish the 8 local commits (+ pre-restart docs commit) | APPROVED 2026-11-24; do after restart with full validation |
+| First scheduled outcome-processing run in production | PENDING (after the push) |
+| Shadow capture BO-wide / BO-raw / BO-cap10 | APPROVED; not started |
+| 5-year download 2020-11-02 → 2025-08-22 | PAUSED at 2023-06-01 (672 stock, 639 index files; resumable) |
+| Data validation + independent replication on 2020-11 → 2025-08 | NOT STARTED (freeze plan first) |
+| 10-year expansion (older NSE formats, 2016+) | APPROVED; not started |
+| 24 Nov evening capture | PENDING — check after ~01:30 UTC 25 Nov |
 
 ## G. Known issues (unresolved)
 - (Resolved) durable exclusions published `5292cf2`; gate amber since the review decision `a730339`.
@@ -186,38 +225,52 @@
   (force-push is blocked). Decision pending (suggested: leave history, optional `.mailmap`).
 - `npm test` gates the scheduled data + live-capture commit in `update-data.yml`: never add data-dependent or slow
   tests to it. Research tests are `*.spec.ts`, run only via `vitest.research.config.ts`.
-- Raw data before 2025-08-25 exists only in Git history (rolling retention); archiving not done.
+- Raw data before 2025-08-25 exists only in Git history (rolling retention); a local research copy of NSE archives
+  from 2020-11 is being built in `research-data/` (not committed).
+- Commit `7b1fe81` also contains the B2a module deletions (scoping slip); the tree does not build at that commit alone.
+- Downloaded archives: 33 dates have a stock file but no index file (possible holiday duplicates); stock file
+  2022-08-08 failed the CSV check (recorded as error, retried on resume). Investigate in the data-validation step.
 
 ## H. Owner approvals and restrictions
-Approved now (scope exactly as stated):
-- Read-only verification at any time.
-- 2026-11-20: final R6 audit, local commit of the correction, ordinary merge sync, and ONE controlled normal push of
-  `c901ac2`, `9c11ba8`, the R6 correction, the merge and this checkpoint — only after all gates pass. (Used.)
-- 2026-11-23: push of B1 `01a4e5c` + `c202517` (USED 06:21 UTC); read-only B2 architecture/security design (done).
-- 2026-11-23: Phase B2a LOCAL implementation + local commits after full validation (done). NOT approved: push,
-  workflow dispatch, issue changes, private repo, App, credentials, secrets, infrastructure, live outcomes.
-- 2026-11-23: B2a security hardening (F1–F3), regression tests, a separate local commit, and ONE normal push of
-  `922b956`, `a4777f2` and the hardening commit after all gates pass. NOT approved: B2b provisioning, private repo,
-  App, credentials, secrets, infrastructure, live outcomes, workflow dispatch, issue changes.
+Approved 2026-11-24 (current):
+- Option B: the live ledger is a continuously monitored prospective benchmark (policy `protocol/evaluation-policy.json`);
+  `mv1-8ecef864` stays the frozen production benchmark; 250 sessions is a research milestone, not a gate; 18 Nov
+  permanently excluded; outcome catch-up from 19 Nov; B2b private infrastructure cancelled.
+- Publication of the 8 local commits `7d7abab 51a9404 7b1fe81 e5ba9a6 b695f6f 9c34a16 f1b0bb9 a1b58f5` (plus the
+  pre-restart documentation commit) after final validation, one normal push (`7b1fe81` does not build alone: accepted).
+- Continuous live outcome evaluation and the Evaluation dashboard.
+- Experimental shadow capture of BO-wide, BO-raw and BO-cap10 (own versions; promotion criteria pre-declared).
+- Five-year historical acquisition and research; ten-year expansion from reliable free sources.
+- Routine technical decisions, implementation, testing and ordinary local commits are delegated.
+- Evidence-based promotion with checkpoints at 20, 50, 100 and 250 sessions (no fixed 100-session wait).
 
-Not approved (each needs fresh, explicit approval):
-- Production prediction-rule or scoring changes; any change to the 22 rule-version hash files or `DEFAULT_SETTINGS`.
-- OD1 protocol or holdout governance changes; unblinding the holdout.
-- Manual workflow dispatch; scheduling background checks; closing or editing GitHub issues.
-- Backfilling, repairing or rewriting live predictions or receipts; watchdog changes; Phase B implementation.
-- Force-push, history rewrite, amending pushed commits.
+Still needs explicit owner approval:
+- Replacing or changing production Possible breakout setup / Continuation characteristics logic (mv1).
+- Publishing the shadow-capture implementation (give a release recommendation first).
+- Paid data services; manual workflow dispatch; closing or editing GitHub issues.
+- Changing `od1.json`, `holdout.json` or the evaluation policy; backfilling or rewriting live predictions.
+- Force-push, rebase, amend or any history rewrite (never).
 
 Standing rules: personal identity only (`Santhosh Ram V <santhoshramv@yahoo.com>`); stop and report on any failed
-validation; never claim success from a green workflow alone; never use data on/after 2026-11-18 for research.
+validation; never claim success from a green workflow alone; historical development data must stay before
+2026-11-18 (live data is the prospective test).
 
 ## I. Next action
-Post-push verification of the B2a push (guard, governance, deploy), then routine: verify the 23 Nov 14:30 UTC data
-run (first on B1/B2a code) after ~15:30 UTC and the evening capture after ~01:30 UTC 24 Nov.
-Next milestone: B2b provisioning, only after owner decisions: GitHub Pro; private repo + App names; HMAC-derived
-salts + offline backup; activation date; 19 Nov+ catch-up; per-file vs batched receipt commits; private-only vs
-public code-only alert issues; correction analysis policy.
+**Pre-restart checkpoint (2026-11-24 06:09 UTC).** Follow `docs/RESUME.md` (section "Outstanding tasks", item 1 onwards).
+Local HEAD before the pre-restart commit: `a1b58f5`; `origin/main` `1596276`; 0 behind at 06:08 UTC.
+
+Latest validation (2026-11-24 05:35 UTC, final local state): ledger 368/368, app 306/306, research 33/33, both
+typechecks, guard 0 violations, baseline byte-identical (`568512f8…5795`), rule `mv1-8ecef864`, engine
+`od1e-a3dcb82a`, `od1.json` / `holdout.json` unchanged, production build OK.
+
+Key findings (exploratory, in-sample; full detail in `docs/research/BREAKOUT_CHARACTERISTICS.md` §2): the top-50
+restriction neither helps nor hurts; close/volume conditions cut signals 2.5x without better outcomes; only the
+bearish-regime effect survives FDR and it is a market-wide effect; day change >= 10% is suggestive; the evidence score
+mostly reflects the session; nothing is tradable at 20 bps on average.
 
 ## J. References
+- **Handover: `docs/RESUME.md`** (self-contained; read first)
+- Research: `docs/research/BREAKOUT_CHARACTERISTICS.md`, `docs/research/HISTORICAL_DATA.md`; policy: `docs/design/EVALUATION_POLICY.md`
 - Private outcome pipeline: `docs/design/OD1_PRIVATE_PIPELINE.md`
 - Ledger design: `docs/design/MOMENTUM_LEDGER_DESIGN.md`; decisions: `docs/design/MOMENTUM_LEDGER_DECISION_REVIEW.md`
 - Sealed protocol: `public/data/ledger/protocol/od1.json`; holdout gate: `public/data/ledger/holdout.json`
