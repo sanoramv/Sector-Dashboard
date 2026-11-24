@@ -2,6 +2,7 @@
  * Breakout characteristics study (Track A, experiments 1-4) - EXPLORATORY, historical, read-only.
  *
  *   npx tsx scripts/research/breakout-characteristics.mts --out <file outside public/>.json [--reps 1000]
+ *     [--export-dashboard public/data/evaluation/historical-mv1-8ecef864.json]
  *
  * Plan (pre-declared, committed before any result): docs/research/BREAKOUT_CHARACTERISTICS.md section 1.
  * Data, fence and safety are those of the Phase 1B baseline (breakout-baseline.mts): one pinned commit read with
@@ -12,7 +13,6 @@ import path from "node:path";
 import { writeFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type { AppSettings } from "../../src/types/config.ts";
-import type { DailyBar } from "../../src/types/market.ts";
 import type { Regime } from "../../src/types/metrics.ts";
 import type { EvidenceCategory, MomentumCandidate, MomentumLabel, SizeSegment } from "../../src/types/momentum.ts";
 import { DEFAULT_SETTINGS } from "../../src/types/config.ts";
@@ -581,7 +581,17 @@ export function runStudy(rows: Row[], sessions: string[], reps: number) {
   const byRegime = Object.fromEntries((["Aplus", "B", "BO_all", "RAW_BO"] as const).map((k) => [k, regs.map((g) => ({ label: g, ...summarise(groups[k].filter((r) => r.regime === g), S, null) }))]));
   const regimeMatched = Object.fromEntries(regs.slice(0, 3).map((g) => [g, matchedEffect(BO_all.filter((r) => r.regime === g), nonBO.filter((r) => r.regime === g), S, boot, chg)]));
   const halves = Object.fromEntries((["Aplus", "B", "BO_all", "BO_top50", "BO_out", "RAW_BO", "E", "F"] as const).map((k) => [k, { first: summarise(groups[k].filter((r) => r.s < half), S, null), second: summarise(groups[k].filter((r) => r.s >= half), S, null) }]));
-  return { robustness: { byRegime, regimeMatched, halves }, sessions: { count: S, first: sessions[0], last: sessions[S - 1], halfCut: sessions[half] }, reps, block: BLOCK, seed: SEED, liquidityTerciles: liqT, summary, matched, pairs, exp1: { byChange, overextension }, exp2, contrasts: contrastTable, exp3, exp4: { label: exp4Label, continuation: exp4Cont, why } };
+  // Historical reference for the live Evaluation dashboard: the SAME group definitions as the live cohort (top-50
+  // gainer list; breakout and continuation within it), OD1 h = 1, 2, 5, 10.
+  const top50BO = groups.BO_top50;
+  const dashboard = {
+    B: summarise(groups.B, S, boot),
+    C: summarise(top50BO, S, boot),
+    E: summarise(top50BO.filter((r) => r.category === "continuation"), S, boot),
+    F: summarise(top50BO.filter((r) => r.category !== "continuation"), S, boot),
+    D: summarise(groups.B.filter((r) => r.label === "momentum-continuation"), S, boot),
+  };
+  return { dashboard, robustness: { byRegime, regimeMatched, halves }, sessions: { count: S, first: sessions[0], last: sessions[S - 1], halfCut: sessions[half] }, reps, block: BLOCK, seed: SEED, liquidityTerciles: liqT, summary, matched, pairs, exp1: { byChange, overextension }, exp2, contrasts: contrastTable, exp3, exp4: { label: exp4Label, continuation: exp4Cont, why } };
 }
 
 async function main() {
@@ -592,6 +602,8 @@ async function main() {
   const reps = Number(opt("--reps") ?? 1000);
   if (!out) throw new Error("--out <file.json> is required");
   if (path.resolve(out).startsWith(path.join(repoRoot, "public") + path.sep)) throw new Error("--out must not write under public/");
+  const ex = opt("--export-dashboard");
+  if (ex && path.resolve(ex) !== path.join(repoRoot, "public", "data", "evaluation", `historical-${EXPECTED_RULE_VERSION}.json`) && path.resolve(ex).startsWith(path.join(repoRoot, "public") + path.sep)) throw new Error("--export-dashboard may only write public/data/evaluation/historical-<rule>.json under public/");
   assertFenceMatchesActivation(repoRoot, FENCE);
   const { computeVersion } = await import("../ledger/capture.mts");
   const { ruleVersion } = await computeVersion(repoRoot);
@@ -603,7 +615,22 @@ async function main() {
   const { rows, sessions } = buildRows(u, settings, FENCE);
   console.log(`rows ${rows.length} gainer stock-days over ${sessions.length} sessions (${sessions[0]}..${sessions[sessions.length - 1]}) in ${((Date.now() - t0) / 1000).toFixed(0)} s`);
   const result = runStudy(rows, sessions, reps);
-  writeFileSync(out, JSON.stringify({ meta: { fence: FENCE, dataCommit: DATA_COMMIT, ruleVersion, latestMarketDate: dataset.manifest.latestMarketDate, universe: u.stocks.length }, ...result }, null, 1) + "\n");
+  const meta = { fence: FENCE, dataCommit: DATA_COMMIT, ruleVersion, latestMarketDate: dataset.manifest.latestMarketDate, universe: u.stocks.length };
+  writeFileSync(out, JSON.stringify({ meta, ...result }, null, 1) + "\n");
+  const exportPath = opt("--export-dashboard");
+  if (exportPath) {
+    const pick = (g: ReturnType<typeof summarise>) => {
+      const o: Record<string, unknown> = { stockDays: g.stockDays, sessions: g.sessions };
+      for (const h of HORIZONS) {
+        const x = (g as unknown as Record<string, Record<string, any>>)[`h${h}`];
+        o[`h${h}`] = { complete: x.complete, coveragePct: x.coveragePct, classes: x.classes, adverse: x.adverse, confirmed: x.confirmed, hitR: x.hitR.v, hitX: x.hitX.v, meanR: x.meanR.v, medianR: x.medianR, meanX: x.meanX, medianX: x.medianX, net20: x.net20 };
+      }
+      return o;
+    };
+    const exp = { kind: "momentum-ledger.historical-reference", schemaVersion: 1, ruleVersion, period: { first: result.sessions.first, last: result.sessions.last, sessions: result.sessions.count }, source: "scripts/research/breakout-characteristics.mts (docs/research/BREAKOUT_CHARACTERISTICS.md); in-sample, already examined", meta, groups: Object.fromEntries(Object.entries(result.dashboard).map(([k, g]) => [k, pick(g)])) };
+    writeFileSync(exportPath, JSON.stringify(exp) + "\n");
+    console.log(`dashboard reference written ${exportPath}`);
+  }
   console.log(`written ${out} in ${((Date.now() - t0) / 1000).toFixed(0)} s`);
 }
 
