@@ -15,6 +15,7 @@ import {
   type HorizonStats,
   type Interval,
 } from "../lib/evaluation/liveEvaluation";
+import { ShadowEvaluationCard } from "./ShadowEvaluationCard";
 
 const DATA_BASE = `${import.meta.env.BASE_URL}data/evaluation`;
 const RULE = "mv1-8ecef864";
@@ -356,6 +357,8 @@ export function EvaluationPanel() {
           <HistoricalTable hist={hist} live={stats} h={h} />
         </div>
       )}
+
+      <ShadowEvaluationCard base={DATA_BASE} h={h} />
 
       <div className="card" style={{ padding: 14 }}>
         <strong style={{ fontSize: 13 }}>Prediction browser</strong>

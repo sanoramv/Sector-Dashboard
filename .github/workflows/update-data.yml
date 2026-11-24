@@ -101,9 +101,17 @@ jobs:
         continue-on-error: true
         run: npm run ledger:outcomes
 
+      # EXPERIMENTAL shadow rules BO-wide / BO-raw / BO-cap10 (docs/research/SHADOW_PREDICTIONS.md): create-only files
+      # in public/data/shadow/ and a derived summary in public/data/evaluation/. Inactive until the owner-approved
+      # public/data/shadow/activation.json exists. Never touches public/data/ledger; never blocks anything.
+      - name: Shadow predictions (experimental)
+        id: shadow
+        continue-on-error: true
+        run: npm run shadow
+
       - name: Remove interrupted ledger partial files
         if: ${{ always() }}
-        run: find public/data/ledger public/data/evaluation data/outcomes -name '*.partial' -type f -print -delete 2>/dev/null || true
+        run: find public/data/ledger public/data/evaluation public/data/shadow data/outcomes -name '*.partial' -type f -print -delete 2>/dev/null || true
 
       # Fail-closed validation of the pending ledger changes BEFORE the data commit. On failure only
       # public/data/ledger is restored to HEAD and an anomaly is recorded; market data is untouched.

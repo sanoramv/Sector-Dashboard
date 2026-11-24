@@ -23,6 +23,7 @@
     "ledger:gate": "tsx scripts/ledger-gate.mts",
     "ledger:guard": "tsx scripts/ledger-guard.mts",
     "ledger:outcomes": "tsx scripts/ledger-outcomes.mts",
+    "shadow": "tsx scripts/shadow-run.mts",
     "ledger:protocol": "tsx scripts/ledger-protocol.mts",
     "ledger:enable": "tsx scripts/ledger-protocol.mts",
     "test:ledger": "vitest run --config vitest.ledger.config.ts"
