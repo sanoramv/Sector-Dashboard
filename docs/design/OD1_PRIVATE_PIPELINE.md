@@ -1,5 +1,8 @@
 # OD1 private outcome pipeline: architecture and provisioning (Phase B2a)
 
+> **HISTORICAL (superseded 2026-11-24).** The owner ended strict blinding and cancelled B2b. Live outcomes are now
+> processed openly in this repository: see [`EVALUATION_POLICY.md`](EVALUATION_POLICY.md) and design erratum 23.
+
 **Status (2026-11-23):** Phase B2a is a local foundation only. Nothing described as "B2b" exists yet: no private repository, GitHub App, secret, workflow, activation record or live outcome. Every function that builds, stores or publishes a governed outcome artifact refuses real dates (`SYNTHETIC_ONLY`, see §1a). The environment check is a tripwire, not authentication.
 
 ## 1. Trust boundaries

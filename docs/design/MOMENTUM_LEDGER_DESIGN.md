@@ -78,6 +78,11 @@ These clarifications supersede the text they reference. They change no approved 
 
 Every item marked *verified* was checked in this task against source code, committed data, Git history or the live GitHub APIs. Anything I could not check says so.
 
+23. **Continuous monitoring replaces strict blinding; B2b cancelled (2026-11-24, owner decision).** Policy record: `public/data/ledger/protocol/evaluation-policy.json` (create-only, immutable); explanation: [`EVALUATION_POLICY.md`](EVALUATION_POLICY.md). Supersedes erratum 22's private architecture ([`OD1_PRIVATE_PIPELINE.md`](OD1_PRIVATE_PIPELINE.md) is historical).
+    - The live `mv1-8ecef864` ledger is a continuously monitored prospective benchmark. Outcomes from 2026-11-19; 2026-11-18 permanently excluded; first computed 2026-11-24 (catch-up). `holdout.json` and `od1.json` are unchanged and remain the record of the original contract; 250 sessions is a research milestone, not a gate.
+    - Retired: the synthetic-only lock, salts, commitments, hash-only receipts, the private store's outside-the-repository rule, the execution-context tripwire and the repository-wide leak scan (`outcome-pipeline.mts`, `outcome-receipts.mts`). Kept unchanged: the OD1 maths (`od1.mts`), the runner's maturity, frozen-sigma, corporate-action and missing-data rules, record validation by re-derivation, create-only atomic writes, append-only corrections (now chained by `outcomesSha256`).
+    - Records: `data/outcomes/od1/<rv>/<date>/h<h>.json` (outside `public/`, so not deployed), written by `npm run ledger:outcomes` (`outcome-process.mts`) in `update-data.yml` after the capture, `continue-on-error`. Dashboard summary: `public/data/evaluation/<rv>.json`, rebuilt from the stored records each run (deterministic).
+    - Guard (`outcome-check.mts`): valid policy; records valid, at their path, bound to their prediction file, eligible and not excluded, on or after `outcomesFrom`; committed history never modifies, deletes or renames a record. Engine version changes (engine files edited); records carry their own engine version. Tests: `tests/ledger/outcome-processing.test.ts`.
 ## Contents
 
 1. [Decisions, history and blocker resolutions](#1-decisions-history-and-blocker-resolutions)

@@ -1,0 +1,27 @@
+{
+ "kind": "momentum-ledger.evaluation-policy",
+ "schemaVersion": 1,
+ "mode": "continuous-monitoring",
+ "decidedAt": "2026-11-24",
+ "decidedBy": "owner",
+ "decision": "Owner decision (Option B of the 2026-11-24 strategic reset): strict blinding of the live holdout ends. The live mv1 ledger becomes a continuously monitored prospective benchmark. Outcomes are computed as they mature, stored openly in this repository and shown on the dashboard.",
+ "referenceRuleVersion": "mv1-8ecef864",
+ "outcomesFrom": "2026-11-19",
+ "outcomesFirstComputed": "2026-11-24",
+ "excludedSessions": [
+  {
+   "sessionDate": "2026-11-18",
+   "reason": "Permanently excluded from official prospective statistics (owner decision 2026-11-20 and 2026-11-24): the session has a retained R6 anomaly in ledger-state.json."
+  }
+ ],
+ "horizons": { "stored": [1, 2, 5, 10], "headline": [1, 5] },
+ "checkpoints": [5, 20, 50, 100, 250],
+ "milestone": "250 completed live sessions remain a long-term research milestone, not a prerequisite for evaluation, rule development or promotion.",
+ "liveDataRole": "A monitored prospective benchmark for mv1-8ecef864. It is NOT an untouched holdout for any rule developed after 2026-11-24: a new rule version is validated only on sessions after its own shadow start, compared with mv1 on the same sessions.",
+ "originalContract": {
+  "holdoutFile": "public/data/ledger/holdout.json",
+  "holdoutStatusRetained": "sealed",
+  "note": "holdout.json and protocol/od1.json are kept unchanged as the historical record of the original sealed contract (250-session gate, never unblinded). The OD1 definitions, thresholds and horizons are unchanged; only the blinding is ended, by this record."
+ },
+ "documentation": "docs/design/EVALUATION_POLICY.md"
+}
