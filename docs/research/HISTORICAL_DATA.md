@@ -56,7 +56,17 @@ Report: `research-data/validation-2020-2025.json` (local). Result: **0 integrity
 ## Acquisition status
 - 2020-11-02 → 2025-08-22 (5-year target, joining the 2025-08-25 start of the existing data): **COMPLETE**
   2026-11-24 08:33 UTC (resumed after a restart at 2023-06-01; special sessions 08:35 UTC). ~126 MB, git-ignored.
-- 10-year target (2016 onwards): feasible with the older formats; not started (needs the second parser).
+- 10-year target (2016 onwards): **in progress** (B6, started 2026-11-24 ~08:58 UTC). Equity days 2016-01-01 →
+  2020-10-30 come from the legacy archives, converted to the `sec_bhavdata_full` layout
+  (`scripts/research/legacy-bhav.mts`, downloader `scripts/research/fetch-history-legacy.mts`, manifest entries
+  `source: "legacy"` with the source-file hashes); index files from `fetch-history.mts --kinds index`. Log:
+  `research-data/fetch-2016-2020.log`.
+- **Converter validation (before any bulk download):** on 12 dates where both formats exist (2020-11-02 → 2024-06-28),
+  every field of every tracked-series row matched the official `sec_bhavdata_full` file — PREV_CLOSE, OHLC, LAST, AVG,
+  volume, turnover, trades, delivery quantity and % — **23,509 / 23,509 rows**, 0 missing. The legacy file carries up to
+  12 extra rows per day (tiny illiquid securities, 1–8 trades) that the newer file omits; kept (they never enter a
+  turnover-ranked universe).
+- Trial: 2016-01-26 (Republic Day) correctly 404 → missing; Muhurat Sunday 2019-10-27 published and stored.
 
 ## Before research use (next steps)
 1. Integrity pass: per-file row counts, duplicate symbols, OHLC sanity, calendar against the NIFTY 500 file.
