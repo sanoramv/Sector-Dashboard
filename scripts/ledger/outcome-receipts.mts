@@ -312,17 +312,30 @@ export async function scanForOutcomeLeaks(dirs: string[]): Promise<ReceiptViolat
   return v;
 }
 
-/** Runs git and returns stdout as bytes (stdin optional). */
-function gitBytes(cwd: string, args: string[], input?: string): Promise<Buffer> {
+/**
+ * Runs git and returns stdout as bytes. stdin is opened ONLY when there is input (cat-file --batch); every other
+ * command gets "ignore". Hotfix 2026-11-24: the first version always piped and wrote stdin, so a git process that
+ * exited before reading it made Node raise an unhandled `write EPIPE` that crashed the test runner on Linux CI.
+ * A stdin write error is never ignored: it rejects, so an incomplete scan can never look clean.
+ */
+export function gitBytes(cwd: string, args: string[], input?: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    const p = spawn("git", args, { cwd, stdio: ["pipe", "pipe", "pipe"] });
+    const p = spawn("git", args, { cwd, stdio: [input === undefined ? "ignore" : "pipe", "pipe", "pipe"] });
     const out: Buffer[] = [];
     let err = "";
-    p.stdout.on("data", (d: Buffer) => out.push(d));
-    p.stderr.on("data", (d: Buffer) => (err += d.toString()));
+    let stdinError: NodeJS.ErrnoException | null = null;
+    p.stdout!.on("data", (d: Buffer) => out.push(d));
+    p.stderr!.on("data", (d: Buffer) => (err += d.toString()));
     p.on("error", reject);
-    p.on("close", (code) => (code === 0 ? resolve(Buffer.concat(out)) : reject(new Error(`git ${args[0]} exited ${code}: ${err.slice(0, 200)}`))));
-    p.stdin.end(input ?? "");
+    p.on("close", (code) => {
+      if (code !== 0) reject(new Error(`git ${args[0]} exited ${code}: ${err.slice(0, 200)}`));
+      else if (stdinError) reject(new Error(`git ${args[0]} did not read all of its input (${stdinError.code})`));
+      else resolve(Buffer.concat(out));
+    });
+    if (input !== undefined) {
+      p.stdin!.on("error", (e: NodeJS.ErrnoException) => (stdinError = e)); // handled: decided on close, never ignored
+      p.stdin!.end(input);
+    }
   });
 }
 
@@ -350,18 +363,30 @@ export async function scanRepositoryForOutcomeLeaks(repoRoot: string): Promise<R
   } catch (err) {
     return [{ path: repoRoot, detail: `cannot list repository files for the protected-outcome scan: ${String(err).slice(0, 120)}` }];
   }
-  // staged blobs, one git process: "<sha> blob <size>\n<content>\n" per object
+  // staged blobs, one git process: "<sha> blob <size>\n<content>\n" per object. Any failure, or output that does not
+  // account for every staged entry, is a violation: an incomplete scan is never reported as clean.
   if (staged.length) {
-    const out = await git(["cat-file", "--batch"], staged.map((s) => s.blob).join("\n") + "\n");
+    let out: Buffer;
+    try {
+      out = await git(["cat-file", "--batch"], staged.map((s) => s.blob).join("\n") + "\n");
+    } catch (err) {
+      return [...v, { path: repoRoot, detail: `the protected-outcome scan of staged files is incomplete: ${String(err).slice(0, 160)}` }];
+    }
     let at = 0;
     for (const s of staged) {
       const nl = out.indexOf(0x0a, at);
-      const [, type, size] = out.subarray(at, nl).toString("utf-8").split(" ");
-      const n = type === "missing" ? 0 : Number(size);
-      const body = out.subarray(nl + 1, nl + 1 + n);
-      at = nl + 1 + n + (type === "missing" ? 0 : 1);
-      const reason = type === "blob" ? protectedContentReason(Buffer.from(body)) : null;
+      const [sha, type, size] = (nl < 0 ? "" : out.subarray(at, nl).toString("utf-8")).split(" ");
+      if (sha !== s.blob || !type || (type !== "missing" && !/^\d+$/.test(size ?? ""))) return [...v, { path: `${s.file} (staged)`, detail: "the protected-outcome scan of staged files is incomplete: unexpected git cat-file output" }];
+      if (type === "missing") {
+        v.push({ path: `${s.file} (staged)`, detail: "the staged file could not be read for the protected-outcome scan (object missing)" });
+        at = nl + 1;
+        continue;
+      }
+      const n = Number(size);
+      if (nl + 1 + n > out.length) return [...v, { path: `${s.file} (staged)`, detail: "the protected-outcome scan of staged files is incomplete: truncated git cat-file output" }];
+      const reason = type === "blob" ? protectedContentReason(Buffer.from(out.subarray(nl + 1, nl + 1 + n))) : null;
       if (reason) v.push({ path: `${s.file} (staged)`, detail: `protected outcome data (${reason}) found in a publishable file` });
+      at = nl + 1 + n + 1;
     }
   }
   for (const f of work) await scanFile(path.join(repoRoot, f), f, v);

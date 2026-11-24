@@ -15,7 +15,7 @@ import { OD1_CLASSES, od1Epsilon, od1Measure, od1SigmaWindow, populationSd } fro
 import { ENGINE_FILES, OUTCOME_CORRECTION_KIND, buildOutcomeReceipt, buildOutcomeRecord, commitmentOf, computeEngine, requireUnblinded, verifyReceiptAgainstRecord, type OutcomeCorrection, type OutcomeRecord } from "../../scripts/ledger/outcomes.mts";
 import { SYNTHETIC_FROM, SYNTHETIC_ONLY, assertSyntheticSession, buildDueRecord, evidenceFor, planOutcomes, type RunnerContext, type RunnerMarket } from "../../scripts/ledger/outcome-runner.mts";
 import { FsPrivateStore, assertSalt, parseStorageKey, storedText, type PrivateStore } from "../../scripts/ledger/private-store.mts";
-import { FsPublicReceiptSink, correctionReceiptOf, correctionReceiptRel, outcomeReceiptRel, receiptForStoredRecord, receiptLeakProblems, receiptText, protectedContentReason, scanForOutcomeLeaks, scanRepositoryForOutcomeLeaks, validateOutcomeReceiptTree, type PublicReceiptSink } from "../../scripts/ledger/outcome-receipts.mts";
+import { FsPublicReceiptSink, correctionReceiptOf, correctionReceiptRel, outcomeReceiptRel, receiptForStoredRecord, receiptLeakProblems, gitBytes, receiptText, protectedContentReason, scanForOutcomeLeaks, scanRepositoryForOutcomeLeaks, validateOutcomeReceiptTree, type PublicReceiptSink } from "../../scripts/ledger/outcome-receipts.mts";
 import { ALERT_TEXT, alertIssueText, assertProtectedExecutionContext, effectiveEnv, runOutcomePipeline, type PipelineDeps } from "../../scripts/ledger/outcome-pipeline.mts";
 import { loadRunnerMarket, loadRunnerSessions } from "../../scripts/ledger/outcome-inputs.mts";
 import { checkOutcomeConfidentiality } from "../../scripts/ledger/guard.mts";
@@ -856,5 +856,50 @@ describe("B2a hardening F3: repository-wide, content-based leak detection", () =
     await writeFile(path.join(s.ledger, "deep", "er", "README"), storedText(rec));
     expect((await checkOutcomeConfidentiality(s.ledger)).some((v) => /protected outcome data/.test(v.detail))).toBe(true);
     expect((await scanForOutcomeLeaks([s.ledger])).length).toBe(1);
+  });
+});
+
+describe("B2a hotfix 2026-11-24: the repository scan never crashes on EPIPE and never mistakes a failure for clean", () => {
+  async function tiny() {
+    const root = await tmp("epipe");
+    execFileSync("git", ["init", "-q"], { cwd: root });
+    await mkdir(path.join(root, "public", "data"), { recursive: true });
+    await writeFile(path.join(root, "public", "data", "stocks.json"), JSON.stringify({ AAA: { bars: [{ date: "2031-01-06", close: 1 }] } }));
+    execFileSync("git", ["add", "."], { cwd: root });
+    return root;
+  }
+
+  it("the original EPIPE scenario: git exits without reading its input -> a handled rejection, not a crash", async () => {
+    const root = await tiny();
+    // the pushed helper always wrote stdin; a process that never reads 4 MB of input reproduces the crash deterministically
+    await expect(gitBytes(root, ["--version"], "x".repeat(4 * 1024 * 1024))).rejects.toThrow(/did not read all of its input/);
+    // commands without input never open stdin: many fast-exiting runs in a tiny repository all succeed
+    const runs = await Promise.all(Array.from({ length: 100 }, () => gitBytes(root, ["ls-files", "-z"])));
+    for (const r of runs) expect(r.toString()).toBe("public/data/stocks.json\0");
+    for (let i = 0; i < 20; i++) expect(await scanRepositoryForOutcomeLeaks(root)).toEqual([]);
+  });
+
+  it("normal scanning succeeds; a genuine leak fails; a scanner error is never clean", async () => {
+    const root = await tiny();
+    expect(await scanRepositoryForOutcomeLeaks(root)).toEqual([]); // legitimate market data accepted
+    // a genuine staged leak
+    await writeFile(path.join(root, "leak.txt"), JSON.stringify({ kind: "momentum-ledger.od1-outcomes", header: {} }));
+    execFileSync("git", ["add", "leak.txt"], { cwd: root });
+    expect((await scanRepositoryForOutcomeLeaks(root)).map((v) => v.path).sort()).toEqual(["leak.txt", "leak.txt (staged)"]);
+    // not a repository: the scan reports that it could not run
+    const notRepo = await tmp("notrepo");
+    expect((await scanRepositoryForOutcomeLeaks(notRepo))[0].detail).toMatch(/cannot list repository files/);
+    // a staged object that cannot be read (corrupted object store): a violation, not a clean result
+    const r2 = await tiny();
+    const blob = execFileSync("git", ["ls-files", "-s"], { cwd: r2 }).toString().split(" ")[1];
+    await rm(path.join(r2, ".git", "objects", blob.slice(0, 2), blob.slice(2)));
+    const v = await scanRepositoryForOutcomeLeaks(r2);
+    expect(v.length).toBeGreaterThan(0);
+    expect(v.map((x) => x.detail).join(" ")).toMatch(/could not be read|incomplete/);
+    // and the guard surfaces it as a violation
+    const g = await tmp("guardroot");
+    const ledger = path.join(g, "public", "data", "ledger");
+    await mkdir(ledger, { recursive: true });
+    expect((await checkOutcomeConfidentiality(ledger)).some((x) => /cannot list repository files/.test(x.detail))).toBe(true);
   });
 });
