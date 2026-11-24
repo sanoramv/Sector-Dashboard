@@ -116,12 +116,14 @@ function features(c: MomentumCandidate, stock: UniverseStock, i: number): Row["f
   };
 }
 
-export function buildRows(u: PreparedUniverse, settings: AppSettings, fence: string): { rows: Row[]; sessions: string[] } {
+/** `range` (optional, used by the historical validation): only sessions with from <= date < to are built. */
+export function buildRows(u: PreparedUniverse, settings: AppSettings, fence: string, range?: { from: string; to: string }): { rows: Row[]; sessions: string[] } {
   const rows: Row[] = [];
   const sessions: string[] = [];
   for (let ci = 1; ci < u.calendar.length; ci++) {
     const date = u.calendar[ci];
     if (date >= fence) break;
+    if (range && (date < range.from || date >= range.to)) continue;
     const day = moversOn(u, date);
     if (day.movers.length === 0) continue;
     const s = sessions.length;
@@ -231,11 +233,11 @@ export class Boot {
     }
   }
 }
-interface Sums {
+export interface Sums {
   num: Float64Array;
   den: Float64Array;
 }
-function sums(rows: Row[], S: number, v: (r: Row) => number | null): Sums {
+export function sums(rows: Row[], S: number, v: (r: Row) => number | null): Sums {
   const num = new Float64Array(S);
   const den = new Float64Array(S);
   for (const r of rows) {
@@ -246,14 +248,14 @@ function sums(rows: Row[], S: number, v: (r: Row) => number | null): Sums {
   }
   return { num, den };
 }
-const ratio = (a: Sums, idx?: Int32Array) => {
+export const ratio = (a: Sums, idx?: Int32Array) => {
   let n = 0;
   let d = 0;
   if (idx) for (let k = 0; k < idx.length; k++) (n += a.num[idx[k]]), (d += a.den[idx[k]]);
   else for (let k = 0; k < a.num.length; k++) (n += a.num[k]), (d += a.den[k]);
   return d > 0 ? n / d : null;
 };
-const pctile = (xs: number[], p: number) => {
+export const pctile = (xs: number[], p: number) => {
   const s = [...xs].sort((a, b) => a - b);
   return s.length ? s[Math.min(s.length - 1, Math.max(0, Math.floor(p * (s.length - 1) + 0.5)))] : null;
 };
@@ -262,7 +264,7 @@ export interface Est {
   ci: [number, number] | null;
   n: number;
 }
-function est(a: Sums, boot: Boot | null): Est {
+export function est(a: Sums, boot: Boot | null): Est {
   const v = ratio(a);
   const n = a.den.reduce((x, y) => x + y, 0);
   if (!boot || v === null) return { v, ci: null, n };
@@ -276,7 +278,7 @@ export interface Diff {
   nX: number;
   nY: number;
 }
-function diff(a: Sums, b: Sums, boot: Boot): Diff {
+export function diff(a: Sums, b: Sums, boot: Boot): Diff {
   const x = ratio(a);
   const y = ratio(b);
   const nX = a.den.reduce((p, q) => p + q, 0);

@@ -98,8 +98,83 @@ negative or inconclusive results. Run from a committed script; output JSON outsi
 Turnover-rank universe is not index membership; today's industries; unadjusted prices with detect-and-exclude; regimes
 cluster in time; free-float market cap unavailable; four years is still one market history.
 
-## 2. Results
-(Not yet computed.)
+## 2. Results (computed 2026-11-24 08:47 UTC, after the plan commit `ff723b1`)
+
+Run: `npx tsx scripts/research/historical-validation.mts --out research-data/historical-validation.json` (~3 min),
+result digest `643f773176479135f84edffc6913513b1e9f637b9fb96726a0ea323294f2f73a`, rule `mv1-8ecef864`, 1,000 block
+resamples. Study code unchanged in behaviour (its own output on period (a) is byte-identical before and after the small
+refactor that added the date range).
+
+### 2.1 Data actually used
+- **928 sessions, 2021-11-15 → 2025-08-07** (≈ 4× the examined period); 8 universe periods of 750 members; 333,359
+  gainer stock-days. Regimes: 433 bullish, 279 sideways, 216 bearish sessions (none insufficient).
+- Signals per session: top-50 gainers 49.6; breakouts any rank 6.97 (top-50: 4.71); raw breakouts 22.8.
+- Coverage limits: 57–76% of members per period carry today's industry/sector classification (renamed and delisted
+  stocks do not); 80% of gainer rows have no sector index (sector context weaker than in production); 1.3% of rows are
+  insufficient-evidence.
+
+### 2.2 Group outcomes (OD1; adverse = Failed + Reversal; 95% intervals)
+| Group | Stock-days | Per session | h1 adverse % | h5 adverse % | h1 confirmed % | h10 mean X (pp) |
+|---|---|---|---|---|---|---|
+| All gainers (Aplus) | 333,359 | 359 | 27.1 [25.4, 28.4] | 28.3 [25.4, 31.0] | 25.4 | +0.26 [−0.10, +0.55] |
+| Top-50 gainers (B) | 46,066 | 49.6 | 32.9 [31.3, 34.2] | 32.7 [29.8, 35.3] | 27.2 | +0.14 [−0.30, +0.52] |
+| Breakout, any rank (= BO-wide) | 6,469 | 6.97 | 31.2 [29.5, 32.7] | 31.7 [29.1, 34.5] | 31.7 | +0.29 [−0.14, +0.68] |
+| Breakout, top-50 (production) | 4,373 | 4.71 | 32.3 [30.4, 33.9] | 32.1 [29.1, 35.0] | 32.2 | +0.39 [−0.07, +0.83] |
+| Breakout, outside top-50 | 2,096 | 2.26 | 28.8 [26.7, 31.3] | 31.0 [27.9, 34.2] | 30.5 | +0.07 [−0.40, +0.55] |
+| Raw breakout (close > 60-session high) | 21,116 | 22.8 | 31.1 [29.6, 32.3] | 30.2 [27.9, 32.8] | 28.3 | +0.38 [−0.06, +0.78] |
+| BO-raw (shadow definition) | 19,327 | 20.8 | 30.4 [29.0, 31.6] | 30.0 [27.6, 32.5] | 27.8 | +0.33 [−0.09, +0.71] |
+| BO-cap10 (shadow definition) | 4,028 | 4.34 | 31.6 [29.7, 33.2] | 31.6 [28.8, 34.5] | 32.3 | +0.38 [−0.08, +0.79] |
+| Breakout + continuation (E) | 6,142 | 6.62 | 30.9 [29.3, 32.5] | 31.7 [29.1, 34.5] | 31.6 | +0.30 [−0.15, +0.69] |
+| Breakout, not continuation (F) | 327 | 0.35 | 35.2 [29.1, 42.5] | 31.8 [26.0, 38.6] | 32.4 | +0.18 [−0.85, +1.18] |
+
+### 2.3 Confirmatory items (BH q = 0.10 over C1–C4; all four passed BH; one-sided p)
+| Id | Test | Result (h1 unless stated) | Halves | Verdict |
+|---|---|---|---|---|
+| C1 | Breakouts worse in bearish sessions | **+4.0 pp** [−1.7, +9.9], p = 0.089 (examined: +16.4) | −0.1 / +10.3 | **Not replicated** (fails the first half; much smaller) |
+| C2 | Bearish penalty is market-wide (all gainers) | **+2.7 pp** [−0.5, +6.3], p = 0.045 | +2.7 / +2.9 | **Replicated by the pre-declared rule, weak** (two-sided 95% interval includes 0) |
+| C3 | Day change ≥ 10% worse | **+9.8 pp** [+2.4, +16.6], p = 0.004; h1 adverse 40.6% vs 30.8% | +8.4 / +11.4 | **Replicated** (strongest result; fades with h: h5 +6.1 [−0.6, +13.4]) |
+| C4 | Raw breakout h10 mean X > 0 | **+0.38 pp** [−0.06, +0.78], p = 0.044 (examined: +0.99) | +0.60 / +0.17 | **Replicated by the rule, weak** (about a third of the examined size; interval includes 0) |
+
+All horizons (adverse pp): C1 h1 +4.0, h2 +2.7, h5 +2.9, h10 +1.9 (all intervals include 0); C2 +2.7, +3.0, +4.0, +3.9;
+C3 +9.8, +6.7, +6.1, +6.3; C4 mean X h1 +0.12, h2 +0.04, h5 +0.12, h10 +0.38.
+
+### 2.4 "No difference" items (equivalence ±5 pp, 95% interval)
+| Id | Contrast | h1 | h5 | Verdict |
+|---|---|---|---|---|
+| E1 | Top-50 minus outside-top-50 breakouts | **+3.4** [+1.1, +5.6] | +1.0 [−1.9, +3.9] | h1 **contradicted**: top-50 breakouts were slightly WORSE next day; h5 replicated |
+| E2 | Breakout (close/volume conditions) minus raw breakout | +0.05 [−0.9, +1.1] | +1.5 [+0.4, +2.6] | **Replicated**: the conditions do not improve outcomes (if anything slightly worse at h2–h10) |
+| E3 | Breakout minus same-day, same-size non-breakout gainers | +1.6 [+0.3, +2.9] | (+1.8) | **Replicated** within ±5 pp: a breakout adds nothing beyond the day's move (slightly worse) |
+| E4 | High (≥ 3) minus low (≤ 1) evidence score, same day and move size | +0.8 [−1.1, +2.5] | (−0.8) | **Replicated**: the score has no stock-specific value holding the day constant |
+
+### 2.5 Descriptive items
+- **D1 replicated:** the consolidation flag fires on 9 of 6,469 breakouts (0.14%); it is inert.
+- **D2 not replicated:** breakouts in leading sectors (sector RS ≥ 3 pp) were not worse (h1 adverse 29.5% vs 27.8–31.7%
+  in other bins). Caveat: 80% of rows lack a sector index here.
+- **D3 replicated: nothing is tradable after costs.** Net of 20 bps (next open → close at h), every group is negative
+  at h1, h2 and h5 (e.g. production breakout h1 −0.52% [−0.64, −0.40]); at h10 means are slightly positive
+  (+0.15 to +0.28%) with intervals well below zero to well above (e.g. raw breakout +0.28% [−0.34, +0.81]). No group or
+  horizon has a positive lower bound.
+
+### 2.6 Exploratory observations first seen here (NOT validated; candidates for prospective tests only)
+Among the study's Exp 2 contrasts on (b), these survive FDR and both halves: very large moves relative to the stock's
+own volatility (z ≥ 4) worse at h1 (+9.2 pp) and h5 (+6.1); relative volume ≥ 5× worse at h1 (+4.5); breakouts above
+the 200-day average worse at h1 (+6.9); micro-cap segment worse at h1 (+3.6); high-volatility stocks (20-day σ ≥ 3.5%)
+better (−12.7 / −14.5 pp); high-turnover stocks better at h1 (−7.7); an expanding range before the breakout
+(consolidation ratio ≥ 1.2) better at h5 (−13.4; it was also the direction in period (a), −14.8, "suggestive" there).
+
+### 2.7 Plain-English conclusion
+- **Holds up:** (1) day moves of 10% or more are a warning sign for the next session; (2) the close-location and volume
+  conditions, the evidence score and the consolidation flag add nothing measurable; (3) a breakout behaves like any
+  other gainer of the same size on the same day; (4) nothing is profitable after realistic costs on average.
+- **Weaker than it looked:** the bearish-regime penalty (market-wide, about +3 pp, not the +16 pp seen in 2025–26 for
+  breakouts) and the raw breakout's 10-day edge (+0.4 pp, not +1.0).
+- **Contradicted:** the top-50 restriction is not neutral at h1 — top-50 breakouts did slightly worse next day than
+  breakouts outside the top 50 (+3.4 pp), consistent with the ≥ 10% effect (all big movers are top-50).
+- **For the shadow rules:** BO-cap10 and BO-raw remove the ≥ 10% moves that consistently do worse; neither shows a
+  tradable edge. These historical figures do not replace the prospective shadow evaluation.
 
 ## 3. Deviations
-(None yet.)
+- Observation end: the plan says "through the last session whose h = 10 window ends on or before 2025-08-22"; the run
+  ends at 2025-08-07 (= the 11th-last calendar session), which is exactly that rule. No deviation in substance.
+- The study script gained an optional date range for `buildRows` and exported its existing statistics helpers
+  (before any result; period (a) output byte-identical). No other deviation.
