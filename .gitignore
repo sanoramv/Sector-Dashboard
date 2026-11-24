@@ -24,3 +24,6 @@ yarn-error.log*
 # Interrupted ledger writes (never committed)
 public/data/ledger/**/*.partial
 *.partial
+
+# Research-only historical archives (Track C; local, never committed)
+research-data/
