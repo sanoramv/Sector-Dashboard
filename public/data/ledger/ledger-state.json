@@ -1,13 +1,13 @@
 {
  "kind": "momentum-ledger.state",
  "schemaVersion": 1,
- "updatedAt": "2026-11-26T01:04:14.408Z",
- "lastAttemptAt": "2026-11-26T01:04:09.845Z",
+ "updatedAt": "2026-11-26T02:00:32.903Z",
+ "lastAttemptAt": "2026-11-26T02:00:28.520Z",
  "lastSuccessfulCaptureAt": "2026-11-25T23:11:43.814Z",
  "lastSuccessfulSessionDate": "2026-11-25",
  "runStatus": "anomaly",
  "lastFailure": {
-  "at": "2026-11-26T01:04:13.390Z",
+  "at": "2026-11-26T02:00:31.944Z",
   "date": null,
   "reasons": [
    "Unresolved anomaly on 2026-11-18: the immutable record was left untouched; see dates.<date>.r6Events in ledger-state.json"
@@ -90,7 +90,7 @@
    ],
    "r6": {
     "status": "anomaly",
-    "checkedAt": "2026-11-26T01:04:13.390Z",
+    "checkedAt": "2026-11-26T02:00:31.944Z",
     "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
     "candidatePredictionsSha256": "601c4d671603eaa0830721534475ba50599011813a1a6d7363528f13adbfb71f",
     "detail": "A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched.",
@@ -371,14 +371,14 @@
     },
     "firstAnomalyAt": "2026-11-19T22:20:19.482Z",
     "latestObservation": {
-     "at": "2026-11-26T01:04:13.390Z",
+     "at": "2026-11-26T02:00:31.944Z",
      "status": "existing",
      "reasonCode": "retention-window-only",
      "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (4 session(s); stored history from 2025-08-26, now from 2025-09-02): 105 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest cf9a4a1e1881dcb84405f991aaac1f6446542b6dd15a79a80c8861b5c27c5df4). Nothing written."
     }
    },
    "sourceDataDate": "2026-11-18",
-   "updatedAt": "2026-11-26T01:04:14.408Z",
+   "updatedAt": "2026-11-26T02:00:32.903Z",
    "earliestCutoffUtc": "2026-11-19T03:30:00.000Z",
    "r6Events": [
     {
@@ -491,7 +491,7 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-26T01:04:13.390Z",
+    "checkedAt": "2026-11-26T02:00:31.944Z",
     "existingPredictionsSha256": "fbc384ee3938dab3b783251523b3639c8648932caadb2283bf3c65f23adb794e",
     "candidatePredictionsSha256": "de4e673ca452caa8bdf8c57edd0ad3a976635e7ccb16497454f2dfc7aa608377",
     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (3 session(s); stored history from 2025-08-28, now from 2025-09-02): 104 of 123 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 2f466788c0fdf5fdc6ee6221bd41f412b78af7b9923f05cf44542dab562e586b). Nothing written.",
@@ -773,7 +773,7 @@
     }
    },
    "sourceDataDate": "2026-11-19",
-   "updatedAt": "2026-11-26T01:04:14.408Z",
+   "updatedAt": "2026-11-26T02:00:32.903Z",
    "earliestCutoffUtc": "2026-11-20T03:30:00.000Z",
    "r6Events": [
     {
@@ -871,7 +871,7 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-26T01:04:13.390Z",
+    "checkedAt": "2026-11-26T02:00:31.944Z",
     "existingPredictionsSha256": "448452053dab3ff23ec8b88ff606582fb7976d519fe22bbabfb5c3b7f31ce483",
     "candidatePredictionsSha256": "c37d7f7887c440d3bef29cf3bdddab27eee9c1f1502624c9fb16d60da6e62591",
     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (3 session(s); stored history from 2025-08-28, now from 2025-09-02): 102 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 85e31b553c61f5967acbedea1a661ce9603a44143a7b5c51a2eec5a756377c45). Nothing written.",
@@ -1153,7 +1153,7 @@
     }
    },
    "sourceDataDate": "2026-11-20",
-   "updatedAt": "2026-11-26T01:04:14.408Z",
+   "updatedAt": "2026-11-26T02:00:32.903Z",
    "earliestCutoffUtc": "2026-11-23T03:30:00.000Z",
    "r6Events": [
     {
@@ -1251,7 +1251,7 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-26T01:04:13.390Z",
+    "checkedAt": "2026-11-26T02:00:31.944Z",
     "existingPredictionsSha256": "3f504d5f3558214c715f49684fed24a01eda12bffaa2e7189b825c538a7efb4d",
     "candidatePredictionsSha256": "70c9b2a67528c96450436ad16f237c1e18c0ac099b38c4eda3c9f14e07d1d878",
     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (1 session(s); stored history from 2025-09-01, now from 2025-09-02): 94 of 117 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest f8545e4fedbe49fd051eca70ee762b23967e62167d5c89bb661835b2f28764f7). Nothing written.",
@@ -1533,7 +1533,7 @@
     }
    },
    "sourceDataDate": "2026-11-23",
-   "updatedAt": "2026-11-26T01:04:14.408Z",
+   "updatedAt": "2026-11-26T02:00:32.903Z",
    "earliestCutoffUtc": "2026-11-24T03:30:00.000Z",
    "r6Events": [
     {
@@ -1623,7 +1623,7 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-26T01:04:13.390Z",
+    "checkedAt": "2026-11-26T02:00:31.944Z",
     "existingPredictionsSha256": "0a3315a0ad47e7884c90586dd4ee7952c4a959339e0de8507339f51d90d8bd6f",
     "candidatePredictionsSha256": "0a3315a0ad47e7884c90586dd4ee7952c4a959339e0de8507339f51d90d8bd6f",
     "detail": "Existing record has an identical prediction digest; nothing written.",
@@ -1904,7 +1904,7 @@
     }
    },
    "sourceDataDate": "2026-11-25",
-   "updatedAt": "2026-11-26T01:04:14.408Z",
+   "updatedAt": "2026-11-26T02:00:32.903Z",
    "earliestCutoffUtc": "2026-11-26T03:30:00.000Z",
    "r6Events": [
     {
@@ -2257,6 +2257,11 @@
  },
  "runs": [
   {
+   "startedAt": "2026-11-26T02:00:28.520Z",
+   "slot": "0 19 * * 1-5",
+   "status": "anomaly"
+  },
+  {
    "startedAt": "2026-11-26T01:04:09.845Z",
    "slot": "30 17 * * 1-5",
    "status": "anomaly"
@@ -2350,17 +2355,12 @@
    "startedAt": "2026-11-20T10:13:50.762Z",
    "slot": "30 2 * * 2-6",
    "status": "anomaly"
-  },
-  {
-   "startedAt": "2026-11-20T00:59:01.760Z",
-   "slot": "0 19 * * 1-5",
-   "status": "anomaly"
   }
  ],
  "metrics": {
   "dailyFileBytes": 559715,
-  "ledgerBytes": 2890388,
-  "publicDataBytes": 29025942,
-  "captureSeconds": 3.548
+  "ledgerBytes": 2890389,
+  "publicDataBytes": 29025943,
+  "captureSeconds": 3.428
  }
 }
