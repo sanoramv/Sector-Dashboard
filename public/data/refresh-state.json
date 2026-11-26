@@ -2,6 +2,13 @@
  "schemaVersion": 1,
  "archives": {
   "index": {
+   "2026-11-26": {
+    "status": "ok",
+    "checkedAt": "2026-11-26T23:08:02.798Z",
+    "attempts": 1,
+    "detail": "20 tracked series",
+    "symbolSetHash": "458eb5100be8543a"
+   },
    "2026-11-25": {
     "status": "ok",
     "checkedAt": "2026-11-25T23:11:37.230Z",
@@ -11,7 +18,7 @@
    },
    "2026-11-24": {
     "status": "missing",
-    "checkedAt": "2026-11-26T11:11:33.080Z",
+    "checkedAt": "2026-11-26T23:08:03.262Z",
     "attempts": 1
    },
    "2026-11-23": {
@@ -2210,13 +2217,16 @@
     "attempts": 1,
     "detail": "19 tracked series",
     "symbolSetHash": "458eb5100be8543a"
-   },
-   "2025-09-02": {
-    "status": "ok",
-    "checkedAt": "bootstrap"
    }
   },
   "stocks": {
+   "2026-11-26": {
+    "status": "ok",
+    "checkedAt": "2026-11-26T23:08:04.069Z",
+    "attempts": 1,
+    "symbolSetHash": "b2128cbc3b6b045d",
+    "detail": "753 tracked symbols"
+   },
    "2026-11-25": {
     "status": "ok",
     "checkedAt": "2026-11-25T23:11:38.472Z",
@@ -2226,7 +2236,7 @@
    },
    "2026-11-24": {
     "status": "earlier-session",
-    "checkedAt": "2026-11-26T11:11:34.224Z",
+    "checkedAt": "2026-11-26T23:08:04.445Z",
     "attempts": 1,
     "detail": "file is for 2026-11-23"
    },
@@ -4441,13 +4451,6 @@
     "checkedAt": "2026-10-27T18:39:35.348Z",
     "attempts": 1,
     "symbolSetHash": "b2128cbc3b6b045d",
-    "detail": "698 tracked symbols"
-   },
-   "2025-09-02": {
-    "status": "ok",
-    "checkedAt": "2026-10-26T06:04:47.063Z",
-    "attempts": 1,
-    "symbolSetHash": "98ce0524a39d636f",
     "detail": "698 tracked symbols"
    }
   }

@@ -1,19 +1,21 @@
 {
  "kind": "momentum-ledger.state",
  "schemaVersion": 1,
- "updatedAt": "2026-11-26T11:11:42.911Z",
- "lastAttemptAt": "2026-11-26T11:11:37.226Z",
- "lastSuccessfulCaptureAt": "2026-11-25T23:11:43.814Z",
- "lastSuccessfulSessionDate": "2026-11-25",
+ "updatedAt": "2026-11-26T23:08:10.601Z",
+ "lastAttemptAt": "2026-11-26T23:08:06.465Z",
+ "lastSuccessfulCaptureAt": "2026-11-26T23:08:09.751Z",
+ "lastSuccessfulSessionDate": "2026-11-26",
  "runStatus": "anomaly",
  "lastFailure": {
-  "at": "2026-11-26T11:11:41.704Z",
+  "at": "2026-11-26T23:08:09.751Z",
   "date": null,
   "reasons": [
    "Unresolved anomaly on 2026-11-18: the immutable record was left untouched; see dates.<date>.r6Events in ledger-state.json"
   ]
  },
- "recoveryRequired": [],
+ "recoveryRequired": [
+  "2026-11-26"
+ ],
  "ruleVersion": "mv1-8ecef864",
  "enabledVersion": "mv1-8ecef864",
  "enabledFrom": "2026-11-18",
@@ -90,7 +92,7 @@
    ],
    "r6": {
     "status": "anomaly",
-    "checkedAt": "2026-11-26T11:11:41.704Z",
+    "checkedAt": "2026-11-26T23:08:09.751Z",
     "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
     "candidatePredictionsSha256": "601c4d671603eaa0830721534475ba50599011813a1a6d7363528f13adbfb71f",
     "detail": "A fresh evaluation produces DIFFERENT predictions from the existing record while the constituent lists are unchanged. The record is immutable and was left untouched.",
@@ -371,14 +373,14 @@
     },
     "firstAnomalyAt": "2026-11-19T22:20:19.482Z",
     "latestObservation": {
-     "at": "2026-11-26T11:11:41.704Z",
+     "at": "2026-11-26T23:08:09.751Z",
      "status": "existing",
      "reasonCode": "retention-window-only",
-     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (4 session(s); stored history from 2025-08-26, now from 2025-09-02): 105 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest cf9a4a1e1881dcb84405f991aaac1f6446542b6dd15a79a80c8861b5c27c5df4). Nothing written."
+     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (5 session(s); stored history from 2025-08-26, now from 2025-09-03): 105 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest cf9a4a1e1881dcb84405f991aaac1f6446542b6dd15a79a80c8861b5c27c5df4). Nothing written."
     }
    },
    "sourceDataDate": "2026-11-18",
-   "updatedAt": "2026-11-26T11:11:42.911Z",
+   "updatedAt": "2026-11-26T23:08:10.601Z",
    "earliestCutoffUtc": "2026-11-19T03:30:00.000Z",
    "r6Events": [
     {
@@ -418,6 +420,14 @@
      "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
      "candidatePredictionsSha256": "0ead01996b40d73a87b88ec70f89f89a54e9d2d073acf4a9eb7a6f2a88791520",
      "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (4 session(s); stored history from 2025-08-26, now from 2025-09-02): 105 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest cf9a4a1e1881dcb84405f991aaac1f6446542b6dd15a79a80c8861b5c27c5df4). Nothing written."
+    },
+    {
+     "at": "2026-11-26T23:08:09.751Z",
+     "status": "existing",
+     "reasonCode": "retention-window-only",
+     "existingPredictionsSha256": "ac454375470c738912e2c5c1986458c4f8d877ccd75d9b4adf6601cacf820308",
+     "candidatePredictionsSha256": "5ed0d03dcbb98190ee20f63f28934e9491d1c38a82727e5e272e50f12764314c",
+     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (5 session(s); stored history from 2025-08-26, now from 2025-09-03): 105 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest cf9a4a1e1881dcb84405f991aaac1f6446542b6dd15a79a80c8861b5c27c5df4). Nothing written."
     }
    ]
   },
@@ -491,10 +501,10 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-26T11:11:41.704Z",
+    "checkedAt": "2026-11-26T23:08:09.751Z",
     "existingPredictionsSha256": "fbc384ee3938dab3b783251523b3639c8648932caadb2283bf3c65f23adb794e",
-    "candidatePredictionsSha256": "de4e673ca452caa8bdf8c57edd0ad3a976635e7ccb16497454f2dfc7aa608377",
-    "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (3 session(s); stored history from 2025-08-28, now from 2025-09-02): 104 of 123 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 2f466788c0fdf5fdc6ee6221bd41f412b78af7b9923f05cf44542dab562e586b). Nothing written.",
+    "candidatePredictionsSha256": "94823fcf56aeb4bc17f08118f6f8699cb76de8413cbff07189e04fdee64be2a3",
+    "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (4 session(s); stored history from 2025-08-28, now from 2025-09-03): 104 of 123 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 2f466788c0fdf5fdc6ee6221bd41f412b78af7b9923f05cf44542dab562e586b). Nothing written.",
     "reasonCode": "retention-window-only",
     "universe": {
      "stored": [
@@ -773,7 +783,7 @@
     }
    },
    "sourceDataDate": "2026-11-19",
-   "updatedAt": "2026-11-26T11:11:42.911Z",
+   "updatedAt": "2026-11-26T23:08:10.601Z",
    "earliestCutoffUtc": "2026-11-20T03:30:00.000Z",
    "r6Events": [
     {
@@ -798,6 +808,14 @@
      "existingPredictionsSha256": "fbc384ee3938dab3b783251523b3639c8648932caadb2283bf3c65f23adb794e",
      "candidatePredictionsSha256": "de4e673ca452caa8bdf8c57edd0ad3a976635e7ccb16497454f2dfc7aa608377",
      "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (3 session(s); stored history from 2025-08-28, now from 2025-09-02): 104 of 123 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 2f466788c0fdf5fdc6ee6221bd41f412b78af7b9923f05cf44542dab562e586b). Nothing written."
+    },
+    {
+     "at": "2026-11-26T23:08:09.751Z",
+     "status": "existing",
+     "reasonCode": "retention-window-only",
+     "existingPredictionsSha256": "fbc384ee3938dab3b783251523b3639c8648932caadb2283bf3c65f23adb794e",
+     "candidatePredictionsSha256": "94823fcf56aeb4bc17f08118f6f8699cb76de8413cbff07189e04fdee64be2a3",
+     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (4 session(s); stored history from 2025-08-28, now from 2025-09-03): 104 of 123 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 2f466788c0fdf5fdc6ee6221bd41f412b78af7b9923f05cf44542dab562e586b). Nothing written."
     }
    ]
   },
@@ -871,10 +889,10 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-26T11:11:41.704Z",
+    "checkedAt": "2026-11-26T23:08:09.751Z",
     "existingPredictionsSha256": "448452053dab3ff23ec8b88ff606582fb7976d519fe22bbabfb5c3b7f31ce483",
-    "candidatePredictionsSha256": "c37d7f7887c440d3bef29cf3bdddab27eee9c1f1502624c9fb16d60da6e62591",
-    "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (3 session(s); stored history from 2025-08-28, now from 2025-09-02): 102 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 85e31b553c61f5967acbedea1a661ce9603a44143a7b5c51a2eec5a756377c45). Nothing written.",
+    "candidatePredictionsSha256": "a400fc38f75c5b25767e8a388b192303c2e5438357aa7432a2be541090098604",
+    "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (4 session(s); stored history from 2025-08-28, now from 2025-09-03): 102 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 85e31b553c61f5967acbedea1a661ce9603a44143a7b5c51a2eec5a756377c45). Nothing written.",
     "reasonCode": "retention-window-only",
     "universe": {
      "stored": [
@@ -1153,7 +1171,7 @@
     }
    },
    "sourceDataDate": "2026-11-20",
-   "updatedAt": "2026-11-26T11:11:42.911Z",
+   "updatedAt": "2026-11-26T23:08:10.601Z",
    "earliestCutoffUtc": "2026-11-23T03:30:00.000Z",
    "r6Events": [
     {
@@ -1178,6 +1196,14 @@
      "existingPredictionsSha256": "448452053dab3ff23ec8b88ff606582fb7976d519fe22bbabfb5c3b7f31ce483",
      "candidatePredictionsSha256": "c37d7f7887c440d3bef29cf3bdddab27eee9c1f1502624c9fb16d60da6e62591",
      "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (3 session(s); stored history from 2025-08-28, now from 2025-09-02): 102 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 85e31b553c61f5967acbedea1a661ce9603a44143a7b5c51a2eec5a756377c45). Nothing written."
+    },
+    {
+     "at": "2026-11-26T23:08:09.751Z",
+     "status": "existing",
+     "reasonCode": "retention-window-only",
+     "existingPredictionsSha256": "448452053dab3ff23ec8b88ff606582fb7976d519fe22bbabfb5c3b7f31ce483",
+     "candidatePredictionsSha256": "a400fc38f75c5b25767e8a388b192303c2e5438357aa7432a2be541090098604",
+     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (4 session(s); stored history from 2025-08-28, now from 2025-09-03): 102 of 126 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest 85e31b553c61f5967acbedea1a661ce9603a44143a7b5c51a2eec5a756377c45). Nothing written."
     }
    ]
   },
@@ -1251,10 +1277,10 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-26T11:11:41.704Z",
+    "checkedAt": "2026-11-26T23:08:09.751Z",
     "existingPredictionsSha256": "3f504d5f3558214c715f49684fed24a01eda12bffaa2e7189b825c538a7efb4d",
-    "candidatePredictionsSha256": "70c9b2a67528c96450436ad16f237c1e18c0ac099b38c4eda3c9f14e07d1d878",
-    "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (1 session(s); stored history from 2025-09-01, now from 2025-09-02): 94 of 117 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest f8545e4fedbe49fd051eca70ee762b23967e62167d5c89bb661835b2f28764f7). Nothing written.",
+    "candidatePredictionsSha256": "da2e2131dd219a909f17467de7a7ea6105fc3bc3be0ff521e14cf928ea5feca6",
+    "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (2 session(s); stored history from 2025-09-01, now from 2025-09-03): 94 of 117 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest f8545e4fedbe49fd051eca70ee762b23967e62167d5c89bb661835b2f28764f7). Nothing written.",
     "reasonCode": "retention-window-only",
     "universe": {
      "stored": [
@@ -1533,7 +1559,7 @@
     }
    },
    "sourceDataDate": "2026-11-23",
-   "updatedAt": "2026-11-26T11:11:42.911Z",
+   "updatedAt": "2026-11-26T23:08:10.601Z",
    "earliestCutoffUtc": "2026-11-24T03:30:00.000Z",
    "r6Events": [
     {
@@ -1550,6 +1576,14 @@
      "existingPredictionsSha256": "3f504d5f3558214c715f49684fed24a01eda12bffaa2e7189b825c538a7efb4d",
      "candidatePredictionsSha256": "70c9b2a67528c96450436ad16f237c1e18c0ac099b38c4eda3c9f14e07d1d878",
      "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (1 session(s); stored history from 2025-09-01, now from 2025-09-02): 94 of 117 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest f8545e4fedbe49fd051eca70ee762b23967e62167d5c89bb661835b2f28764f7). Nothing written."
+    },
+    {
+     "at": "2026-11-26T23:08:09.751Z",
+     "status": "existing",
+     "reasonCode": "retention-window-only",
+     "existingPredictionsSha256": "3f504d5f3558214c715f49684fed24a01eda12bffaa2e7189b825c538a7efb4d",
+     "candidatePredictionsSha256": "da2e2131dd219a909f17467de7a7ea6105fc3bc3be0ff521e14cf928ea5feca6",
+     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (2 session(s); stored history from 2025-09-01, now from 2025-09-03): 94 of 117 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest f8545e4fedbe49fd051eca70ee762b23967e62167d5c89bb661835b2f28764f7). Nothing written."
     }
    ]
   },
@@ -1623,10 +1657,11 @@
    ],
    "r6": {
     "status": "existing",
-    "checkedAt": "2026-11-26T11:11:41.704Z",
+    "checkedAt": "2026-11-26T23:08:09.751Z",
     "existingPredictionsSha256": "0a3315a0ad47e7884c90586dd4ee7952c4a959339e0de8507339f51d90d8bd6f",
-    "candidatePredictionsSha256": "0a3315a0ad47e7884c90586dd4ee7952c4a959339e0de8507339f51d90d8bd6f",
-    "detail": "Existing record has an identical prediction digest; nothing written.",
+    "candidatePredictionsSha256": "3390449c445ece3efd61d03be023e32866409f59a30c7c09a3fc9924102f5b1a",
+    "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (1 session(s); stored history from 2025-09-02, now from 2025-09-03): 107 of 123 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest cae1a2b0189d1d2f89a26f57b7d1a5dcea19371bbd8e8e87167d2717d4e45e99). Nothing written.",
+    "reasonCode": "retention-window-only",
     "universe": {
      "stored": [
       {
@@ -1904,7 +1939,7 @@
     }
    },
    "sourceDataDate": "2026-11-25",
-   "updatedAt": "2026-11-26T11:11:42.911Z",
+   "updatedAt": "2026-11-26T23:08:10.601Z",
    "earliestCutoffUtc": "2026-11-26T03:30:00.000Z",
    "r6Events": [
     {
@@ -1913,8 +1948,95 @@
      "existingPredictionsSha256": "0a3315a0ad47e7884c90586dd4ee7952c4a959339e0de8507339f51d90d8bd6f",
      "candidatePredictionsSha256": "0a3315a0ad47e7884c90586dd4ee7952c4a959339e0de8507339f51d90d8bd6f",
      "detail": "Existing record has an identical prediction digest; nothing written."
+    },
+    {
+     "at": "2026-11-26T23:08:09.751Z",
+     "status": "existing",
+     "reasonCode": "retention-window-only",
+     "existingPredictionsSha256": "0a3315a0ad47e7884c90586dd4ee7952c4a959339e0de8507339f51d90d8bd6f",
+     "candidatePredictionsSha256": "3390449c445ece3efd61d03be023e32866409f59a30c7c09a3fc9924102f5b1a",
+     "detail": "Existing record has a different full prediction digest ONLY because retention pruned the oldest history (1 session(s); stored history from 2025-09-02, now from 2025-09-03): 107 of 123 prediction(s) differ only in quality.barsUsed / quality.usableFrom, which are explained by that pruning; every other field is identical (retention-normalised digest cae1a2b0189d1d2f89a26f57b7d1a5dcea19371bbd8e8e87167d2717d4e45e99). Nothing written."
     }
    ]
+  },
+  "2026-11-26": {
+   "status": "recorded",
+   "reasons": [],
+   "generatedAt": "2026-11-26T23:08:09.751Z",
+   "publicationClass": "pending",
+   "cutoffUtc": null,
+   "readiness": [
+    {
+     "id": "R1",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R2",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R3",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R4",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R5",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R7",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R9",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R8",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R11",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R10",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R6",
+     "status": "pass",
+     "disposition": "ok"
+    },
+    {
+     "id": "R6",
+     "status": "pass",
+     "disposition": "ok"
+    }
+   ],
+   "r6": {
+    "status": "pass",
+    "checkedAt": "2026-11-26T23:08:09.751Z",
+    "existingPredictionsSha256": null,
+    "candidatePredictionsSha256": "933ee3b6e80bca30260491c45f16510c43b3d8fec03b74e9d54f0ce55be12382",
+    "detail": "No existing record for this date and rule version."
+   },
+   "sourceDataDate": "2026-11-26",
+   "updatedAt": "2026-11-26T23:08:10.601Z",
+   "earliestCutoffUtc": "2026-11-27T03:30:00.000Z"
   }
  },
  "calendar": {
@@ -2253,9 +2375,15 @@
   "2026-11-20": "trading",
   "2026-11-23": "trading",
   "2026-11-24": "non-trading",
-  "2026-11-25": "trading"
+  "2026-11-25": "trading",
+  "2026-11-26": "trading"
  },
  "runs": [
+  {
+   "startedAt": "2026-11-26T23:08:06.465Z",
+   "slot": "30 14 * * 1-5",
+   "status": "anomaly"
+  },
   {
    "startedAt": "2026-11-26T11:11:37.226Z",
    "slot": "30 2 * * 2-6",
@@ -2350,17 +2478,12 @@
    "startedAt": "2026-11-20T22:25:43.774Z",
    "slot": "0 16 * * 1-5",
    "status": "anomaly"
-  },
-  {
-   "startedAt": "2026-11-20T21:53:56.780Z",
-   "slot": "30 14 * * 1-5",
-   "status": "anomaly"
   }
  ],
  "metrics": {
-  "dailyFileBytes": 559715,
-  "ledgerBytes": 2890389,
-  "publicDataBytes": 29101401,
-  "captureSeconds": 4.479
+  "dailyFileBytes": 527229,
+  "ledgerBytes": 3417618,
+  "publicDataBytes": 29647056,
+  "captureSeconds": 3.287
  }
 }
